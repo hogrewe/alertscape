@@ -2,5 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry sourcepath="lib/idw-docking/idw-gpl-1.4.0-src.zip" kind="lib" path="lib/idw-docking/idw-gpl.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
