@@ -3,10 +3,13 @@
  */
 package com.temp.cev.model.tree;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.temp.cev.model.Event;
+import com.temp.cev.model.severity.SeverityFactory;
 
 /**
  * @author josh
@@ -14,8 +17,18 @@ import com.temp.cev.model.Event;
  */
 public class CevTreeNode
 {
+    public static final String CHILD_ADDED_PROP = "ChildAdded";
+    public static final String CHILD_REMOVED_PROP = "ChildRemoved";
+    public static final String DISPLAY_CHANGED_PROP = "DisplayChanged";
+    public static final String EVENT_ADDED_PROP = "EventAdded";
+    public static final String EVENT_REMOVED_PROP = "EventRemoved";
+
+    private byte[] eventLock = new byte[0];
+
     private CevTreeNode parent;
     private List<CevTreeNode> children;
+    /** This is the order that we should try to add the events to the children */
+    private List<CevTreeNode> childAddOrder;
     private CevTreeNode noMatchNode;
     private List<Event> events;
     /** Trade off space for speed in handling severity changes */
@@ -27,19 +40,79 @@ public class CevTreeNode
     private String text;
     private String description;
     private boolean blink;
-    
-    private boolean addEvent(Event e)
+
+    public CevTreeNode( )
+    {
+        int numsevs = SeverityFactory.getInstance( ).getMaxSeverity( );
+        for (int i = 0; i < numsevs; i++) {
+            severityEvents[i] = new HashMap<String,Event>( );
+        }
+    }
+
+    public boolean addEvent(Event e)
     {
         boolean added = false;
-        
+
+        synchronized (eventLock) {
+
+        }
+
         return added;
     }
-    
-    private void removeEvent(Event e)
+
+    public void removeEvent(Event e)
     {
-        
+        synchronized (eventLock) {
+
+        }
+    }
+
+    public List getChildren( )
+    {
+        synchronized (eventLock) {
+            return Collections.unmodifiableList(children);
+        }
+    }
+
+    public void addChild(CevTreeNode child)
+    {
+        children.add(child);
+    }
+
+    public void addChild(int index, CevTreeNode child)
+    {
+        children.add(index, child);
     }
     
+    public void setChildAddOrder(List<CevTreeNode> addOrder)
+    {
+        this.childAddOrder = addOrder;
+    }
+    
+    protected List getChildAddOrder()
+    {
+        if(childAddOrder == null)
+        {
+            return children;
+        }
+        else
+        {
+            return childAddOrder;
+        }
+    }
+
+    public void clearEvents( )
+    {
+        synchronized (eventLock) {
+            events.clear( );
+            for (int i = 0; i < severityEvents.length; i++) {
+                severityEvents[i].clear( );
+            }
+            maxSeverity = 0;
+        }
+
+    }
+
     /**
      * @return Returns the blink.
      */
@@ -202,10 +275,15 @@ public class CevTreeNode
     }
 
     /**
-     * @param noMatchNode The noMatchNode to set.
+     * @param noMatchNode
+     *            The noMatchNode to set.
      */
     public void setNoMatchNode(CevTreeNode noMatchNode)
     {
         this.noMatchNode = noMatchNode;
+        if(!children.contains(noMatchNode))
+        {
+            children.add(noMatchNode);
+        }
     }
 }
