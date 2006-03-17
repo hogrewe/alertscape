@@ -31,4 +31,9 @@ public class SeverityFactory
         }
         return sev;
     }
+    
+    public int getMaxSeverity()
+    {
+        return severities.length;
+    }
 }
