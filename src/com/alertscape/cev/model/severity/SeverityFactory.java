@@ -20,6 +20,9 @@ public class SeverityFactory
 
     protected SeverityFactory( )
     {
+        severities = new Severity[1];
+        severities[0] = new Severity();
+        severities[0].setLevel(0);
         // TODO: Load the severities from a config file
     }
 
