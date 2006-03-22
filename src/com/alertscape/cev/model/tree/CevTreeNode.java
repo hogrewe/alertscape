@@ -1,15 +1,15 @@
 /*
  * Created on Mar 15, 2006
  */
-package com.temp.cev.model.tree;
+package com.alertscape.cev.model.tree;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.temp.cev.model.Event;
-import com.temp.cev.model.severity.SeverityFactory;
+import com.alertscape.cev.model.Event;
+import com.alertscape.cev.model.severity.SeverityFactory;
 
 /**
  * @author josh

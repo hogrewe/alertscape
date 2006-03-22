@@ -1,13 +1,13 @@
 /*
  * Created on Mar 15, 2006
  */
-package com.temp.cev.model;
+package com.alertscape.cev.model.tree;
 
 /**
  * @author josh
  * @version $Version: $
  */
-public interface Event
+public class BlinkCriterion
 {
-    public String getEventId();
+
 }

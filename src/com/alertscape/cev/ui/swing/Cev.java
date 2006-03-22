@@ -1,7 +1,7 @@
 /*
  * Created on Mar 15, 2006
  */
-package com.temp.cev.ui.swing;
+package com.alertscape.cev.ui.swing;
 
 import javax.swing.JFrame;
 

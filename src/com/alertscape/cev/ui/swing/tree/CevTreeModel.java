@@ -1,13 +1,13 @@
 /*
  * Created on Mar 16, 2006
  */
-package com.temp.cev.ui.swing.tree;
+package com.alertscape.cev.ui.swing.tree;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import com.temp.cev.model.tree.CevTreeNode;
+import com.alertscape.cev.model.tree.CevTreeNode;
 
 /**
  * @author josh

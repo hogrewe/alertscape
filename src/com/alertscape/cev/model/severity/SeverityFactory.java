@@ -1,7 +1,7 @@
 /*
  * Created on Mar 15, 2006
  */
-package com.temp.cev.model.severity;
+package com.alertscape.cev.model.severity;
 
 /**
  * @author josh
