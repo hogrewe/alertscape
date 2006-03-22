@@ -5,6 +5,8 @@ package com.alertscape.cev.ui.swing.tree;
 
 import javax.swing.JTree;
 
+import com.alertscape.cev.model.Event;
+
 /**
  * @author josh
  * @version $Version: $
@@ -12,6 +14,28 @@ import javax.swing.JTree;
 public class CevTree extends JTree
 {
     private static final long serialVersionUID = 1L;
-
     
+    public CevTree(CevTreeModel model)
+    {
+        super(model);
+        setCellRenderer(new CevTreeNodeRenderer());
+    }
+
+    public void addEvent(Event e)
+    {
+        CevTreeModel model = (CevTreeModel) getModel();
+        model.addEvent(e);
+    }
+    
+    public void removeEvent(Event e)
+    {
+        CevTreeModel model = (CevTreeModel) getModel();
+        model.removeEvent(e);
+    }
+    
+    public void clearEvents()
+    {
+        CevTreeModel model = (CevTreeModel) getModel();
+        model.clearEvents();
+    }
 }

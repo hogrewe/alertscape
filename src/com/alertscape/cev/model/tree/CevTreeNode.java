@@ -3,6 +3,7 @@
  */
 package com.alertscape.cev.model.tree;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,7 @@ public class CevTreeNode
     private CevTreeNode noMatchNode;
     private List<Event> events;
     /** Trade off space for speed in handling severity changes */
-    private Map<String, Event>[] severityEvents;
+    private Map<String,Event>[] severityEvents;
     private EventCriterion eventCriterion;
     private BlinkCriterion blinkCriterion;
     private int maxSeverity;
@@ -41,12 +42,15 @@ public class CevTreeNode
     private String description;
     private boolean blink;
 
+    @SuppressWarnings("unchecked")
     public CevTreeNode( )
     {
         int numsevs = SeverityFactory.getInstance( ).getMaxSeverity( );
+        severityEvents = new Map[numsevs];
         for (int i = 0; i < numsevs; i++) {
             severityEvents[i] = new HashMap<String,Event>( );
         }
+        children = new ArrayList<CevTreeNode>();
     }
 
     public boolean addEvent(Event e)
@@ -67,10 +71,17 @@ public class CevTreeNode
         }
     }
 
-    public List getChildren( )
+    public List<CevTreeNode> getChildren( )
     {
         synchronized (eventLock) {
             return Collections.unmodifiableList(children);
+        }
+    }
+    
+    public int getChildCount()
+    {
+        synchronized (eventLock) {
+            return children.size();
         }
     }
 
@@ -83,6 +94,7 @@ public class CevTreeNode
     {
         children.add(index, child);
     }
+    
     
     public void setChildAddOrder(List<CevTreeNode> addOrder)
     {

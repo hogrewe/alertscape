@@ -7,6 +7,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.tree.CevTreeNode;
 
 /**
@@ -17,16 +18,31 @@ public class CevTreeModel implements TreeModel
 {
     private CevTreeNode root;
 
-    public CevTreeModel()
+    public CevTreeModel( )
     {
-        
+
     }
-    
+
     public CevTreeModel(CevTreeNode root)
     {
         setRoot(root);
     }
     
+    public void addEvent(Event e)
+    {
+        root.addEvent(e);
+    }
+    
+    public void removeEvent(Event e)
+    {
+        root.removeEvent(e);
+    }
+    
+    public void clearEvents()
+    {
+        root.clearEvents();
+    }
+
     public Object getRoot( )
     {
         return root;
@@ -35,9 +51,9 @@ public class CevTreeModel implements TreeModel
     public Object getChild(Object parent, int index)
     {
         CevTreeNode child = null;
-        if(parent instanceof CevTreeNode)
-        {
+        if (parent instanceof CevTreeNode) {
             CevTreeNode n = (CevTreeNode) parent;
+            child = n.getChildren().get(index);
         }
         return child;
     }
@@ -45,17 +61,22 @@ public class CevTreeModel implements TreeModel
     public int getChildCount(Object parent)
     {
         int count = 0;
-        if(parent instanceof CevTreeNode)
-        {
-            
+        if (parent instanceof CevTreeNode) {
+            count = ((CevTreeNode) parent).getChildCount( );
         }
-        return 0;
+        return count;
     }
 
     public boolean isLeaf(Object node)
     {
-        // TODO Auto-generated method stub
-        return false;
+        boolean leaf = true;
+
+        if (node instanceof CevTreeNode) {
+            CevTreeNode ctn = (CevTreeNode) node;
+            leaf = ctn.getChildCount( ) < 1;
+        }
+
+        return leaf;
     }
 
     public void valueForPathChanged(TreePath path, Object newValue)
@@ -66,8 +87,14 @@ public class CevTreeModel implements TreeModel
 
     public int getIndexOfChild(Object parent, Object child)
     {
-        // TODO Auto-generated method stub
-        return 0;
+        int index = -1;
+        
+        if (parent instanceof CevTreeNode) {
+            CevTreeNode ctn = (CevTreeNode) parent;
+            index = ctn.getChildren().indexOf(child);
+        }
+        
+        return index;
     }
 
     public void addTreeModelListener(TreeModelListener l)
@@ -86,5 +113,4 @@ public class CevTreeModel implements TreeModel
     {
         this.root = root;
     }
-
 }
