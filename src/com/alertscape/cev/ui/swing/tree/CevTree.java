@@ -1,7 +1,7 @@
 /*
  * Created on Mar 16, 2006
  */
-package com.temp.cev.ui.swing.tree;
+package com.alertscape.cev.ui.swing.tree;
 
 import javax.swing.JTree;
 
