@@ -9,5 +9,10 @@ package com.alertscape.cev.model;
  */
 public interface Event
 {
+    public final static int STANDING = 1;
+    public final static int CLEARED = 2;
+    
     public String getEventId();
+    public int getStatus();
+    public boolean isStanding();
 }

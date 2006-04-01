@@ -27,12 +27,12 @@ public class CevFrame extends JFrame
     
     public void init()
     {
+        setSize(800,600);
         CevTreeNode root = new CevTreeNode();
         root.setText("Root yo");
         CevTreeModel model = new CevTreeModel(root);
         tree = new CevTree(model);
         add(tree);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        pack();
     }
 }
