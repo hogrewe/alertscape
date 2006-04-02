@@ -99,7 +99,7 @@ public class SortedEventCollection extends EventCollection implements
         return collection.getAllEvents( );
     }
 
-    public Event getEvent(String id)
+    public Event getEvent(long id)
     {
         return collection.getEvent(id);
     }

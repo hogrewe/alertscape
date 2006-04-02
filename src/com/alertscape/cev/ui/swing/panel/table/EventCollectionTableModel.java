@@ -12,7 +12,6 @@ import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.EventChange;
 import com.alertscape.cev.model.EventChangeListener;
 import com.alertscape.cev.model.EventCollection;
-import com.alertscape.cev.model.SortedEventCollection;
 import com.alertscape.cev.model.panel.EventCollectionPanelModel;
 
 /**
@@ -27,23 +26,17 @@ public class EventCollectionTableModel extends AbstractTableModel implements
 
     private static final long serialVersionUID = 1L;
     private List<EventColumn> columns;
-    private String sortField;
-    private boolean sortDescending;
 
-    private SortedEventCollection collection;
+    private EventCollection collection;
 
-    public EventCollectionTableModel(List<EventColumn> columns,
-            String sortField, boolean desc)
+    public EventCollectionTableModel(List<EventColumn> columns)
     {
-        setSortField(sortField);
-        setSortDescending(desc);
         setColumns(columns);
     }
     
     public void setCollection(EventCollection collection)
     {
-        this.collection = new SortedEventCollection(collection);
-        this.collection.setSortedField(getSortField(), isSortDescending());
+        this.collection = collection;
         this.collection.addEventChangeListener(this);
     }
 
@@ -89,6 +82,11 @@ public class EventCollectionTableModel extends AbstractTableModel implements
         Event e = collection.getEventAt(rowIndex);
         return column.getValue(e);
     }
+    
+    public Event getEventAt(int rowIndex)
+    {
+        return collection.getEventAt(rowIndex);
+    }
 
     public void setColumns(List<EventColumn> columns)
     {
@@ -99,35 +97,4 @@ public class EventCollectionTableModel extends AbstractTableModel implements
     {
         return Collections.unmodifiableList(columns);
     }
-
-    public boolean isSortDescending( )
-    {
-        return sortDescending;
-    }
-
-    public void setSortDescending(boolean desc)
-    {
-        this.sortDescending = desc;
-        if (collection != null)
-        {
-            collection
-                    .setSortedField(getSortField( ), isSortDescending( ));
-        }
-    }
-
-    public String getSortField( )
-    {
-        return sortField;
-    }
-
-    public void setSortField(String sortField)
-    {
-        this.sortField = sortField;
-        if (collection != null)
-        {
-            collection
-                    .setSortedField(getSortField( ), isSortDescending( ));
-        }
-    }
-
 }
