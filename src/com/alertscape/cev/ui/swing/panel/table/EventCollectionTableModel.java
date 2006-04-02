@@ -6,29 +6,31 @@ package com.alertscape.cev.ui.swing.panel.table;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 
 import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.EventChange;
+import com.alertscape.cev.model.EventChangeListener;
+import com.alertscape.cev.model.EventCollection;
 import com.alertscape.cev.model.SortedEventCollection;
-import com.alertscape.cev.model.panel.AbstractEventCollectionPanelModel;
+import com.alertscape.cev.model.panel.EventCollectionPanelModel;
 
 /**
  * @author josh
  * @version $Version: $
  */
-public class EventCollectionTableModel extends
-        AbstractEventCollectionPanelModel implements TableModel
+public class EventCollectionTableModel extends AbstractTableModel implements
+        EventCollectionPanelModel, EventChangeListener
 {
-//    private static Logger logger = Logger
-//            .getLogger(EventCollectionTableModel.class);
+    // private static Logger logger = Logger
+    // .getLogger(EventCollectionTableModel.class);
 
+    private static final long serialVersionUID = 1L;
     private List<EventColumn> columns;
     private String sortField;
     private boolean sortDescending;
 
-    private SortedEventCollection sortedCollection;
+    private SortedEventCollection collection;
 
     public EventCollectionTableModel(List<EventColumn> columns,
             String sortField, boolean desc)
@@ -36,15 +38,23 @@ public class EventCollectionTableModel extends
         setSortField(sortField);
         setSortDescending(desc);
         setColumns(columns);
-        sortedCollection = new SortedEventCollection( );
-        sortedCollection.setSortedField(sortField, desc);
-        setCollection(sortedCollection);
+    }
+    
+    public void setCollection(EventCollection collection)
+    {
+        this.collection = new SortedEventCollection(collection);
+        this.collection.setSortedField(getSortField(), isSortDescending());
+        this.collection.addEventChangeListener(this);
+    }
+
+    public EventCollection getCollection( )
+    {
+        return collection;
     }
 
     public void handleChange(EventChange change)
     {
-        // TODO Auto-generated method stub
-
+        fireTableDataChanged();
     }
 
     public int getRowCount( )
@@ -73,32 +83,11 @@ public class EventCollectionTableModel extends
         return c;
     }
 
-    public boolean isCellEditable(int rowIndex, int columnIndex)
-    {
-        return false;
-    }
-
     public Object getValueAt(int rowIndex, int columnIndex)
     {
         EventColumn column = columns.get(columnIndex);
-        Event e = sortedCollection.getEventAt(rowIndex);
+        Event e = collection.getEventAt(rowIndex);
         return column.getValue(e);
-    }
-
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
-    {
-    }
-
-    public void addTableModelListener(TableModelListener l)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void removeTableModelListener(TableModelListener l)
-    {
-        // TODO Auto-generated method stub
-
     }
 
     public void setColumns(List<EventColumn> columns)
@@ -119,9 +108,10 @@ public class EventCollectionTableModel extends
     public void setSortDescending(boolean desc)
     {
         this.sortDescending = desc;
-        if(sortedCollection != null)
+        if (collection != null)
         {
-            sortedCollection.setSortedField(getSortField(), isSortDescending());
+            collection
+                    .setSortedField(getSortField( ), isSortDescending( ));
         }
     }
 
@@ -133,9 +123,11 @@ public class EventCollectionTableModel extends
     public void setSortField(String sortField)
     {
         this.sortField = sortField;
-        if(sortedCollection != null)
+        if (collection != null)
         {
-            sortedCollection.setSortedField(getSortField(), isSortDescending());
+            collection
+                    .setSortedField(getSortField( ), isSortDescending( ));
         }
     }
+
 }

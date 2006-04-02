@@ -4,8 +4,10 @@
 package com.alertscape.cev.model;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -16,7 +18,8 @@ import com.alertscape.util.GetterHelper;
  * @author josh
  * @version $Version: $
  */
-public class SortedEventCollection extends EventCollection
+public class SortedEventCollection extends EventCollection implements
+        EventChangeListener
 {
     private static Logger logger = Logger
             .getLogger(SortedEventCollection.class);
@@ -25,6 +28,37 @@ public class SortedEventCollection extends EventCollection
     private List<Event> sortedEvents;
     private EventComparator<Event> comparator;
     private byte[] lock = new byte[0];
+    private EventCollection collection;
+
+    public SortedEventCollection(EventCollection collection)
+    {
+        this.collection = collection;
+        this.collection.addEventChangeListener(this);
+    }
+
+    public void handleChange(EventChange change)
+    {
+        if(change.getChangeType() == EventChange.FULL)
+        {
+            clearEvents();
+        }
+        
+        Iterator<Event> eventIter = change.getEvents().iterator();
+        while(eventIter.hasNext())
+        {
+            Event e = eventIter.next();
+            
+            Event alreadyStanding = collection.getEvent(e.getEventId());
+            sortedEvents.remove(alreadyStanding);
+            
+            if(e.isStanding())
+            {
+                sortedEvents.add(e);
+            }
+        }
+        sort();
+        fireEventChange(change.getEvents());
+    }
 
     public void setSortedField(String fieldName, boolean desc)
     {
@@ -46,34 +80,38 @@ public class SortedEventCollection extends EventCollection
         }
     }
 
-    @Override
-    public void processEvents(List<Event> events)
-    {
-        synchronized (lock)
-        {
-            for (int i = 0; i < events.size( ); i++)
-            {
-                Event e = events.get(i);
-                if (e.isStanding( ))
-                {
-                    sortedEvents.add(e);
-                } else
-                {
-                    Event alreadyThere = getEvent(e.getEventId( ));
-                    sortedEvents.remove(alreadyThere);
-                }
-            }
-            sort( );
-        }
-        super.processEvents(events);
-    }
-
     public Event getEventAt(int index)
     {
         synchronized (lock)
         {
             return sortedEvents.get(index);
         }
+    }
+
+    public void clearEvents( )
+    {
+        sortedEvents.clear();
+        fireFullEventChange(new ArrayList<Event>());
+    }
+
+    public List<Event> getAllEvents( )
+    {
+        return collection.getAllEvents( );
+    }
+
+    public Event getEvent(String id)
+    {
+        return collection.getEvent(id);
+    }
+
+    public int getEventCount( )
+    {
+        return collection.getEventCount( );
+    }
+
+    public void processEvents(List<Event> events)
+    {
+        collection.processEvents(events);
     }
 
     protected void sort( )
@@ -147,4 +185,5 @@ public class SortedEventCollection extends EventCollection
             this.inverted = inverted;
         }
     }
+
 }
