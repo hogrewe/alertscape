@@ -55,6 +55,12 @@ public class EventCollection
         return e;
     }
     
+    public void clearEvents()
+    {
+        eventMap.clear();
+        fireFullEventChange(new ArrayList<Event>());
+    }
+    
     public void addEventChangeListener(EventChangeListener l)
     {
         support.addListener(l);
@@ -66,6 +72,12 @@ public class EventCollection
     }
 
     protected void fireEventChange(List<Event> events)
+    {
+        EventChange change = new EventChange(EventChange.PARTIAL, events);
+        support.fireEventChange(change);
+    }
+    
+    protected void fireFullEventChange(List<Event> events)
     {
         EventChange change = new EventChange(EventChange.PARTIAL, events);
         support.fireEventChange(change);
