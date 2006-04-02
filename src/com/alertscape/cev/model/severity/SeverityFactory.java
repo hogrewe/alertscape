@@ -3,6 +3,8 @@
  */
 package com.alertscape.cev.model.severity;
 
+import java.awt.Color;
+
 /**
  * @author josh
  * @version $Version: $
@@ -20,9 +22,25 @@ public class SeverityFactory
 
     protected SeverityFactory( )
     {
-        severities = new Severity[1];
+        severities = new Severity[3];
         severities[0] = new Severity();
         severities[0].setLevel(0);
+        severities[0].setBackgroundColor(Color.GREEN);
+        severities[0].setForegroundColor(Color.BLACK);
+        severities[0].setName("Normal");
+
+        severities[1] = new Severity();
+        severities[1].setLevel(1);
+        severities[1].setBackgroundColor(Color.YELLOW);
+        severities[1].setForegroundColor(Color.BLACK);
+        severities[1].setName("Minor");
+
+        severities[2] = new Severity();
+        severities[2].setLevel(2);
+        severities[2].setBackgroundColor(Color.RED);
+        severities[2].setForegroundColor(Color.BLACK);
+        severities[2].setName("Critical");
+
         // TODO: Load the severities from a config file
     }
 

@@ -17,6 +17,12 @@ class EventColumn
     String displayName;
     String propertyName;
     private Method propertyGetter;
+    
+    public EventColumn(String displayName, String propertyName)
+    {
+        setDisplayName(displayName);
+        setPropertyName(propertyName);
+    }
 
     public String getDisplayName( )
     {

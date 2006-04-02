@@ -4,6 +4,7 @@
 package com.alertscape.cev.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,8 @@ import java.util.Map;
 public class EventCollection
 {
     private byte[] lock = new byte[0];
-    private Map<String, Event> eventMap;
+    private Map<Long, Event> eventMap = new HashMap<Long,Event>();
+    private List<Event> events = new ArrayList<Event>();
     private EventChangeSupport support = new EventChangeSupport( );
 
     public void processEvents(List<Event> events)
@@ -46,13 +48,18 @@ public class EventCollection
         return eventMap.size();
     }
 
-    public Event getEvent(String id)
+    public Event getEvent(long id)
     {
         Event e = null;
         synchronized (lock) {
             e = eventMap.get(id);
         }
         return e;
+    }
+    
+    public Event getEventAt(int index)
+    {
+        return events.get(index);
     }
     
     public void clearEvents()
@@ -86,11 +93,14 @@ public class EventCollection
     protected void addEvent(Event e)
     {
         eventMap.put(e.getEventId( ), e);
+        events.remove(e);
+        events.add(e);
     }
 
     protected void removeEvent(Event e)
     {
         eventMap.remove(e.getEventId( ));
+        events.remove(e);
     }
 
 }

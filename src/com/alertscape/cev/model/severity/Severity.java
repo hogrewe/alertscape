@@ -3,6 +3,8 @@
  */
 package com.alertscape.cev.model.severity;
 
+import java.awt.Color;
+
 /**
  * @author josh
  * @version $Version: $
@@ -13,13 +15,20 @@ public class Severity
     private String smallIcon;
     private String largeIcon;
     private String name;
-    private String backgroundColor;
-    private String foregroundColor;
+    private Color backgroundColor;
+    private Color foregroundColor;
+    private Color selectionForegroundColor;
+    private Color selectionBackgroundColor;
+    
+    Severity()
+    {
+        
+    }
 
     /**
      * @return Returns the backgroundColor.
      */
-    public String getBackgroundColor( )
+    public Color getBackgroundColor( )
     {
         return backgroundColor;
     }
@@ -28,7 +37,7 @@ public class Severity
      * @param backgroundColor
      *            The backgroundColor to set.
      */
-    void setBackgroundColor(String backgroundColor)
+    void setBackgroundColor(Color backgroundColor)
     {
         this.backgroundColor = backgroundColor;
     }
@@ -36,7 +45,7 @@ public class Severity
     /**
      * @return Returns the foregroundColor.
      */
-    public String getForegroundColor( )
+    public Color getForegroundColor( )
     {
         return foregroundColor;
     }
@@ -45,7 +54,7 @@ public class Severity
      * @param foregroundColor
      *            The foregroundColor to set.
      */
-    void setForegroundColor(String foregroundColor)
+    void setForegroundColor(Color foregroundColor)
     {
         this.foregroundColor = foregroundColor;
     }
@@ -116,5 +125,25 @@ public class Severity
     void setSmallIcon(String smallIcon)
     {
         this.smallIcon = smallIcon;
+    }
+
+    public Color getSelectionBackgroundColor( )
+    {
+        return selectionBackgroundColor;
+    }
+
+    void setSelectionBackgroundColor(Color selectionBackgroundColor)
+    {
+        this.selectionBackgroundColor = selectionBackgroundColor;
+    }
+
+    public Color getSelectionForegroundColor( )
+    {
+        return selectionForegroundColor;
+    }
+
+    void setSelectionForegroundColor(Color selectionForegroundColor)
+    {
+        this.selectionForegroundColor = selectionForegroundColor;
     }
 }
