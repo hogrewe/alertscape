@@ -71,7 +71,7 @@ public class EventCollectionTableModel extends AbstractTableModel implements
         EventColumn column = columns.get(columnIndex);
         if (column.getPropertyGetter( ) != null)
         {
-            c = column.getPropertyGetter( ).getReturnType( );
+            c = column.getColumnClass();
         }
         return c;
     }

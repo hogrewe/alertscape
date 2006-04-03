@@ -9,7 +9,7 @@ import java.awt.Color;
  * @author josh
  * @version $Version: $
  */
-public class Severity
+public class Severity implements Comparable<Severity>
 {
     private int level;
     private String smallIcon;
@@ -145,5 +145,10 @@ public class Severity
     void setSelectionForegroundColor(Color selectionForegroundColor)
     {
         this.selectionForegroundColor = selectionForegroundColor;
+    }
+
+    public int compareTo(Severity s)
+    {
+        return getLevel() - s.getLevel();
     }
 }

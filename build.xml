@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="compile" name="cev">
+
+	<target name="init">
+	</target>
+
+	<target depends="init" name="compile">
+		<javac debug="true" deprecation="true" destdir="classes" srcdir="src">
+			<classpath>
+				<pathelement location="lib/idw-docking/idw-gpl.jar" />
+				<pathelement location="lib/log4j/log4j-1.2.13.jar" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target depends="init,compile" name="jar">
+		<jar compress="true" jarfile="jar/cev.jar">
+			<fileset dir="classes" />
+		</jar>
+	</target>
+
+	<target depends="init,clean,jar" description="Build everything." name="all">
+	</target>
+
+	<target depends="init" description="Clean all build products." name="clean">
+		<delete>
+			<fileset dir="classes">
+				<include name="**/*.class" />
+			</fileset>
+		</delete>
+		<delete file="jar/cev.jar" />
+		<delete dir="apidoc" />
+	</target>
+
+</project>
