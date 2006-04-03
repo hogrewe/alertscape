@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 
 import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.EventCollection;
-import com.alertscape.cev.model.severity.Severity;
 import com.alertscape.cev.model.severity.SeverityFactory;
 import com.alertscape.cev.ui.swing.panel.table.EventCollectionTablePanel;
 

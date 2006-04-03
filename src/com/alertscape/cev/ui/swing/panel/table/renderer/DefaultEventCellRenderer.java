@@ -28,7 +28,8 @@ public class DefaultEventCellRenderer extends DefaultTableCellRenderer
         
         EventCollectionTableModel model = (EventCollectionTableModel) table
                 .getModel( );
-        Event e = model.getEventAt(row);
+        int modelRow = table.convertRowIndexToModel(row);
+        Event e = model.getEventAt(modelRow);
         Severity sev = e.getSeverity( );
         c.setForeground(sev.getForegroundColor( ));
         c.setBackground(sev.getBackgroundColor( ));

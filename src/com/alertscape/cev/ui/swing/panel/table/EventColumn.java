@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import com.alertscape.cev.model.Event;
 import com.alertscape.util.GetterHelper;
+import com.alertscape.util.PrimitiveHelper;
 
 class EventColumn
 {
@@ -17,11 +18,17 @@ class EventColumn
     String displayName;
     String propertyName;
     private Method propertyGetter;
-    
+    private Class columnClass;
+
     public EventColumn(String displayName, String propertyName)
     {
         setDisplayName(displayName);
         setPropertyName(propertyName);
+    }
+
+    public Class getColumnClass( )
+    {
+        return columnClass;
     }
 
     public String getDisplayName( )
@@ -45,6 +52,15 @@ class EventColumn
                 || !this.propertyName.equals(propertyName))
         {
             propertyGetter = GetterHelper.makeEventGetter(propertyName);
+            if (propertyGetter != null)
+            {
+                columnClass = propertyGetter.getReturnType( );
+                if (columnClass.isPrimitive( ))
+                {
+                    columnClass = PrimitiveHelper
+                            .getContainingClass(columnClass);
+                }
+            }
         }
         this.propertyName = propertyName;
     }
