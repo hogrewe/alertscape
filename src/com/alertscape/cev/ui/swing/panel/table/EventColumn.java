@@ -19,6 +19,9 @@ class EventColumn
     String propertyName;
     private Method propertyGetter;
     private Class columnClass;
+    private int minWidth;
+    private int maxWidth;
+    private int width;
 
     public EventColumn(String displayName, String propertyName)
     {
@@ -63,6 +66,36 @@ class EventColumn
             }
         }
         this.propertyName = propertyName;
+    }
+
+    public int getMaxWidth( )
+    {
+        return maxWidth;
+    }
+
+    public void setMaxWidth(int maxWidth)
+    {
+        this.maxWidth = maxWidth;
+    }
+
+    public int getMinWidth( )
+    {
+        return minWidth;
+    }
+
+    public void setMinWidth(int minWidth)
+    {
+        this.minWidth = minWidth;
+    }
+
+    public int getWidth( )
+    {
+        return width;
+    }
+
+    public void setWidth(int width)
+    {
+        this.width = width;
     }
 
     public Object getValue(Event e)
