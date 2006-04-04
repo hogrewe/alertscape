@@ -1,7 +1,7 @@
 /*
  * Created on Mar 15, 2006
  */
-package com.alertscape.cev;
+package com.alertscape.cev.ui.swing;
 
 /**
  * @author josh
@@ -15,7 +15,7 @@ public class CevMain
      */
     public static void main(String[] args)
     {
-        CevFrame frame = new CevFrame();
+        new Cev();
     }
 
 }

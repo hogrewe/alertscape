@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
@@ -41,23 +42,44 @@ public class EventCollectionTablePanel extends JPanel implements
     public void init( )
     {
         List<EventColumn> columns = new ArrayList<EventColumn>( );
-        columns.add(new EventColumn("Event ID", "eventId"));
-        columns.add(new EventColumn("Description", "longDescription"));
-        columns.add(new EventColumn("Type", "type"));
-        columns.add(new EventColumn("Severity", "severity"));
-        columns.add(new EventColumn("Count", "count"));
-        columns.add(new EventColumn("Source", "sourceId"));
-        columns.add(new EventColumn("Item", "item"));
-        columns.add(new EventColumn("Manager", "itemManager"));
-        columns.add(new EventColumn("Item Type", "itemType"));
-        columns.add(new EventColumn("Manager Type", "itemManagerType"));
-        columns.add(new EventColumn("First", "firstOccurence"));
-        columns.add(new EventColumn("Last", "lastOccurence"));
+        EventColumn c;
+        c = new EventColumn("Event ID", "eventId");
+        columns.add(c);
+        c = new EventColumn("Description", "longDescription");
+        columns.add(c);
+        c = new EventColumn("Type", "type");
+        columns.add(c);
+        c = new EventColumn("Severity", "severity");
+        columns.add(c);
+        c = new EventColumn("Count", "count");
+        columns.add(c);
+        c = new EventColumn("Source", "sourceId");
+        columns.add(c);
+        c = new EventColumn("Item", "item");
+        c.setWidth(200);
+        columns.add(c);
+        c = new EventColumn("Manager", "itemManager");
+        c.setWidth(200);
+        columns.add(c);
+        c = new EventColumn("Item Type", "itemType");
+        c.setWidth(200);
+        columns.add(c);
+        c = new EventColumn("Manager Type", "itemManagerType");
+        c.setWidth(200);
+        columns.add(c);
+        c = new EventColumn("First", "firstOccurence");
+        c.setWidth(250);
+        columns.add(c);
+        c = new EventColumn("Last", "lastOccurence");
+        c.setWidth(250);
+        columns.add(c);
 
         model = new EventCollectionTableModel(columns);
-        EventCollectionTableColumnModel columnModel = new EventCollectionTableColumnModel( );
-//        collectionTable = new JTable(model, columnModel);
-      collectionTable = new JTable(model);
+        EventCollectionTableColumnModel columnModel = new EventCollectionTableColumnModel(
+                columns);
+        // collectionTable = new JTable(model, columnModel);
+        // collectionTable = new JTable(model);
+        collectionTable = new EventTable(model, columnModel);
         sorter = new TableRowSorter<EventCollectionTableModel>(model);
 
         TableCellRenderer defaultRenderer = new DefaultEventCellRenderer( );
@@ -69,6 +91,9 @@ public class EventCollectionTablePanel extends JPanel implements
         collectionTable.setDefaultRenderer(Object.class, defaultRenderer);
         collectionTable.setDefaultRenderer(Date.class, defaultRenderer);
         collectionTable.setDefaultRenderer(Severity.class, sevRenderer);
+        collectionTable
+                .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        // collectionTable.setRowSelectionAllowed(true);
         setLayout(new BorderLayout( ));
         JScrollPane tableScroller = new JScrollPane(collectionTable);
         add(tableScroller, BorderLayout.CENTER);

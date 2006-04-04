@@ -3,12 +3,11 @@
  */
 package com.alertscape.cev.ui.swing.panel.table;
 
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author josh
@@ -17,49 +16,58 @@ import org.apache.log4j.Logger;
 public class EventCollectionTableColumnModel extends DefaultTableColumnModel
 {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger
-            .getLogger(EventCollectionTableColumnModel.class);
-
-    @Override
-    public void addColumn(TableColumn aColumn)
+//    private static final Logger logger = Logger
+//            .getLogger(EventCollectionTableColumnModel.class);
+    private List<EventColumn> eventColumns;
+    private List<TableColumn> tableColumns;
+    
+    public EventCollectionTableColumnModel(List<EventColumn> columns)
     {
-        logger.debug("addColumn " + aColumn);
-        super.addColumn(aColumn);
+        this.eventColumns = columns;
+        tableColumns = new ArrayList<TableColumn>();
+        for(int i=0; i<columns.size(); i++)
+        {
+            EventColumn c = columns.get(i);
+            TableColumn tc = buildTableColumn(c);
+            tc.setModelIndex(i);
+            tableColumns.add(i, tc);
+            addColumn(tc);
+        }
     }
 
-    @Override
-    public TableColumn getColumn(int columnIndex)
+    public void addEventColumn(EventColumn column)
     {
-        logger.debug("getColumn " + columnIndex);
-        return super.getColumn(columnIndex);
+        eventColumns.add(0, column);
+        TableColumn tc = buildTableColumn(column);
+        tableColumns.add(0, tc);
+        addColumn(tc);
+    }
+    
+    public void addEventColumn(EventColumn column, int index)
+    {
+        eventColumns.add(index, column);
+        TableColumn tc = buildTableColumn(column);
+        tableColumns.add(index, tc);
+        addColumn(tc);
     }
 
-    @Override
-    public int getColumnCount( )
+    protected TableColumn buildTableColumn(EventColumn column)
     {
-        logger.debug("getColumnCount");
-        return super.getColumnCount( );
+        TableColumn tc = new TableColumn();
+        
+        tc.setHeaderValue(column.getDisplayName());
+        if(column.getMinWidth() > 0)
+        {
+            tc.setMinWidth(column.getMinWidth());
+        }
+        if(column.getMaxWidth() > 0)
+        {
+            tc.setMaxWidth(column.getMaxWidth());
+        }
+        if(column.getWidth() > 0)
+        {
+            tc.setPreferredWidth(column.getWidth());
+        }
+        return tc;
     }
-
-    @Override
-    public int getColumnIndex(Object identifier)
-    {
-        logger.debug("getColumnIndex " + identifier);
-        return super.getColumnIndex(identifier);
-    }
-
-    @Override
-    public int getColumnIndexAtX(int x)
-    {
-        logger.debug("getColumnIndexAtX " + x);
-        return super.getColumnIndexAtX(x);
-    }
-
-    @Override
-    public Enumeration<TableColumn> getColumns( )
-    {
-        logger.debug("getColumns");
-        return super.getColumns( );
-    }
-
 }
