@@ -56,7 +56,10 @@ public class EventCollectionTableModel extends AbstractTableModel implements
         while(it.hasNext())
         {
             int index = it.next();
-            fireTableRowsDeleted(index, index);    
+            if (index < collection.getEventCount())
+            {
+              fireTableRowsDeleted(index, index);
+            }
         }        
         
         fireTableRowsInserted(start, end);

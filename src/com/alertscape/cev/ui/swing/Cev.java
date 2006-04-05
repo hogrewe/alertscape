@@ -48,6 +48,74 @@ public class Cev extends JFrame
         private long id = 1000000;
         private SeverityFactory sevFactory = SeverityFactory.getInstance( ); 
 
+        private Event buildNewEvent()
+        {
+            int sevLevel = (int) (Math.random( ) * sevFactory
+                    .getMaxSeverity( ));
+            Event e = new Event( );
+            e.setCount((long) (Math.random( ) * 1000));
+            e.setEventId(id++);
+            e.setFirstOccurence(new Date( ));
+            e.setItem("Some item");
+            e.setItemManager("Some item manager");
+            e.setItemManagerType("Some item manager type");
+            e.setItemType("Some item type");
+            e.setLastOccurence(new Date( ));
+            e.setLongDescription("Some long desription");
+            e.setSeverity(sevFactory.getSeverity(sevLevel));
+            e.setShortDescription("Some short description");
+            e.setSourceId(1);
+            e.setStatus(Event.STANDING);
+            e.setType("Some type");
+            
+            return e;
+        }
+        
+        private Event buildUpdateToExistingEvent()
+        {
+            Event e = new Event( );
+            if (collection.getEventCount( ) > 0)
+            {
+                int eventIndex = (int) (Math.random( ) * (collection.getEventCount( ) - 1));
+                Event old = collection.getEventAt(eventIndex);
+
+                
+                e.setCount(old.getCount( ) + 1);
+                e.setEventId(old.getEventId( ));
+                e.setFirstOccurence(old.getFirstOccurence( ));
+                e.setItem(old.getItem( ));
+                e.setItemManager(old.getItemManager( ));
+                e.setItemManagerType(old.getItemManagerType( ));
+                e.setItemType(old.getItemType( ));
+                e.setLastOccurence(new Date( ));
+                e.setLongDescription(old.getLongDescription( ));
+                e.setSeverity(old.getSeverity( ));
+                e.setShortDescription(old.getShortDescription( ));
+                e.setSourceId(old.getSourceId( ));
+                int status = (int) Math.random( ) * 2;
+                if (status == 0)
+                {
+                    status = 1;
+                }
+                e.setStatus(status);
+                if (status == Event.STANDING)
+                {
+                    System.out.print("U");
+                }
+                else
+                {
+                    System.out.print("C");
+                }
+                e.setType(old.getType( ));
+            }
+            else
+            {
+                e = buildNewEvent();
+                System.out.print("N");
+            }
+            return e;
+        }
+        
         public void run( )
         {
             while (true)
@@ -55,27 +123,24 @@ public class Cev extends JFrame
                 List<Event> events = new ArrayList<Event>( );
                 for (int i = 0; i < 100; i++)
                 {
-                    int sevLevel = (int) (Math.random( ) * sevFactory
-                            .getMaxSeverity( ));
-                    Event e = new Event( );
-                    e.setCount((long) (Math.random( ) * 1000));
-                    e.setEventId(id++);
-                    e.setFirstOccurence(new Date( ));
-                    e.setItem("Some item");
-                    e.setItemManager("Some item manager");
-                    e.setItemManagerType("Some item manager type");
-                    e.setItemType("Some item type");
-                    e.setLastOccurence(new Date( ));
-                    e.setLongDescription("Some long desription");
-                    e.setSeverity(sevFactory.getSeverity(sevLevel));
-                    e.setShortDescription("Some short description");
-                    e.setSourceId(1);
-                    e.setStatus(Event.STANDING);
-                    e.setType("Some type");
-
+                    int val = (int) (Math.random( ) * 2);
+                    
+                    Event e = null;
+                    
+                    if (val == 1)
+                    {
+                        e = buildNewEvent();
+                        System.out.print("N");
+                    }
+                    else
+                    {
+                        e = buildUpdateToExistingEvent();                        
+                    }
+                    
                     events.add(e);
                 }
                 collection.processEvents(events);
+                System.out.println("");
 
                 try
                 {
