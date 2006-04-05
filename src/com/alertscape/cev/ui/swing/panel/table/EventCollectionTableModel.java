@@ -4,8 +4,10 @@
 package com.alertscape.cev.ui.swing.panel.table;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 
 import com.alertscape.cev.model.Event;
@@ -47,7 +49,18 @@ public class EventCollectionTableModel extends AbstractTableModel implements
 
     public void handleChange(EventChange change)
     {
-        fireTableDataChanged();
+        int start = getRowCount() - change.getAddEvents().size();
+        int end = getRowCount() - 1;
+        //fireTableChanged(new TableModelEvent(this, start, end));
+        Iterator<Integer> it = change.getRemoveIndexes().iterator();
+        while(it.hasNext())
+        {
+            int index = it.next();
+            fireTableRowsDeleted(index, index);    
+        }        
+        
+        fireTableRowsInserted(start, end);
+        //fireTableDataChanged();
     }
 
     public int getRowCount( )

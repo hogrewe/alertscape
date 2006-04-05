@@ -43,23 +43,50 @@ public class SortedEventCollection extends EventCollection implements
             clearEvents();
         }
         
-        Iterator<Event> eventIter = change.getEvents().iterator();
+        removeEvents(change.getRemoveEvents());
+        removeEvents(change.getAddEvents());
+        addEvents(change.getAddEvents());
+        
+//        Iterator<Event> eventIter = change.getEvents().iterator();
+//        while(eventIter.hasNext())
+//        {
+//            Event e = eventIter.next();
+//            
+//            Event alreadyStanding = collection.getEvent(e.getEventId());
+//            sortedEvents.remove(alreadyStanding);
+//            
+//            if(e.isStanding())
+//            {
+//                sortedEvents.add(e);
+//            }
+//        }
+        sort();
+        fireEventChange(change.getAddEvents(), change.getRemoveEvents(), change.getRemoveIndexes());
+    }
+
+    private void addEvents(List<Event> events)
+    {
+        Iterator<Event> eventIter = events.iterator();
+        while(eventIter.hasNext())
+        {
+            Event e = eventIter.next();
+            
+            sortedEvents.add(e);
+        }
+    }
+    
+    private void removeEvents(List<Event> events)
+    {
+        Iterator<Event> eventIter = events.iterator();
         while(eventIter.hasNext())
         {
             Event e = eventIter.next();
             
             Event alreadyStanding = collection.getEvent(e.getEventId());
             sortedEvents.remove(alreadyStanding);
-            
-            if(e.isStanding())
-            {
-                sortedEvents.add(e);
-            }
         }
-        sort();
-        fireEventChange(change.getEvents());
     }
-
+    
     public void setSortedField(String fieldName, boolean desc)
     {
         synchronized (lock)
