@@ -21,17 +21,33 @@ public class EventCollection
 
     public void processEvents(List<Event> events)
     {
-        synchronized (lock) {
-            for (int i = 0; i < events.size( ); i++) {
+        List<Event> adds = new ArrayList<Event>(0);
+        List<Event> removes = new ArrayList<Event>(0);
+        List<Integer> removeindices = new ArrayList<Integer>(0);
+        synchronized (lock) 
+        {            
+            for (int i = 0; i < events.size( ); i++) 
+            {
+                int removeindex = -1;
                 Event e = events.get(i);
-                if (e.isStanding( )) {
-                    addEvent(e);
-                } else {
-                    removeEvent(e);
+                if (e.isStanding( )) 
+                {    
+                    removeindex = addEvent(e);
+                    adds.add(e);
+                } 
+                else 
+                {
+                    removeindex = removeEvent(e);
+                    removes.add(e);
                 }
+                if (removeindex>=0)
+                {
+                    removeindices.add(removeindex);  
+                }
+                
             }
         }
-        fireEventChange(events);
+        fireEventChange(adds, removes, removeindices);
     }
 
     public List<Event> getAllEvents( )
@@ -78,29 +94,43 @@ public class EventCollection
         support.removeListener(l);
     }
 
-    protected void fireEventChange(List<Event> events)
+    protected void fireEventChange(List<Event> addEvents, List<Event> removeEvents, List<Integer> indexes)
     {
-        EventChange change = new EventChange(EventChange.PARTIAL, events);
+        EventChange change = new EventChange(EventChange.PARTIAL, addEvents);
+        change.setRemoveEvents(removeEvents);
+        change.setRemoveIndexes(indexes);
         support.fireEventChange(change);
     }
     
     protected void fireFullEventChange(List<Event> events)
     {
-        EventChange change = new EventChange(EventChange.PARTIAL, events);
+        EventChange change = new EventChange(EventChange.FULL, events);
         support.fireEventChange(change);
     }
 
-    protected void addEvent(Event e)
+    protected int addEvent(Event e)
     {
-        eventMap.put(e.getEventId( ), e);
-        events.remove(e);
+        eventMap.put(e.getEventId( ), e);        
+        int index = events.indexOf(e);
+        if (index >= 0)
+        {
+            events.remove(index);        
+
+        }
         events.add(e);
+        return index;
     }
 
-    protected void removeEvent(Event e)
+    protected int removeEvent(Event e)
     {
         eventMap.remove(e.getEventId( ));
-        events.remove(e);
+        int index = events.indexOf(e);
+        if (index >= 0)
+        {
+          events.remove(index);
+          //events.remove(e);
+        }
+        return index;
     }
 
 }
