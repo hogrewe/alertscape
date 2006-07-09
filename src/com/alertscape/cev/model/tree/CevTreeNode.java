@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alertscape.cev.model.Event;
+import com.alertscape.cev.model.criterion.EventCriterion;
 import com.alertscape.cev.model.severity.SeverityFactory;
 
 /**
@@ -33,7 +34,7 @@ public class CevTreeNode
     private CevTreeNode noMatchNode;
     private List<Event> events;
     /** Trade off space for speed in handling severity changes */
-    private Map<String,Event>[] severityEvents;
+    private Map<String, Event>[] severityEvents;
     private EventCriterion eventCriterion;
     private BlinkCriterion blinkCriterion;
     private int maxSeverity;
@@ -47,18 +48,27 @@ public class CevTreeNode
     {
         int numsevs = SeverityFactory.getInstance( ).getMaxSeverity( );
         severityEvents = new Map[numsevs];
-        for (int i = 0; i < numsevs; i++) {
-            severityEvents[i] = new HashMap<String,Event>( );
+        for (int i = 0; i < numsevs; i++)
+        {
+            severityEvents[i] = new HashMap<String, Event>( );
         }
-        children = new ArrayList<CevTreeNode>();
+        children = new ArrayList<CevTreeNode>( );
     }
 
+    /**
+     * This method will look to see if the event should be added to this node,
+     * given this node's criteria, and will return true if it was added, and
+     * false if it was not.
+     * 
+     * @param e The event to add to the node
+     * @return true if the event was added, false otherwise
+     */
     public boolean addEvent(Event e)
     {
         boolean added = false;
 
-        synchronized (eventLock) {
-
+        synchronized (eventLock)
+        {
         }
 
         return added;
@@ -66,22 +76,25 @@ public class CevTreeNode
 
     public void removeEvent(Event e)
     {
-        synchronized (eventLock) {
+        synchronized (eventLock)
+        {
 
         }
     }
 
     public List<CevTreeNode> getChildren( )
     {
-        synchronized (eventLock) {
+        synchronized (eventLock)
+        {
             return Collections.unmodifiableList(children);
         }
     }
-    
-    public int getChildCount()
+
+    public int getChildCount( )
     {
-        synchronized (eventLock) {
-            return children.size();
+        synchronized (eventLock)
+        {
+            return children.size( );
         }
     }
 
@@ -94,20 +107,18 @@ public class CevTreeNode
     {
         children.add(index, child);
     }
-    
-    
+
     public void setChildAddOrder(List<CevTreeNode> addOrder)
     {
         this.childAddOrder = addOrder;
     }
-    
-    protected List getChildAddOrder()
+
+    protected List getChildAddOrder( )
     {
-        if(childAddOrder == null)
+        if (childAddOrder == null)
         {
             return children;
-        }
-        else
+        } else
         {
             return childAddOrder;
         }
@@ -115,9 +126,11 @@ public class CevTreeNode
 
     public void clearEvents( )
     {
-        synchronized (eventLock) {
+        synchronized (eventLock)
+        {
             events.clear( );
-            for (int i = 0; i < severityEvents.length; i++) {
+            for (int i = 0; i < severityEvents.length; i++)
+            {
                 severityEvents[i].clear( );
             }
             maxSeverity = 0;
@@ -293,7 +306,7 @@ public class CevTreeNode
     public void setNoMatchNode(CevTreeNode noMatchNode)
     {
         this.noMatchNode = noMatchNode;
-        if(!children.contains(noMatchNode))
+        if (!children.contains(noMatchNode))
         {
             children.add(noMatchNode);
         }

@@ -17,23 +17,27 @@ import com.alertscape.cev.model.Event;
  */
 public class GetterHelper
 {
-    private static final Class EVENT_CLASS = Event.class;
-    private static Logger logger = Logger.getLogger(GetterHelper.class);
+  private static final Class EVENT_CLASS = Event.class;
+  private static Logger logger = Logger.getLogger(GetterHelper.class);
 
-    public static Method makeEventGetter(String fieldName)
-    {
-        return makeGetter(EVENT_CLASS, fieldName);
-    }
+  public static Method makeEventGetter(String fieldName)
+  {
+    return makeGetter(EVENT_CLASS, fieldName);
+  }
 
-    public static Method makeGetter(Class c, String fieldName)
+  public static Method makeGetter(Class c, String fieldName)
+  {
+    Method getter = null;
+    try
     {
-        Method getter = null;
-        try {
-            PropertyDescriptor d = new PropertyDescriptor(fieldName, c);
-            getter = d.getReadMethod( );
-        } catch (IntrospectionException e) {
-            logger.error("Couldn't make getter", e);
-        }
-        return getter;
+      PropertyDescriptor d = new PropertyDescriptor(fieldName, c);
+      getter = d.getReadMethod( );
     }
+    catch (IntrospectionException e)
+    {
+      logger.error("Couldn't make getter for " + fieldName + " in class " + c,
+          e);
+    }
+    return getter;
+  }
 }
