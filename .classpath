@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="testsrc"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry sourcepath="lib/idw-docking/idw-gpl-1.4.0-src.zip" kind="lib" path="lib/idw-docking/idw-gpl.jar"/>
 	<classpathentry sourcepath="lib/log4j/log4j-1.2.13-src.zip" kind="lib" path="lib/log4j/log4j-1.2.13.jar"/>
+	<classpathentry sourcepath="lib/junit/junit-4.1-src.jar" kind="lib" path="lib/junit/junit-4.1.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
