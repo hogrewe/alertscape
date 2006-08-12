@@ -1,7 +1,7 @@
 /*
  * Created on Apr 3, 2006
  */
-package com.alertscape.cev.ui.swing.panel.table;
+package com.alertscape.cev.ui.swing.panel.collection.table;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;

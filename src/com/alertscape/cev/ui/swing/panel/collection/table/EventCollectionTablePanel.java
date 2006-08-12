@@ -1,7 +1,7 @@
 /*
  * Created on Apr 1, 2006
  */
-package com.alertscape.cev.ui.swing.panel.table;
+package com.alertscape.cev.ui.swing.panel.collection.table;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -17,9 +17,9 @@ import javax.swing.table.TableRowSorter;
 
 import com.alertscape.cev.model.EventCollection;
 import com.alertscape.cev.model.severity.Severity;
-import com.alertscape.cev.ui.swing.panel.EventCollectionPanel;
-import com.alertscape.cev.ui.swing.panel.table.renderer.DefaultEventCellRenderer;
-import com.alertscape.cev.ui.swing.panel.table.renderer.SeverityEventCellRenderer;
+import com.alertscape.cev.ui.swing.panel.collection.EventCollectionPanel;
+import com.alertscape.cev.ui.swing.panel.collection.table.renderer.DefaultEventCellRenderer;
+import com.alertscape.cev.ui.swing.panel.collection.table.renderer.SeverityEventCellRenderer;
 
 /**
  * @author josh

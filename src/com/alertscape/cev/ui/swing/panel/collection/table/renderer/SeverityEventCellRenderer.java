@@ -1,7 +1,7 @@
 /*
  * Created on Apr 2, 2006
  */
-package com.alertscape.cev.ui.swing.panel.table.renderer;
+package com.alertscape.cev.ui.swing.panel.collection.table.renderer;
 
 import java.awt.Component;
 

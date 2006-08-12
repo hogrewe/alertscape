@@ -1,7 +1,7 @@
 /*
  * Created on Apr 1, 2006
  */
-package com.alertscape.cev.ui.swing.panel;
+package com.alertscape.cev.ui.swing.panel.collection;
 
 import com.alertscape.cev.model.EventCollection;
 

@@ -176,4 +176,17 @@ public class Event
         this.status = status;
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+      return getEventId() == ((Event)o).getEventId();
+    }
+
+    @Override
+    public int hashCode( )
+    {
+      return Long.valueOf(getEventId()).hashCode();
+    }
+
+    
 }
