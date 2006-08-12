@@ -1,7 +1,7 @@
 /*
  * Created on Apr 1, 2006
  */
-package com.alertscape.cev.ui.swing.panel.table;
+package com.alertscape.cev.ui.swing.panel.collection.table;
 
 import java.lang.reflect.Method;
 

@@ -1,7 +1,7 @@
 /*
  * Created on Apr 2, 2006
  */
-package com.alertscape.cev.ui.swing.panel.table;
+package com.alertscape.cev.ui.swing.panel.collection.table;
 
 import java.util.ArrayList;
 import java.util.List;

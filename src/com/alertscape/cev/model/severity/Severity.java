@@ -11,144 +11,149 @@ import java.awt.Color;
  */
 public class Severity implements Comparable<Severity>
 {
-    private int level;
-    private String smallIcon;
-    private String largeIcon;
-    private String name;
-    private Color backgroundColor;
-    private Color foregroundColor;
-    private Color selectionForegroundColor;
-    private Color selectionBackgroundColor;
-    
-    Severity()
-    {
-        
-    }
+  private int level;
+  private String smallIcon;
+  private String largeIcon;
+  private String name;
+  private Color backgroundColor;
+  private Color foregroundColor;
+  private Color selectionForegroundColor;
+  private Color selectionBackgroundColor;
 
-    /**
-     * @return Returns the backgroundColor.
-     */
-    public Color getBackgroundColor( )
-    {
-        return backgroundColor;
-    }
+  Severity( )
+  {
 
-    /**
-     * @param backgroundColor
-     *            The backgroundColor to set.
-     */
-    void setBackgroundColor(Color backgroundColor)
-    {
-        this.backgroundColor = backgroundColor;
-    }
+  }
 
-    /**
-     * @return Returns the foregroundColor.
-     */
-    public Color getForegroundColor( )
-    {
-        return foregroundColor;
-    }
+  /**
+   * @return Returns the backgroundColor.
+   */
+  public Color getBackgroundColor( )
+  {
+    return backgroundColor;
+  }
 
-    /**
-     * @param foregroundColor
-     *            The foregroundColor to set.
-     */
-    void setForegroundColor(Color foregroundColor)
-    {
-        this.foregroundColor = foregroundColor;
-    }
+  /**
+   * @param backgroundColor
+   *          The backgroundColor to set.
+   */
+  void setBackgroundColor(Color backgroundColor)
+  {
+    this.backgroundColor = backgroundColor;
+  }
 
-    /**
-     * @return Returns the largeIcon.
-     */
-    public String getLargeIcon( )
-    {
-        return largeIcon;
-    }
+  /**
+   * @return Returns the foregroundColor.
+   */
+  public Color getForegroundColor( )
+  {
+    return foregroundColor;
+  }
 
-    /**
-     * @param largeIcon
-     *            The largeIcon to set.
-     */
-    void setLargeIcon(String largeIcon)
-    {
-        this.largeIcon = largeIcon;
-    }
+  /**
+   * @param foregroundColor
+   *          The foregroundColor to set.
+   */
+  void setForegroundColor(Color foregroundColor)
+  {
+    this.foregroundColor = foregroundColor;
+  }
 
-    /**
-     * @return Returns the level.
-     */
-    public int getLevel( )
-    {
-        return level;
-    }
+  /**
+   * @return Returns the largeIcon.
+   */
+  public String getLargeIcon( )
+  {
+    return largeIcon;
+  }
 
-    /**
-     * @param level
-     *            The level to set.
-     */
-    void setLevel(int level)
-    {
-        this.level = level;
-    }
+  /**
+   * @param largeIcon
+   *          The largeIcon to set.
+   */
+  void setLargeIcon(String largeIcon)
+  {
+    this.largeIcon = largeIcon;
+  }
 
-    /**
-     * @return Returns the name.
-     */
-    public String getName( )
-    {
-        return name;
-    }
+  /**
+   * @return Returns the level.
+   */
+  public int getLevel( )
+  {
+    return level;
+  }
 
-    /**
-     * @param name
-     *            The name to set.
-     */
-    void setName(String name)
-    {
-        this.name = name;
-    }
+  /**
+   * @param level
+   *          The level to set.
+   */
+  void setLevel(int level)
+  {
+    this.level = level;
+  }
 
-    /**
-     * @return Returns the smallIcon.
-     */
-    public String getSmallIcon( )
-    {
-        return smallIcon;
-    }
+  /**
+   * @return Returns the name.
+   */
+  public String getName( )
+  {
+    return name;
+  }
 
-    /**
-     * @param smallIcon
-     *            The smallIcon to set.
-     */
-    void setSmallIcon(String smallIcon)
-    {
-        this.smallIcon = smallIcon;
-    }
+  /**
+   * @param name
+   *          The name to set.
+   */
+  void setName(String name)
+  {
+    this.name = name;
+  }
 
-    public Color getSelectionBackgroundColor( )
-    {
-        return selectionBackgroundColor;
-    }
+  /**
+   * @return Returns the smallIcon.
+   */
+  public String getSmallIcon( )
+  {
+    return smallIcon;
+  }
 
-    void setSelectionBackgroundColor(Color selectionBackgroundColor)
-    {
-        this.selectionBackgroundColor = selectionBackgroundColor;
-    }
+  /**
+   * @param smallIcon
+   *          The smallIcon to set.
+   */
+  void setSmallIcon(String smallIcon)
+  {
+    this.smallIcon = smallIcon;
+  }
 
-    public Color getSelectionForegroundColor( )
-    {
-        return selectionForegroundColor;
-    }
+  public Color getSelectionBackgroundColor( )
+  {
+    return selectionBackgroundColor;
+  }
 
-    void setSelectionForegroundColor(Color selectionForegroundColor)
-    {
-        this.selectionForegroundColor = selectionForegroundColor;
-    }
+  void setSelectionBackgroundColor(Color selectionBackgroundColor)
+  {
+    this.selectionBackgroundColor = selectionBackgroundColor;
+  }
 
-    public int compareTo(Severity s)
-    {
-        return getLevel() - s.getLevel();
-    }
+  public Color getSelectionForegroundColor( )
+  {
+    return selectionForegroundColor;
+  }
+
+  void setSelectionForegroundColor(Color selectionForegroundColor)
+  {
+    this.selectionForegroundColor = selectionForegroundColor;
+  }
+
+  public int compareTo(Severity s)
+  {
+    return getLevel( ) - s.getLevel( );
+  }
+
+  public String toString( )
+  {
+    return getName( );
+  }
 }

@@ -1,7 +1,7 @@
 /*
  * Created on Apr 1, 2006
  */
-package com.alertscape.cev.ui.swing.panel.table.renderer;
+package com.alertscape.cev.ui.swing.panel.collection.table.renderer;
 
 import java.awt.Component;
 
@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.severity.Severity;
-import com.alertscape.cev.ui.swing.panel.table.EventCollectionTableModel;
+import com.alertscape.cev.ui.swing.panel.collection.table.EventCollectionTableModel;
 
 /**
  * @author josh
