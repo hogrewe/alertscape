@@ -113,7 +113,7 @@ public class CevTreeNode
         this.childAddOrder = addOrder;
     }
 
-    protected List getChildAddOrder( )
+    protected List<CevTreeNode> getChildAddOrder( )
     {
         if (childAddOrder == null)
         {
@@ -129,9 +129,9 @@ public class CevTreeNode
         synchronized (eventLock)
         {
             events.clear( );
-            for (int i = 0; i < severityEvents.length; i++)
+            for (Map<String, Event> element : severityEvents)
             {
-                severityEvents[i].clear( );
+                element.clear( );
             }
             maxSeverity = 0;
         }

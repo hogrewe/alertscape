@@ -88,6 +88,7 @@ public class CompositeCriterion implements EventCriterion
       this.type = type;
     }
 
+    @Override
     public String toString( )
     {
       return type;

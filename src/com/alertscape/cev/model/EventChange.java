@@ -5,54 +5,64 @@ package com.alertscape.cev.model;
 
 import java.util.List;
 
-
 /**
  * @author josh
  * @version $Version: $
  */
 public class EventChange
 {
-    public static final int PARTIAL = 1;
-    public static final int FULL = 2;
-    
-    private List<Event> addEvents;
-    private List<Event> removeEvents;
-    private List<Integer> removeIndexes;
-    private int changeType;
-    
-    public EventChange(int type, List<Event> addEvents)
+  private EventChangeType type;
+  private List<Event> events;
+  private List<Integer> indices;
+  private EventCollection source;
+
+  public EventChange(EventChangeType type, List<Event> events,
+      List<Integer> indices, EventCollection source)
+  {
+    this.type = type;
+    this.events = events;
+    this.indices = indices;
+    this.source = source;
+  }
+
+  public EventCollection getSource( )
+  {
+    return source;
+  }
+
+  public List<Event> getEvents( )
+  {
+    return events;
+  }
+
+  public List<Integer> getIndices( )
+  {
+    return indices;
+  }
+
+  public EventChangeType getType( )
+  {
+    return type;
+  }
+
+  public enum EventChangeType
+  {
+    INSERT("INSERT"),
+    UPDATE("UPDATE"),
+    REMOVE("REMOVE");
+
+    private String type;
+
+    private EventChangeType(String type)
     {
-        this.changeType = type;
-        this.addEvents = addEvents;
+      this.type = type;
     }
 
-    public int getChangeType( )
+    @Override
+    public String toString( )
     {
-        return changeType;
+      return type;
     }
+  }
 
-    public List<Event> getAddEvents( )
-    {
-        return addEvents;
-    }
-
-    public List<Event> getRemoveEvents( )
-    {
-        return removeEvents;
-    }
-
-    public void setRemoveEvents(List<Event> removeEvents)
-    {
-        this.removeEvents = removeEvents;
-    }
-
-    public List<Integer> getRemoveIndexes( )
-    {
-        return removeIndexes;
-    }
-
-    public void setRemoveIndexes(List<Integer> removeIndexes)
-    {
-        this.removeIndexes = removeIndexes;
-    }
 }

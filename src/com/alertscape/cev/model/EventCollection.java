@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alertscape.cev.model.EventChange.EventChangeType;
+
 /**
  * @author josh
  * @version $Version: $
@@ -19,35 +21,92 @@ public class EventCollection
   private List<Event> events = new ArrayList<Event>( );
   private EventChangeSupport support = new EventChangeSupport( );
 
-  public void processEvents(List<Event> events)
+  public void processEvents(List<Event> newEvents)
   {
-    List<Event> adds = new ArrayList<Event>(0);
-    List<Event> removes = new ArrayList<Event>(0);
-    List<Integer> removeindices = new ArrayList<Integer>(0);
+    List<Event> inserts = new ArrayList<Event>(newEvents.size( ));
+    List<Event> updates = new ArrayList<Event>(newEvents.size( ));
+    List<Event> removes = new ArrayList<Event>(newEvents.size( ));
+    List<Integer> insertIndices = new ArrayList<Integer>(newEvents.size( ));
+    List<Integer> updateIndices = new ArrayList<Integer>(newEvents.size( ));
+    List<Integer> removeIndices = new ArrayList<Integer>(newEvents.size( ));
+
     synchronized (lock)
     {
-      for (int i = 0; i < events.size( ); i++)
+      // We have to loop thrice because we have to do removes first, then
+      // updates and then inserts so our indices are correct
+      for (int i = 0, size = newEvents.size( ); i < size; i++)
       {
-        int removeindex = -1;
-        Event e = events.get(i);
+        Event e = newEvents.get(i);
+        // First loop, we only care about removes
+        if (!e.isStanding( ))
+        {
+          Event current = eventMap.remove(e.getEventId( ));
+          if (current != null)
+          {
+            int index = events.indexOf(current);
+            events.remove(index);
+            removes.add(e);
+            removeIndices.add(index);
+          }
+        }
+      }
+      // Fire off the removes
+      if (!removes.isEmpty( ))
+      {
+        fireEventChange(EventChange.EventChangeType.REMOVE, removes, removeIndices);
+      }
+
+      for (int i = 0, size = newEvents.size( ); i < size; i++)
+      {
+        Event e = newEvents.get(i);
+        // Second loop, we only care about updates
         if (e.isStanding( ))
         {
-          removeindex = addEvent(e);
-          adds.add(e);
+          // Check to see if we already have it
+          Event current = eventMap.get(e.getEventId( ));
+          // If we already have it, this is an update
+          if (current != null)
+          {
+            // Pull the index that we need to update and set it to the new event
+            int index = events.indexOf(current);
+            events.set(index, e);
+            updates.add(e);
+            updateIndices.add(index);
+            eventMap.put(e.getEventId( ), e);
+          }
         }
-        else
-        {
-          removeindex = removeEvent(e);
-          removes.add(e);
-        }
-        if (removeindex >= 0)
-        {
-          removeindices.add(removeindex);
-        }
+      }
+      // Fire off the updates
+      if (!updates.isEmpty( ))
+      {
+        fireEventChange(EventChange.EventChangeType.UPDATE, updates, updateIndices);
+      }
 
+      for (int i = 0, size = newEvents.size( ); i < size; i++)
+      {
+        Event e = newEvents.get(i);
+        // Third loop, we only care about inserts
+        if (e.isStanding( ))
+        {
+          // Check to see if we already have it
+          Event current = eventMap.get(e.getEventId( ));
+          // If we don't already have it, this is an insert
+          if (current == null)
+          {
+            int index = events.size( );
+            events.add(e);
+            inserts.add(e);
+            insertIndices.add(index);
+            eventMap.put(e.getEventId( ), e);
+          }
+        }
+      }
+      // Fire off the updates
+      if (!inserts.isEmpty( ))
+      {
+        fireEventChange(EventChange.EventChangeType.INSERT, inserts, insertIndices);
       }
     }
-    fireEventChange(adds, removes, removeindices);
   }
 
   public List<Event> getAllEvents( )
@@ -62,7 +121,7 @@ public class EventCollection
 
   public int getEventCount( )
   {
-    return eventMap.size( );
+    return events.size( );
   }
 
   public Event getEvent(long id)
@@ -82,12 +141,21 @@ public class EventCollection
 
   public void clearEvents( )
   {
+    List<Event> removed = null;
+    List<Integer> indices = null;
     synchronized (lock)
     {
       eventMap.clear( );
-      events.clear();
+      removed = new ArrayList<Event>(events.size( ));
+      indices = new ArrayList<Integer>(events.size( ));
+      for (int i = 0, size = events.size( ); i < size; i++)
+      {
+        removed.add(events.get(i));
+        indices.add(i);
+      }
+      events.clear( );
     }
-    fireFullEventChange(new ArrayList<Event>( ));
+    fireEventChange(EventChange.EventChangeType.REMOVE, removed, indices);
   }
 
   public void addEventChangeListener(EventChangeListener l)
@@ -100,18 +168,10 @@ public class EventCollection
     support.removeListener(l);
   }
 
-  protected void fireEventChange(List<Event> addEvents,
-      List<Event> removeEvents, List<Integer> indexes)
+  protected void fireEventChange(EventChangeType type, List<Event> events,
+      List<Integer> indices)
   {
-    EventChange change = new EventChange(EventChange.PARTIAL, addEvents);
-    change.setRemoveEvents(removeEvents);
-    change.setRemoveIndexes(indexes);
-    support.fireEventChange(change);
-  }
-
-  protected void fireFullEventChange(List<Event> events)
-  {
-    EventChange change = new EventChange(EventChange.FULL, events);
+    EventChange change = new EventChange(type, events, indices, this);
     support.fireEventChange(change);
   }
 
@@ -122,10 +182,13 @@ public class EventCollection
     int index = events.indexOf(e);
     if (index >= 0)
     {
-      events.remove(index);
-
+      events.set(index, e);
     }
-    events.add(e);
+    else
+    {
+      events.add(e);
+      index = events.size( ) - 1;
+    }
     return index;
   }
 
@@ -137,9 +200,7 @@ public class EventCollection
     if (index >= 0)
     {
       events.remove(index);
-      // events.remove(e);
     }
     return index;
   }
-
 }

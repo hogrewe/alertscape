@@ -9,4 +9,7 @@ package com.alertscape.cev.model;
  */
 public interface EventFilter
 {
+  public void setMasterCollection(EventCollection master);
+
+  public void setSubCollection(EventCollection sub);
 }

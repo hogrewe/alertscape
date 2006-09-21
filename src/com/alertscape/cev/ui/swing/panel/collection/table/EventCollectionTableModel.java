@@ -4,7 +4,6 @@
 package com.alertscape.cev.ui.swing.panel.collection.table;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -48,27 +47,24 @@ public class EventCollectionTableModel extends AbstractTableModel implements
 
   public void handleChange(EventChange change)
   {
-    // int start = getRowCount( ) - change.getAddEvents( ).size( );
-    // int end = getRowCount( ) - 1;
-    // if (change.getChangeType( ) == EventChange.FULL)
-    // {
-    // fireTableRowsDeleted(0, getRowCount( )-1);
-    // }
-    // else
-    // {
-    // Iterator<Integer> it = change.getRemoveIndexes( ).iterator( );
-    // while (it.hasNext( ))
-    // {
-    // int index = it.next( );
-    // if (index < collection.getEventCount( ))
-    // {
-    // fireTableRowsDeleted(index, index);
-    // }
-    // }
-    // }
-    //
-    // fireTableRowsInserted(start, end);
-    fireTableDataChanged( );
+    List<Integer> indices = change.getIndices( );
+    for (int i = 0, size = indices.size( ); i < size; i++)
+    {
+      int index = indices.get(i);
+      // TODO: make this smarter and send ranges
+      if (change.getType( ) == EventChange.EventChangeType.INSERT)
+      {
+        fireTableRowsInserted(index, index);
+      }
+      else if (change.getType( ) == EventChange.EventChangeType.UPDATE)
+      {
+        fireTableRowsUpdated(index, index);
+      }
+      else if (change.getType( ) == EventChange.EventChangeType.REMOVE)
+      {
+        fireTableRowsDeleted(index, index);
+      }
+    }
   }
 
   public int getRowCount( )
@@ -81,11 +77,13 @@ public class EventCollectionTableModel extends AbstractTableModel implements
     return columns.size( );
   }
 
+  @Override
   public String getColumnName(int columnIndex)
   {
     return columns.get(columnIndex).getDisplayName( );
   }
 
+  @Override
   public Class<?> getColumnClass(int columnIndex)
   {
     Class c = Object.class;

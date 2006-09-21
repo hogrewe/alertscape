@@ -3,6 +3,8 @@
  */
 package com.alertscape.cev.ui.swing.panel.collection.summary;
 
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -12,13 +14,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 
 import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.EventChange;
 import com.alertscape.cev.model.EventChangeListener;
 import com.alertscape.cev.model.EventCollection;
+import com.alertscape.cev.model.EventFilter;
+import com.alertscape.cev.model.EventChange.EventChangeType;
 import com.alertscape.cev.model.criterion.ComparisonCriterion;
 import com.alertscape.cev.model.criterion.EventCriterion;
 import com.alertscape.cev.model.severity.Severity;
@@ -30,14 +36,14 @@ import com.alertscape.cev.ui.swing.panel.collection.EventCollectionPanel;
  * @version $Version: $
  */
 public class EventCollectionSummaryPanel extends JPanel implements
-    EventCollectionPanel, EventChangeListener
+    EventCollectionPanel, EventChangeListener, EventFilter
 {
   private static final long serialVersionUID = 1L;
   private EventCollection collection;
   private Map<Severity, Set<Event>> severityEvents = new HashMap<Severity, Set<Event>>( );
-  private EventCollectionPanel subPanel;
-  private EventCollection subCollection = new EventCollection( );
+  private EventCollection subCollection;
   private JToggleButton[] sevButtons;
+  private JLabel totalLabel;
   private byte[] updateLock = new byte[0];
 
   public EventCollectionSummaryPanel( )
@@ -51,6 +57,11 @@ public class EventCollectionSummaryPanel extends JPanel implements
     collection.addEventChangeListener(this);
   }
 
+  public void setMasterCollection(EventCollection master)
+  {
+    setCollection(master);
+  }
+
   public EventCollection getCollection( )
   {
     return collection;
@@ -61,26 +72,25 @@ public class EventCollectionSummaryPanel extends JPanel implements
     synchronized (updateLock)
     {
       List<Event> subChanges = new ArrayList<Event>( );
-      List<Event> adds = change.getAddEvents( );
-      for (int i = 0, size = adds.size( ); i < size; i++)
+      List<Event> changes = change.getEvents( );
+      for (int i = 0, size = changes.size( ); i < size; i++)
       {
-        Event event = adds.get(i);
+        Event event = changes.get(i);
         Severity s = event.getSeverity( );
         Set<Event> standing = severityEvents.get(s);
-        standing.add(event);
-        if (sevButtons[s.getLevel( )].isSelected( ))
+        EventChangeType type = change.getType( );
+        if (type == EventChange.EventChangeType.INSERT)
         {
-          subChanges.add(event);
+          standing.add(event);
         }
-      }
-
-      List<Event> removes = change.getRemoveEvents( );
-      for (int i = 0, size = removes.size( ); i < size; i++)
-      {
-        Event event = removes.get(i);
-        Severity s = event.getSeverity( );
-        Set<Event> standing = severityEvents.get(s);
-        standing.remove(event);
+        else if (type == EventChange.EventChangeType.UPDATE)
+        {
+          // Not sure, do we do anything?
+        }
+        else if (type == EventChange.EventChangeType.REMOVE)
+        {
+          standing.remove(event);
+        }
         if (sevButtons[s.getLevel( )].isSelected( ))
         {
           subChanges.add(event);
@@ -88,18 +98,23 @@ public class EventCollectionSummaryPanel extends JPanel implements
       }
 
       SeverityFactory fact = SeverityFactory.getInstance( );
+      int total = 0;
       for (int i = 0; i < sevButtons.length; i++)
       {
         Severity s = fact.getSeverity(i);
-        sevButtons[i].setText(s.getName( ) + ": "
-            + severityEvents.get(s).size( ));
+        int size = severityEvents.get(s).size( );
+        total += size;
+        sevButtons[i].setText(s.getName( ) + ": " + size);
       }
+      totalLabel.setText("Total: " + total);
       subCollection.processEvents(subChanges);
     }
   }
 
   protected void init( )
   {
+    // setLayout(null);
+    setLayout(new GridLayout( ));
     SeverityFactory fact = SeverityFactory.getInstance( );
     int max = fact.getMaxSeverity( );
     sevButtons = new JToggleButton[max];
@@ -113,21 +128,14 @@ public class EventCollectionSummaryPanel extends JPanel implements
       sevButton.setText(s.getName( ));
       sevButton.addItemListener(new SeverityItemListener(s));
       sevButton.setSelected(true);
-      sevButton.setFocusPainted(true);
       add(sevButton);
       sevButtons[i] = sevButton;
     }
-  }
-
-  public EventCollectionPanel getSubPanel( )
-  {
-    return subPanel;
-  }
-
-  public void setSubPanel(EventCollectionPanel nextPanel)
-  {
-    this.subPanel = nextPanel;
-    this.subPanel.setCollection(subCollection);
+    totalLabel = new JLabel( );
+    totalLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    totalLabel.setFont(totalLabel.getFont( ).deriveFont(Font.BOLD));
+    totalLabel.setText("Total: ");
+    add(totalLabel);
   }
 
   private class SeverityItemListener implements ItemListener
@@ -137,7 +145,7 @@ public class EventCollectionSummaryPanel extends JPanel implements
     public SeverityItemListener(Severity s)
     {
       sevCriterion = new ComparisonCriterion("severity", s,
-          ComparisonCriterion.EQUAL);
+          ComparisonCriterion.ComparisonType.EQUAL);
     }
 
     public void itemStateChanged(ItemEvent e)
@@ -159,10 +167,18 @@ public class EventCollectionSummaryPanel extends JPanel implements
             }
           }
         }
-        subCollection.clearEvents( );
-        subCollection.processEvents(newEvents);
+        if (subCollection != null)
+        {
+          subCollection.clearEvents( );
+          subCollection.processEvents(newEvents);
+        }
       }
     }
+  }
+
+  public void setSubCollection(EventCollection sub)
+  {
+    subCollection = sub;
   }
 
 }

@@ -152,6 +152,7 @@ public class Severity implements Comparable<Severity>
     return getLevel( ) - s.getLevel( );
   }
 
+  @Override
   public String toString( )
   {
     return getName( );

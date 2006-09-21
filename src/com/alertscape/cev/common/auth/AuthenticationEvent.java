@@ -32,12 +32,11 @@ public class AuthenticationEvent
     return user;
   }
 
-  private static class AuthEventType
+  private enum AuthEventType
   {
-    public static final AuthEventType LOGIN = new AuthEventType("LOGIN");
-    public static final AuthEventType LOGOUT = new AuthEventType("LOGOUT");
-    public static final AuthEventType FAILED_LOGIN = new AuthEventType(
-        "FAILED_LOGIN");
+    LOGIN("LOGIN"),
+    LOGOUT("LOGOUT"),
+    FAILED_LOGIN("FAILED_LOGIN");
 
     private String type;
 
@@ -46,6 +45,7 @@ public class AuthenticationEvent
       this.type = type;
     }
 
+    @Override
     public String toString( )
     {
       return type;

@@ -138,6 +138,7 @@ public class DockingWindowsExample {
    * A dynamically created view containing an id.
    */
   private static class DynamicView extends View {
+    private static final long serialVersionUID = 1L;
     private int id;
 
     /**
@@ -201,7 +202,9 @@ public class DockingWindowsExample {
     StringBuffer sb = new StringBuffer();
 
     for (int j = 0; j < 100; j++)
+    {
       sb.append(text + ". This is line " + j + "\n");
+    }
 
     return new JScrollPane(new JTextArea(sb.toString()));
   }
@@ -216,7 +219,9 @@ public class DockingWindowsExample {
     View view = (View) dynamicViews.get(new Integer(id));
 
     if (view == null)
+    {
       view = new DynamicView("Dynamic View " + id, VIEW_ICON, createViewComponent("Dynamic View " + id), id);
+    }
 
     return view;
   }
@@ -230,7 +235,9 @@ public class DockingWindowsExample {
     int id = 0;
 
     while (dynamicViews.containsKey(new Integer(id)))
+    {
       id++;
+    }
 
     return id;
   }
@@ -286,34 +293,47 @@ public class DockingWindowsExample {
 
     // Add a listener which shows dialogs when a window is closing or closed.
     rootWindow.addListener(new DockingWindowAdapter() {
+      @Override
       public void windowAdded(DockingWindow addedToWindow, DockingWindow addedWindow) {
         updateViews(addedWindow, true);
         
         // If the added window is a floating window, then update it
         if (addedWindow instanceof FloatingWindow)
+        {
           updateFloatingWindow((FloatingWindow) addedWindow);
+        }
       }
 
+      @Override
       public void windowRemoved(DockingWindow removedFromWindow, DockingWindow removedWindow) {
         updateViews(removedWindow, false);
       }
 
+      @Override
       public void windowClosing(DockingWindow window) throws OperationAbortedException {
         // Confirm close operation
         if (JOptionPane.showConfirmDialog(frame, "Really close window '" + window + "'?") != JOptionPane.YES_OPTION)
+        {
           throw new OperationAbortedException("Window close was aborted!");
+        }
       }
 
+      @Override
       public void windowDocking(DockingWindow window) throws OperationAbortedException {
         // Confirm dock operation
         if (JOptionPane.showConfirmDialog(frame, "Really dock window '" + window + "'?") != JOptionPane.YES_OPTION)
+        {
           throw new OperationAbortedException("Window dock was aborted!");
+        }
       }
 
+      @Override
       public void windowUndocking(DockingWindow window) throws OperationAbortedException {
         // Confirm undock operation 
         if (JOptionPane.showConfirmDialog(frame, "Really undock window '" + window + "'?") != JOptionPane.YES_OPTION)
+        {
           throw new OperationAbortedException("Window undock was aborted!");
+        }
       }
 
     });
@@ -332,19 +352,29 @@ public class DockingWindowsExample {
     if (window instanceof View) {
       if (window instanceof DynamicView) {
         if (added)
+        {
           dynamicViews.put(new Integer(((DynamicView) window).getId()), window);
+        }
         else
+        {
           dynamicViews.remove(new Integer(((DynamicView) window).getId()));
+        }
       }
       else {
         for (int i = 0; i < views.length; i++)
+        {
           if (views[i] == window && viewItems[i] != null)
+          {
             viewItems[i].setEnabled(!added);
+          }
+        }
       }
     }
     else {
       for (int i = 0; i < window.getChildWindowCount(); i++)
+      {
         updateViews(window.getChildWindow(i), added);
+      }
     }
   }
 
@@ -365,7 +395,9 @@ public class DockingWindowsExample {
     WindowBar windowBar = rootWindow.getWindowBar(Direction.DOWN);
 
     while (windowBar.getChildWindowCount() > 0)
+    {
       windowBar.getChildWindow(0).close();
+    }
 
     windowBar.addTab(views[3]);
   }
@@ -498,8 +530,8 @@ public class DockingWindowsExample {
   private JMenu createFocusViewMenu() {
     JMenu viewsMenu = new JMenu("Focus View");
 
-    for (int i = 0; i < views.length; i++) {
-      final View view = views[i];
+    for (final View view : views)
+    {
       viewsMenu.add("Focus " + view.getTitle()).addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           SwingUtilities.invokeLater(new Runnable() {
@@ -533,9 +565,13 @@ public class DockingWindowsExample {
     titleBarStyleItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (titleBarStyleItem.isSelected())
+        {
           properties.addSuperObject(titleBarStyleProperties);
+        }
         else
+        {
           properties.removeSuperObject(titleBarStyleProperties);
+        }
       }
     });
 
@@ -665,7 +701,9 @@ public class DockingWindowsExample {
       menu.add(viewItems[i]).addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           if (view.getRootWindow() != null)
+          {
             view.restoreFocus();
+          }
           else {
             DockingUtil.addWindow(view, rootWindow);
           }

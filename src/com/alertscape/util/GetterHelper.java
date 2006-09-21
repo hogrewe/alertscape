@@ -7,9 +7,8 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
-
 import com.alertscape.cev.model.Event;
+import com.alertscape.common.logging.ASLogger;
 
 /**
  * @author josh
@@ -18,7 +17,6 @@ import com.alertscape.cev.model.Event;
 public class GetterHelper
 {
   private static final Class EVENT_CLASS = Event.class;
-  private static Logger logger = Logger.getLogger(GetterHelper.class);
 
   public static Method makeEventGetter(String fieldName)
   {
@@ -35,7 +33,7 @@ public class GetterHelper
     }
     catch (IntrospectionException e)
     {
-      logger.error("Couldn't make getter for " + fieldName + " in class " + c,
+      ASLogger.error("Couldn't make getter for " + fieldName + " in class " + c,
           e);
     }
     return getter;

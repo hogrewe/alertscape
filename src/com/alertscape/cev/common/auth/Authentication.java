@@ -36,7 +36,7 @@ public class Authentication
     return u;
   }
 
-  public void addAuthenticationListener(AuthenticationListener l)
+  public static void addAuthenticationListener(AuthenticationListener l)
   {
     if (!authListeners.contains(l))
     {
@@ -44,7 +44,7 @@ public class Authentication
     }
   }
 
-  public void removeAuthenticationListener(AuthenticationListener l)
+  public static void removeAuthenticationListener(AuthenticationListener l)
   {
     authListeners.remove(l);
   }
