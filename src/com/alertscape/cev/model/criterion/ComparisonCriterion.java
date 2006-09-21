@@ -6,9 +6,8 @@ package com.alertscape.cev.model.criterion;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
-
 import com.alertscape.cev.model.Event;
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.util.GetterHelper;
 
 /**
@@ -17,22 +16,25 @@ import com.alertscape.util.GetterHelper;
  */
 public class ComparisonCriterion implements EventCriterion
 {
-  public static final int EQUAL = 0;
-  public static final int NOT_EQUAL = 1;
-  public static final int GREATER_THAN = 2;
-  public static final int GREATER_THAN_OR_EQUAL = 3;
-  public static final int LESS_THAN = 4;
-  public static final int LESS_THAN_OR_EQUAL = 5;
-
-  private static Logger logger = Logger.getLogger(ComparisonCriterion.class);
+  // TODO: change this to a typesafe enum
+  public enum ComparisonType
+  {
+    EQUAL, 
+    NOT_EQUAL, 
+    GREATER_THAN, 
+    GREATER_THAN_OR_EQUAL,
+    LESS_THAN,
+    LESS_THAN_OR_EQUAL;
+  }
+  
   private static final Object[] GETTER_ARGS = new Object[0];
 
   private String field;
   private Object value;
   private Method fieldGetter;
-  private int comparisonType;
+  private ComparisonType comparisonType;
 
-  public ComparisonCriterion(String field, Object value, int comparisonType)
+  public ComparisonCriterion(String field, Object value, ComparisonType comparisonType)
   {
     setField(field);
     setValue(value);
@@ -81,24 +83,24 @@ public class ComparisonCriterion implements EventCriterion
             matches = comparison <= 0;
             break;
           default:
-            logger.error("The comparison type: " + getComparisonType( )
+            ASLogger.error("The comparison type: " + getComparisonType( )
                 + " is not a recognized type");
             break;
         }
       }
       catch (IllegalArgumentException e1)
       {
-        logger.error("Trouble invoking getter: " + getFieldGetter( ) + " on "
+        ASLogger.error("Trouble invoking getter: " + getFieldGetter( ) + " on "
             + e, e1);
       }
       catch (IllegalAccessException e1)
       {
-        logger.error("Trouble invoking getter: " + getFieldGetter( ) + " on "
+        ASLogger.error("Trouble invoking getter: " + getFieldGetter( ) + " on "
             + e, e1);
       }
       catch (InvocationTargetException e1)
       {
-        logger.error("Trouble invoking getter: " + getFieldGetter( ) + " on "
+        ASLogger.error("Trouble invoking getter: " + getFieldGetter( ) + " on "
             + e, e1);
       }
     }
@@ -221,12 +223,12 @@ public class ComparisonCriterion implements EventCriterion
     this.fieldGetter = fieldGetter;
   }
 
-  protected int getComparisonType( )
+  protected ComparisonType getComparisonType( )
   {
     return comparisonType;
   }
 
-  protected void setComparisonType(int comparisonType)
+  protected void setComparisonType(ComparisonType comparisonType)
   {
     this.comparisonType = comparisonType;
   }

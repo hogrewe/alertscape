@@ -5,118 +5,114 @@ package com.alertscape.cev.ui.swing.panel.collection.table;
 
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
-
 import com.alertscape.cev.model.Event;
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.util.GetterHelper;
 import com.alertscape.util.PrimitiveHelper;
 
 class EventColumn
 {
-    private static Logger logger = Logger.getLogger(EventColumn.class);
+  String displayName;
+  String propertyName;
+  private Method propertyGetter;
+  private Class columnClass;
+  private int minWidth;
+  private int maxWidth;
+  private int width;
 
-    String displayName;
-    String propertyName;
-    private Method propertyGetter;
-    private Class columnClass;
-    private int minWidth;
-    private int maxWidth;
-    private int width;
+  public EventColumn(String displayName, String propertyName)
+  {
+    setDisplayName(displayName);
+    setPropertyName(propertyName);
+  }
 
-    public EventColumn(String displayName, String propertyName)
+  public Class getColumnClass( )
+  {
+    return columnClass;
+  }
+
+  public String getDisplayName( )
+  {
+    return displayName;
+  }
+
+  public void setDisplayName(String displayName)
+  {
+    this.displayName = displayName;
+  }
+
+  public String getPropertyName( )
+  {
+    return propertyName;
+  }
+
+  public void setPropertyName(String propertyName)
+  {
+    if (this.propertyName == null || !this.propertyName.equals(propertyName))
     {
-        setDisplayName(displayName);
-        setPropertyName(propertyName);
-    }
-
-    public Class getColumnClass( )
-    {
-        return columnClass;
-    }
-
-    public String getDisplayName( )
-    {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName)
-    {
-        this.displayName = displayName;
-    }
-
-    public String getPropertyName( )
-    {
-        return propertyName;
-    }
-
-    public void setPropertyName(String propertyName)
-    {
-        if (this.propertyName == null
-                || !this.propertyName.equals(propertyName))
+      propertyGetter = GetterHelper.makeEventGetter(propertyName);
+      if (propertyGetter != null)
+      {
+        columnClass = propertyGetter.getReturnType( );
+        if (columnClass.isPrimitive( ))
         {
-            propertyGetter = GetterHelper.makeEventGetter(propertyName);
-            if (propertyGetter != null)
-            {
-                columnClass = propertyGetter.getReturnType( );
-                if (columnClass.isPrimitive( ))
-                {
-                    columnClass = PrimitiveHelper
-                            .getContainingClass(columnClass);
-                }
-            }
+          columnClass = PrimitiveHelper.getContainingClass(columnClass);
         }
-        this.propertyName = propertyName;
+      }
     }
+    this.propertyName = propertyName;
+  }
 
-    public int getMaxWidth( )
-    {
-        return maxWidth;
-    }
+  public int getMaxWidth( )
+  {
+    return maxWidth;
+  }
 
-    public void setMaxWidth(int maxWidth)
-    {
-        this.maxWidth = maxWidth;
-    }
+  public void setMaxWidth(int maxWidth)
+  {
+    this.maxWidth = maxWidth;
+  }
 
-    public int getMinWidth( )
-    {
-        return minWidth;
-    }
+  public int getMinWidth( )
+  {
+    return minWidth;
+  }
 
-    public void setMinWidth(int minWidth)
-    {
-        this.minWidth = minWidth;
-    }
+  public void setMinWidth(int minWidth)
+  {
+    this.minWidth = minWidth;
+  }
 
-    public int getWidth( )
-    {
-        return width;
-    }
+  public int getWidth( )
+  {
+    return width;
+  }
 
-    public void setWidth(int width)
-    {
-        this.width = width;
-    }
+  public void setWidth(int width)
+  {
+    this.width = width;
+  }
 
-    public Object getValue(Event e)
+  public Object getValue(Event e)
+  {
+    Object o = null;
+    if (propertyGetter != null)
     {
-        Object o = null;
-        if (propertyGetter != null)
-        {
-            try
-            {
-                o = propertyGetter.invoke(e, new Object[0]);
-            } catch (Exception e1)
-            {
-                logger.error("Couldn't get value for column "
-                        + getDisplayName( ), e1);
-            }
-        }
-        return o;
+      try
+      {
+        o = propertyGetter.invoke(e, new Object[0]);
+      }
+      catch (Exception e1)
+      {
+        ASLogger
+            .error("Couldn't get value for column " + getDisplayName( ), e1);
+      }
     }
+    return o;
+  }
 
-    public Method getPropertyGetter( )
-    {
-        return propertyGetter;
-    }
+  public Method getPropertyGetter( )
+  {
+    return propertyGetter;
+  }
 }

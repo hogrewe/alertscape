@@ -4,11 +4,13 @@
 package com.alertscape.cev.ui.swing;
 
 import java.awt.BorderLayout;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -17,7 +19,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import com.alertscape.cev.common.auth.Authentication;
 import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.EventCollection;
+import com.alertscape.cev.model.Event.EventStatus;
 import com.alertscape.cev.model.severity.SeverityFactory;
+import com.alertscape.cev.ui.swing.panel.CevStatusPanel;
 import com.alertscape.cev.ui.swing.panel.collection.summary.EventCollectionSummaryPanel;
 import com.alertscape.cev.ui.swing.panel.collection.table.EventCollectionTablePanel;
 
@@ -41,53 +45,65 @@ public class Cev extends JFrame
   {
     try
     {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName( ));
     }
     catch (ClassNotFoundException e)
     {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      e.printStackTrace( );
     }
     catch (InstantiationException e)
     {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      e.printStackTrace( );
     }
     catch (IllegalAccessException e)
     {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      e.printStackTrace( );
     }
     catch (UnsupportedLookAndFeelException e)
     {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      e.printStackTrace( );
     }
     setSize(800, 600);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     EventCollectionTablePanel tablePanel = new EventCollectionTablePanel( );
     collection = new EventCollection( );
-    // tablePanel.setCollection(collection);
     JPanel p = new JPanel( );
     p.setLayout(new BorderLayout( ));
     EventCollectionSummaryPanel summaryPanel = new EventCollectionSummaryPanel( );
-    summaryPanel.setCollection(collection);
-    summaryPanel.setSubPanel(tablePanel);
+    EventCollection subCollection = new EventCollection( );
+    summaryPanel.setMasterCollection(collection);
+    summaryPanel.setSubCollection(subCollection);
+    tablePanel.setCollection(subCollection);
     p.add(summaryPanel, BorderLayout.NORTH);
     p.add(tablePanel, BorderLayout.CENTER);
+    p.add(new CevStatusPanel( ), BorderLayout.SOUTH);
     setContentPane(p);
-    
-    Authentication.login("CEV", "john.doe", null);
 
-    Thread t = new Thread(new GenerateEvents( ));
+    Authentication.login("CEV", "john.doe", null);
+    setTitle("CEV");
+    URL cevImageUrl = getClass( ).getResource(
+        "/com/alertscape/images/common/as_logo_32.gif");
+    ImageIcon cevImage = new ImageIcon(cevImageUrl);
+    setIconImage(cevImage.getImage( ));
+
+    Thread t = new Thread(new GenerateEvents(collection));
     t.start( );
   }
 
-  class GenerateEvents implements Runnable
+  public static class GenerateEvents implements Runnable
   {
     private long id = 1000000;
     private SeverityFactory sevFactory = SeverityFactory.getInstance( );
     private Random rand = new Random( );
+    private EventCollection c;
+    public GenerateEvents(EventCollection collection)
+    {
+      c = collection;
+    }
 
     private Event buildNewEvent( )
     {
@@ -105,7 +121,7 @@ public class Cev extends JFrame
       e.setSeverity(sevFactory.getSeverity(sevLevel));
       e.setShortDescription("Some short description");
       e.setSourceId(1);
-      e.setStatus(Event.STANDING);
+      e.setStatus(Event.EventStatus.STANDING);
       e.setType("Some type");
 
       return e;
@@ -114,10 +130,10 @@ public class Cev extends JFrame
     private Event buildUpdateToExistingEvent( )
     {
       Event e = new Event( );
-      if (collection.getEventCount( ) > 0)
+      if (c.getEventCount( ) > 0)
       {
-        int eventIndex = (int) (Math.random( ) * (collection.getEventCount( ) - 1));
-        Event old = collection.getEventAt(eventIndex);
+        int eventIndex = (int) (Math.random( ) * (c.getEventCount( ) - 1));
+        Event old = c.getEventAt(eventIndex);
 
         e.setCount(old.getCount( ) + 1);
         e.setEventId(old.getEventId( ));
@@ -131,14 +147,14 @@ public class Cev extends JFrame
         e.setSeverity(old.getSeverity( ));
         e.setShortDescription(old.getShortDescription( ));
         e.setSourceId(old.getSourceId( ));
-        int status = rand.nextInt(2);
-        e.setStatus(status + 1);
-        if (status == Event.STANDING)
+        if (rand.nextBoolean( ))
         {
+          e.setStatus(EventStatus.STANDING);
           System.out.print("U");
         }
         else
         {
+          e.setStatus(EventStatus.CLEARED);
           System.out.print("C");
         }
         e.setType(old.getType( ));
@@ -174,7 +190,7 @@ public class Cev extends JFrame
 
           events.add(e);
         }
-        collection.processEvents(events);
+        c.processEvents(events);
         System.out.println("");
 
         try

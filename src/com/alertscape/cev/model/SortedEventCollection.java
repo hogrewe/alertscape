@@ -4,14 +4,12 @@
 package com.alertscape.cev.model;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.util.GetterHelper;
 
 /**
@@ -19,198 +17,207 @@ import com.alertscape.util.GetterHelper;
  * @version $Version: $
  */
 public class SortedEventCollection extends EventCollection implements
-        EventChangeListener
+    EventChangeListener
 {
-    private static Logger logger = Logger
-            .getLogger(SortedEventCollection.class);
-    private static final Object emptyArgs = new Object[0];
+  private static final Object emptyArgs = new Object[0];
 
-    private List<Event> sortedEvents;
-    private EventComparator<Event> comparator;
-    private byte[] lock = new byte[0];
-    private EventCollection collection;
+  private List<Event> sortedEvents;
+  private EventComparator<Event> comparator;
+  private byte[] lock = new byte[0];
+  private EventCollection collection;
 
-    public SortedEventCollection(EventCollection collection)
+  public SortedEventCollection(EventCollection collection)
+  {
+    this.collection = collection;
+    this.collection.addEventChangeListener(this);
+  }
+
+  public void handleChange(EventChange change)
+  {
+    // if(change.getChangeType() == EventChange.FULL)
+    // {
+    // clearEvents();
+    // }
+    //        
+    // removeEvents(change.getRemoveEvents());
+    // removeEvents(change.getAddEvents());
+    // addEvents(change.getAddEvents());
+    //        
+    // // Iterator<Event> eventIter = change.getEvents().iterator();
+    // // while(eventIter.hasNext())
+    // // {
+    // // Event e = eventIter.next();
+    // //
+    // // Event alreadyStanding = collection.getEvent(e.getEventId());
+    // // sortedEvents.remove(alreadyStanding);
+    // //
+    // // if(e.isStanding())
+    // // {
+    // // sortedEvents.add(e);
+    // // }
+    // // }
+    // sort();
+    // fireEventChange(change.getAddEvents(), change.getRemoveEvents(),
+    // change.getRemoveIndexes());
+  }
+
+  private void addEvents(List<Event> events)
+  {
+    Iterator<Event> eventIter = events.iterator( );
+    while (eventIter.hasNext( ))
     {
-        this.collection = collection;
-        this.collection.addEventChangeListener(this);
+      Event e = eventIter.next( );
+
+      sortedEvents.add(e);
     }
+  }
 
-    public void handleChange(EventChange change)
+  private void removeEvents(List<Event> events)
+  {
+    Iterator<Event> eventIter = events.iterator( );
+    while (eventIter.hasNext( ))
     {
-        if(change.getChangeType() == EventChange.FULL)
+      Event e = eventIter.next( );
+
+      Event alreadyStanding = collection.getEvent(e.getEventId( ));
+      sortedEvents.remove(alreadyStanding);
+    }
+  }
+
+  public void setSortedField(String fieldName, boolean desc)
+  {
+    synchronized (lock)
+    {
+      if (comparator != null && comparator.getCompareField( ).equals(fieldName))
+      {
+        if (comparator.isInverted( ) != desc)
         {
-            clearEvents();
+          comparator.setInverted(desc);
+          sort( );
         }
-        
-        removeEvents(change.getRemoveEvents());
-        removeEvents(change.getAddEvents());
-        addEvents(change.getAddEvents());
-        
-//        Iterator<Event> eventIter = change.getEvents().iterator();
-//        while(eventIter.hasNext())
-//        {
-//            Event e = eventIter.next();
-//            
-//            Event alreadyStanding = collection.getEvent(e.getEventId());
-//            sortedEvents.remove(alreadyStanding);
-//            
-//            if(e.isStanding())
-//            {
-//                sortedEvents.add(e);
-//            }
-//        }
-        sort();
-        fireEventChange(change.getAddEvents(), change.getRemoveEvents(), change.getRemoveIndexes());
+      }
+      else
+      {
+        comparator = new EventComparator<Event>(fieldName, desc);
+        sort( );
+      }
+    }
+  }
+
+  @Override
+  public Event getEventAt(int index)
+  {
+    synchronized (lock)
+    {
+      return sortedEvents.get(index);
+    }
+  }
+
+  @Override
+  public void clearEvents( )
+  {
+    sortedEvents.clear( );
+    // fireFullEventChange(new ArrayList<Event>());
+  }
+
+  @Override
+  public List<Event> getAllEvents( )
+  {
+    return collection.getAllEvents( );
+  }
+
+  @Override
+  public Event getEvent(long id)
+  {
+    return collection.getEvent(id);
+  }
+
+  @Override
+  public int getEventCount( )
+  {
+    return collection.getEventCount( );
+  }
+
+  @Override
+  public void processEvents(List<Event> events)
+  {
+    collection.processEvents(events);
+  }
+
+  protected void sort( )
+  {
+    if (comparator != null)
+    {
+      Collections.sort(sortedEvents, comparator);
+    }
+  }
+
+  class EventComparator<E> implements Comparator<E>
+  {
+    private String compareField;
+    private Method fieldGetter;
+    private boolean inverted = false;
+
+    public EventComparator(String compareField, boolean inverted)
+    {
+      setInverted(inverted);
+      setCompareField(compareField);
     }
 
-    private void addEvents(List<Event> events)
+    @SuppressWarnings("unchecked")
+    public int compare(E e1, E e2)
     {
-        Iterator<Event> eventIter = events.iterator();
-        while(eventIter.hasNext())
+      int compare = 0;
+      try
+      {
+        Object f1 = fieldGetter.invoke(e1, emptyArgs);
+        Object f2 = fieldGetter.invoke(e2, emptyArgs);
+        if (f1 == null && f2 == null)
         {
-            Event e = eventIter.next();
-            
-            sortedEvents.add(e);
+          compare = 0;
         }
-    }
-    
-    private void removeEvents(List<Event> events)
-    {
-        Iterator<Event> eventIter = events.iterator();
-        while(eventIter.hasNext())
+        else if (f1 != null && f1 instanceof Comparable)
         {
-            Event e = eventIter.next();
-            
-            Event alreadyStanding = collection.getEvent(e.getEventId());
-            sortedEvents.remove(alreadyStanding);
+          compare = ((Comparable) f1).compareTo(f2);
         }
-    }
-    
-    public void setSortedField(String fieldName, boolean desc)
-    {
-        synchronized (lock)
+        else if (f1 != null)
         {
-            if (comparator != null
-                    && comparator.getCompareField( ).equals(fieldName))
-            {
-                if (comparator.isInverted( ) != desc)
-                {
-                    comparator.setInverted(desc);
-                    sort( );
-                }
-            } else
-            {
-                comparator = new EventComparator<Event>(fieldName, desc);
-                sort( );
-            }
+          compare = f1.toString( ).compareTo(f2.toString( ));
         }
-    }
-
-    public Event getEventAt(int index)
-    {
-        synchronized (lock)
+        else
         {
-            return sortedEvents.get(index);
-        }
-    }
-
-    public void clearEvents( )
-    {
-        sortedEvents.clear();
-        fireFullEventChange(new ArrayList<Event>());
-    }
-
-    public List<Event> getAllEvents( )
-    {
-        return collection.getAllEvents( );
-    }
-
-    public Event getEvent(long id)
-    {
-        return collection.getEvent(id);
-    }
-
-    public int getEventCount( )
-    {
-        return collection.getEventCount( );
-    }
-
-    public void processEvents(List<Event> events)
-    {
-        collection.processEvents(events);
-    }
-
-    protected void sort( )
-    {
-        if (comparator != null)
-        {
-            Collections.sort(sortedEvents, comparator);
-        }
-    }
-
-    class EventComparator<E> implements Comparator<E>
-    {
-        private String compareField;
-        private Method fieldGetter;
-        private boolean inverted = false;
-
-        public EventComparator(String compareField, boolean inverted)
-        {
-            setInverted(inverted);
-            setCompareField(compareField);
-        }
-
-        @SuppressWarnings("unchecked")
-        public int compare(E e1, E e2)
-        {
-            int compare = 0;
-            try
-            {
-                Object f1 = fieldGetter.invoke(e1, emptyArgs);
-                Object f2 = fieldGetter.invoke(e2, emptyArgs);
-                if (f1 == null && f2 == null)
-                {
-                    compare = 0;
-                } else if (f1 != null && f1 instanceof Comparable)
-                {
-                    compare = ((Comparable) f1).compareTo(f2);
-                } else if (f1 != null)
-                {
-                    compare = f1.toString( ).compareTo(f2.toString( ));
-                } else
-                {
-                    compare = f2.toString( ).compareTo(f1.toString( ));
-                }
-
-            } catch (Exception e)
-            {
-                String mesg = "Couldn't compare objects " + e1 + " and " + e2;
-                logger.error(mesg, e);
-            }
-            return inverted ? -compare : compare;
-        }
-
-        public String getCompareField( )
-        {
-            return compareField;
+          compare = f2.toString( ).compareTo(f1.toString( ));
         }
 
-        protected void setCompareField(String compareField)
-        {
-            fieldGetter = GetterHelper.makeEventGetter(compareField);
-            this.compareField = compareField;
-        }
-
-        public boolean isInverted( )
-        {
-            return inverted;
-        }
-
-        public void setInverted(boolean inverted)
-        {
-            this.inverted = inverted;
-        }
+      }
+      catch (Exception e)
+      {
+        String mesg = "Couldn't compare objects " + e1 + " and " + e2;
+        ASLogger.error(mesg, e);
+      }
+      return inverted ? -compare : compare;
     }
+
+    public String getCompareField( )
+    {
+      return compareField;
+    }
+
+    protected void setCompareField(String compareField)
+    {
+      fieldGetter = GetterHelper.makeEventGetter(compareField);
+      this.compareField = compareField;
+    }
+
+    public boolean isInverted( )
+    {
+      return inverted;
+    }
+
+    public void setInverted(boolean inverted)
+    {
+      this.inverted = inverted;
+    }
+  }
 
 }

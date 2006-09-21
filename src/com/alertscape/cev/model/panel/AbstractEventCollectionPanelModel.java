@@ -17,7 +17,7 @@ public abstract class AbstractEventCollectionPanelModel implements
 
     public void setCollection(EventCollection collection)
     {
-        if (this.collection == null) {
+        if (this.collection != null) {
             this.collection.removeEventChangeListener(this);
         }
         this.collection = collection;
