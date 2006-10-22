@@ -11,50 +11,70 @@ import java.awt.Color;
  */
 public class SeverityFactory
 {
-    private static SeverityFactory inst = new SeverityFactory( );
+  private static SeverityFactory inst = new SeverityFactory( );
 
-    private Severity[] severities;
+  private Severity[] severities;
 
-    public static final SeverityFactory getInstance( )
-    {
-        return inst;
-    }
+  public static final SeverityFactory getInstance( )
+  {
+    return inst;
+  }
 
-    protected SeverityFactory( )
-    {
-        severities = new Severity[3];
-        severities[0] = new Severity();
-        severities[0].setLevel(0);
-        severities[0].setBackgroundColor(new Color(16,187,12) );
-        severities[0].setForegroundColor(Color.BLACK);
-        severities[0].setName("Normal");
+  protected SeverityFactory( )
+  {
+    int sevNum = 0;
+    severities = new Severity[5];
 
-        severities[1] = new Severity();
-        severities[1].setLevel(1);
-        severities[1].setBackgroundColor(new Color(236,233,0));
-        severities[1].setForegroundColor(Color.BLACK);
-        severities[1].setName("Minor");
-
-        severities[2] = new Severity();
-        severities[2].setLevel(2);
-        severities[2].setBackgroundColor(new Color(198,65,0));
-        severities[2].setForegroundColor(Color.BLACK);
-        severities[2].setName("Critical");
-
-        // TODO: Load the severities from a config file
-    }
-
-    public Severity getSeverity(int level)
-    {
-        Severity sev = null;
-        if (level < severities.length) {
-            sev = severities[level];
-        }
-        return sev;
-    }
+    severities[sevNum] = new Severity( );
+    severities[sevNum].setLevel(sevNum);
+    severities[sevNum].setBackgroundColor(new Color(16, 187, 12));
+    severities[sevNum].setForegroundColor(Color.BLACK);
+    severities[sevNum].setName("Normal");
+    sevNum++;
     
-    public int getMaxSeverity()
+    severities[sevNum] = new Severity( );
+    severities[sevNum].setLevel(sevNum);
+    severities[sevNum].setBackgroundColor(Color.blue);
+    severities[sevNum].setForegroundColor(Color.white);
+    severities[sevNum].setName("Warning");
+    sevNum++;
+
+    severities[sevNum] = new Severity( );
+    severities[sevNum].setLevel(sevNum);
+    severities[sevNum].setBackgroundColor(new Color(236, 233, 0));
+    severities[sevNum].setForegroundColor(Color.BLACK);
+    severities[sevNum].setName("Minor");
+    sevNum++;
+
+    severities[sevNum] = new Severity( );
+    severities[sevNum].setLevel(sevNum);
+    severities[sevNum].setBackgroundColor(Color.orange);
+    severities[sevNum].setForegroundColor(Color.BLACK);
+    severities[sevNum].setName("Major");
+    sevNum++;
+
+    severities[sevNum] = new Severity( );
+    severities[sevNum].setLevel(sevNum);
+    severities[sevNum].setBackgroundColor(new Color(198, 65, 0));
+    severities[sevNum].setForegroundColor(Color.BLACK);
+    severities[sevNum].setName("Critical");
+    sevNum++;
+
+    // TODO: Load the severities from a config file
+  }
+
+  public Severity getSeverity(int level)
+  {
+    Severity sev = null;
+    if (level < severities.length)
     {
-        return severities.length;
+      sev = severities[level];
     }
+    return sev;
+  }
+
+  public int getNumSeverities( )
+  {
+    return severities.length;
+  }
 }

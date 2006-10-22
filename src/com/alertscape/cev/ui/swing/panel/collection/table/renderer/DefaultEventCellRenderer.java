@@ -8,9 +8,10 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import ca.odell.glazedlists.swing.EventTableModel;
+
 import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.severity.Severity;
-import com.alertscape.cev.ui.swing.panel.collection.table.EventCollectionTableModel;
 
 /**
  * @author josh
@@ -27,10 +28,8 @@ public class DefaultEventCellRenderer extends DefaultTableCellRenderer
         Component c = super.getTableCellRendererComponent(table, value,
                 isSelected, hasFocus, row, column);
 
-        EventCollectionTableModel model = (EventCollectionTableModel) table
-                .getModel( );
-        int modelRow = table.convertRowIndexToModel(row);
-        Event e = model.getEventAt(modelRow);
+        EventTableModel<Event> model = (EventTableModel<Event>) table.getModel( );
+        Event e = model.getElementAt(row);
         Severity sev = e.getSeverity( );
         if (isSelected)
         {

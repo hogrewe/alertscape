@@ -46,7 +46,7 @@ public class CevTreeNode
     @SuppressWarnings("unchecked")
     public CevTreeNode( )
     {
-        int numsevs = SeverityFactory.getInstance( ).getMaxSeverity( );
+        int numsevs = SeverityFactory.getInstance( ).getNumSeverities( );
         severityEvents = new Map[numsevs];
         for (int i = 0; i < numsevs; i++)
         {
