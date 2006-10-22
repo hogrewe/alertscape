@@ -10,7 +10,6 @@ import javax.swing.table.AbstractTableModel;
 
 import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.EventChange;
-import com.alertscape.cev.model.EventChangeListener;
 import com.alertscape.cev.model.EventCollection;
 import com.alertscape.cev.model.panel.EventCollectionPanelModel;
 
@@ -19,7 +18,7 @@ import com.alertscape.cev.model.panel.EventCollectionPanelModel;
  * @version $Version: $
  */
 public class EventCollectionTableModel extends AbstractTableModel implements
-    EventCollectionPanelModel, EventChangeListener
+    EventCollectionPanelModel
 {
   // private static Logger logger = Logger
   // .getLogger(EventCollectionTableModel.class);
@@ -37,7 +36,6 @@ public class EventCollectionTableModel extends AbstractTableModel implements
   public void setCollection(EventCollection collection)
   {
     this.collection = collection;
-    this.collection.addEventChangeListener(this);
   }
 
   public EventCollection getCollection( )

@@ -5,10 +5,11 @@
 	</target>
 
 	<target depends="init" name="compile">
-		<javac debug="true" deprecation="true" destdir="classes" srcdir="src">
+		<javac debug="true" deprecation="true" destdir="classes" srcdir="src" target="1.5">
 			<classpath>
 				<pathelement location="lib/idw-docking/idw-gpl.jar" />
 				<pathelement location="lib/log4j/log4j-1.2.13.jar" />
+				<pathelement location="lib/glazedlists/glazedlists-1.7.0_java15.jar" />
 			</classpath>
 		</javac>
 	</target>

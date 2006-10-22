@@ -7,7 +7,7 @@ package com.alertscape.cev.model;
  * @author josh
  * @version $Version: $
  */
-public interface EventChangeListener
-{
-    public void handleChange(EventChange change);
-}
+//public interface EventChangeListener
+//{
+//    public void handleChange(EventChange change);
+//}

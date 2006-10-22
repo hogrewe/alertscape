@@ -11,6 +11,5 @@ import com.alertscape.cev.model.EventCollection;
  */
 public interface EventCollectionPanel
 {
-    public void setCollection(EventCollection collection);
     public EventCollection getCollection();
 }

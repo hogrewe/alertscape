@@ -29,8 +29,8 @@ public class CevTreeNodeRenderer extends DefaultTreeCellRenderer
     {
         SeverityFactory factory = SeverityFactory.getInstance( );
         ImageFinder finder = ImageFinder.getInstance( );
-        severityIcons = new Icon[factory.getMaxSeverity( )];
-        for (int i = 0; i < factory.getMaxSeverity( ); i++) {
+        severityIcons = new Icon[factory.getNumSeverities( )];
+        for (int i = 0; i < factory.getNumSeverities( ); i++) {
             Severity sev = factory.getSeverity(i);
             severityIcons[i] = finder.findImage(sev.getSmallIcon( ));
         }
