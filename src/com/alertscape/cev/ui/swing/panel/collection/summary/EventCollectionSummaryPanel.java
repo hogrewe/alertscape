@@ -8,10 +8,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -22,17 +20,14 @@ import javax.swing.border.BevelBorder;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
-import ca.odell.glazedlists.event.ListEvent;
-import ca.odell.glazedlists.event.ListEventListener;
-import ca.odell.glazedlists.util.concurrent.Lock;
 
 import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.EventCollection;
 import com.alertscape.cev.model.EventFilter;
 import com.alertscape.cev.model.IndexedEventCollection;
+import com.alertscape.cev.model.SeverityCounter;
 import com.alertscape.cev.model.severity.Severity;
 import com.alertscape.cev.model.severity.SeverityFactory;
-import com.alertscape.common.logging.ASLogger;
 
 /**
  * @author josh
@@ -45,13 +40,10 @@ public class EventCollectionSummaryPanel extends JPanel implements EventFilter
   private JToggleButton[] sevButtons;
   private JLabel totalLabel;
   private SeverityMatcherEditor severityMatcher = new SeverityMatcherEditor( );
-  private Map<Severity, Integer> severityCounts;
-  private List<Event> existingEvents = new ArrayList<Event>(70000);
+  private SeverityCounter counter = new SeverityCounter( );
 
   public EventCollectionSummaryPanel( )
   {
-    severityCounts = new HashMap<Severity, Integer>(SeverityFactory
-        .getInstance( ).getNumSeverities( ));
     init( );
   }
 
@@ -61,92 +53,28 @@ public class EventCollectionSummaryPanel extends JPanel implements EventFilter
     FilterList<Event> filterList = new FilterList<Event>(masterList,
         severityMatcher);
     subCollection = new IndexedEventCollection(filterList);
-    existingEvents.clear( );
-    existingEvents.addAll(masterList);
-
-    masterList.addListEventListener(new ListEventListener<Event>( )
+    counter.setEventCollection(master);
+    counter.addPropertyChangeListener(new PropertyChangeListener( )
     {
-      public void listChanged(ListEvent<Event> listChanges)
+      public void propertyChange(PropertyChangeEvent evt)
       {
-        EventList<Event> list = listChanges.getSourceList( );
-        Lock lock = list.getReadWriteLock( ).readLock( );
-        lock.lock( );
-        Event e;
-        Severity s;
-        int count;
-        while (listChanges.next( ))
+        SeverityFactory sevFactory = SeverityFactory.getInstance( );
+        for (int i = 0, size = sevFactory.getNumSeverities( ); i < size; i++)
         {
-          int index = listChanges.getIndex( );
-          if (index >= list.size( ) || index < 0)
-          {
-            ASLogger.debug("WTF??? index: " + index + " size: " + list.size( )
-                + ", change: " + listChanges);
-            continue;
-          }
-          switch (listChanges.getType( ))
-          {
-            case ListEvent.INSERT:
-              e = list.get(listChanges.getIndex( ));
-              existingEvents.add(listChanges.getIndex( ), e);
-              s = e.getSeverity( );
-              count = severityCounts.get(s);
-              count++;
-              severityCounts.put(s, count);
-              break;
-            case ListEvent.DELETE:
-              e = existingEvents.get(listChanges.getIndex( ));
-              s = e.getSeverity( );
-              count = severityCounts.get(s);
-              count--;
-              severityCounts.put(s, count);
-              break;
-            case ListEvent.UPDATE:
-              e = existingEvents.get(listChanges.getIndex( ));
-              Event newEvent = list.get(listChanges.getIndex( ));
-              existingEvents.set(listChanges.getIndex( ), newEvent);
-              if(newEvent.getSeverity( ) != e.getSeverity( ))
-              {
-                // Decrement the old severity
-                count = severityCounts.get(e.getSeverity( ));
-                count--;
-                severityCounts.put(e.getSeverity( ), count);
-                
-                // Increment the new severity
-                count = severityCounts.get(newEvent.getSeverity( ));
-                count++;
-                severityCounts.put(newEvent.getSeverity( ), count);
-              }
-              break;
-          }
-
+          Severity sev = sevFactory.getSeverity(i);
+          sevButtons[i].setText(sev.getName( ) + ":" + counter.getCount(sev));
         }
-        lock.unlock( );
-
-        for (Severity sev : severityCounts.keySet( ))
-        {
-          sevButtons[sev.getLevel( )].setText(sev.getName( ) + ": "
-              + severityCounts.get(sev));
-        }
-        totalLabel.setText("Total: " + list.size( ));
+        totalLabel.setText("Total: " + counter.getTotalCount( ));
       }
     });
 
-    // Initialize the counts to the current counts in the collection
-    Lock lock = getCollection( ).getEventList( ).getReadWriteLock( ).readLock( );
-    lock.lock( );
-    for (Event event : getCollection( ).getEventList( ))
+    SeverityFactory sevFactory = SeverityFactory.getInstance( );
+    for (int i = 0, size = sevFactory.getNumSeverities( ); i < size; i++)
     {
-      int count = severityCounts.get(event.getSeverity( ));
-      count++;
-      severityCounts.put(event.getSeverity( ), count);
+      Severity sev = sevFactory.getSeverity(i);
+      sevButtons[i].setText(sev.getName( ) + ":" + counter.getCount(sev));
     }
-    lock.unlock( );
-
-    for (Severity sev : severityCounts.keySet( ))
-    {
-      sevButtons[sev.getLevel( )].setText(sev.getName( ) + ":"
-          + severityCounts.get(sev));
-    }
+    totalLabel.setText("Total: " + masterList.size( ));
 
     return subCollection;
   }
@@ -167,7 +95,6 @@ public class EventCollectionSummaryPanel extends JPanel implements EventFilter
     for (int i = 0; i < max; i++)
     {
       Severity s = fact.getSeverity(i);
-      severityCounts.put(s, 0);
       JToggleButton sevButton = new JToggleButton( );
       sevButton.setForeground(s.getForegroundColor( ));
       sevButton.setBackground(s.getBackgroundColor( ));
