@@ -1,4 +1,5 @@
-<?xml version="1.0"?><project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
   <parent>
     <artifactId>alertscape</artifactId>
     <groupId>com.alertscape</groupId>
@@ -9,13 +10,19 @@
   <artifactId>cev</artifactId>
   <name>cev</name>
   <version>0.1-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
+  <url>http://alertscape.com</url>
   <dependencies>
+    <dependency>
+	  <groupId>com.odell</groupId>
+	  <artifactId>glazedlists</artifactId>
+	</dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
