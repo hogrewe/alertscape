@@ -6,9 +6,33 @@
   <packaging>pom</packaging>
   <version>0.1-SNAPSHOT</version>
   <name>alertscape</name>
-  <url>http://maven.apache.org</url>
+  <url>http://alertscape.com</url>
+  <modules>
+    <module>cev</module>
+  </modules>
+  <build>
+    <plugins>  
+      <plugin>  
+        <artifactId>maven-compiler-plugin</artifactId>  
+        <configuration>  
+          <source>1.5</source>  
+          <target>1.5</target>  
+        </configuration>  
+      </plugin>  
+    </plugins>  
+  </build>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+	    <groupId>com.odell</groupId>
+	    <artifactId>glazedlists</artifactId>
+	    <version>1.7.0</version>
+	  </dependency>
+	  <dependency>
+	    <groupId>log4j</groupId>
+	    <artifactId>log4j</artifactId>
+	    <version>1.2.13</version>
+	  </dependency>
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
@@ -17,7 +41,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <modules>
-    <module>cev</module>
-  </modules>
 </project>
