@@ -45,7 +45,7 @@
     <repository>
       <id>internal</id>
       <name>Archiva Managed Internal Repository</name>
-      <url>http://athens:8585/archiva/repository/internal/</url>
+      <url>http://hogrewe.com:8585/archiva/repository/internal/</url>
       <releases>
         <enabled>true</enabled>
       </releases>
