@@ -9,6 +9,7 @@
   <url>http://alertscape.com</url>
   <modules>
     <module>cev</module>
+    <module>as-common</module>
   </modules>
   <build>
     <plugins>  
@@ -23,6 +24,11 @@
   </build>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+	    <groupId>com.alertscape</groupId>
+	    <artifactId>as-common</artifactId>
+	    <version>${project.version}</version>
+	  </dependency>
       <dependency>
 	    <groupId>com.odell</groupId>
 	    <artifactId>glazedlists</artifactId>

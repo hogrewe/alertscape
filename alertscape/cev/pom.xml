@@ -13,6 +13,10 @@
   <url>http://alertscape.com</url>
   <dependencies>
     <dependency>
+	  <groupId>com.alertscape</groupId>
+	  <artifactId>as-common</artifactId>
+	</dependency>
+    <dependency>
 	  <groupId>com.odell</groupId>
 	  <artifactId>glazedlists</artifactId>
 	</dependency>
