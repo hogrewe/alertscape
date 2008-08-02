@@ -7,8 +7,8 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
-import com.alertscape.cev.model.Event;
 import com.alertscape.common.logging.ASLogger;
+import com.alertscape.common.model.Event;
 
 /**
  * @author josh

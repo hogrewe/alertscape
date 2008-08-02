@@ -6,6 +6,8 @@ package com.alertscape.cev.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alertscape.common.model.Event;
+
 import ca.odell.glazedlists.EventList;
 
 /**

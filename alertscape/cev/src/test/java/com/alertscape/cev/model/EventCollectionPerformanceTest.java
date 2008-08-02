@@ -9,6 +9,7 @@ import java.util.Random;
 
 import com.alertscape.common.junit.AlertScapeTestCase;
 import com.alertscape.common.logging.ASLogger;
+import com.alertscape.common.model.Event;
 import com.alertscape.common.performance.PerformanceRun;
 
 /**

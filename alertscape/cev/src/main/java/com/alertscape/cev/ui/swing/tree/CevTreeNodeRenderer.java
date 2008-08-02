@@ -10,9 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import com.alertscape.cev.model.severity.Severity;
-import com.alertscape.cev.model.severity.SeverityFactory;
 import com.alertscape.cev.model.tree.CevTreeNode;
+import com.alertscape.common.model.severity.Severity;
+import com.alertscape.common.model.severity.SeverityFactory;
 import com.alertscape.util.ImageFinder;
 
 /**

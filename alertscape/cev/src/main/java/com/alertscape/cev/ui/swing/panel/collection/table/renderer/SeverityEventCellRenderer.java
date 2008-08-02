@@ -7,7 +7,7 @@ import java.awt.Component;
 
 import javax.swing.JTable;
 
-import com.alertscape.cev.model.severity.Severity;
+import com.alertscape.common.model.severity.Severity;
 
 /**
  * @author josh
