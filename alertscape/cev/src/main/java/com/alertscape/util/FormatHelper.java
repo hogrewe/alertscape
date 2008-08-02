@@ -15,7 +15,7 @@ public class FormatHelper
   private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z");
   private FormatHelper()
   {
-    
+    // some text inserted here to test out svn via eclipse
   }
   
   public static String formatDate(Date d)
