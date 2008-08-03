@@ -11,6 +11,8 @@ import junit.framework.TestCase;
 
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Event;
+import com.alertscape.common.model.EventCollection;
+import com.alertscape.common.model.IndexedEventCollection;
 import com.alertscape.common.performance.PerformanceRun;
 
 /**

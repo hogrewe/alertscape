@@ -16,6 +16,7 @@ import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.util.concurrent.Lock;
 
 import com.alertscape.common.model.Event;
+import com.alertscape.common.model.EventCollection;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
 

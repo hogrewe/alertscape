@@ -18,11 +18,11 @@ import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 
-import com.alertscape.cev.model.EventCollection;
 import com.alertscape.cev.ui.swing.panel.collection.EventCollectionPanel;
 import com.alertscape.cev.ui.swing.panel.collection.table.renderer.DefaultEventCellRenderer;
 import com.alertscape.cev.ui.swing.panel.collection.table.renderer.SeverityEventCellRenderer;
 import com.alertscape.common.model.Event;
+import com.alertscape.common.model.EventCollection;
 import com.alertscape.common.model.severity.Severity;
 
 /**

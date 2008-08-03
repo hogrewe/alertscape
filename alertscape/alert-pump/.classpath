@@ -6,4 +6,5 @@
   <classpathentry kind="var" path="M2_REPO/com/odell/glazedlists/1.7.0/glazedlists-1.7.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
+  <classpathentry kind="src" path="/as-common"/>
 </classpath>

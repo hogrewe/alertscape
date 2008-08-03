@@ -3,8 +3,6 @@
  */
 package com.alertscape.cev.model;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author josh

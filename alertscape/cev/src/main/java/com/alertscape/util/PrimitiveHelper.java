@@ -16,7 +16,7 @@ public class PrimitiveHelper
      * @param c The primitive type
      * @return
      */
-    public static Class getContainingClass(Class c)
+    public static Class<?> getContainingClass(Class<?> c)
     {
         if(c == long.class)
         {
