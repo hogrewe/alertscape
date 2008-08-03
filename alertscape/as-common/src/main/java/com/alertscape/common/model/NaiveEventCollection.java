@@ -1,9 +1,8 @@
 /*
  * Created on Oct 17, 2006
  */
-package com.alertscape.cev.model;
+package com.alertscape.common.model;
 
-import com.alertscape.common.model.Event;
 
 import ca.odell.glazedlists.util.concurrent.Lock;
 

@@ -26,11 +26,11 @@ import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.util.concurrent.Lock;
 
-import com.alertscape.cev.model.EventCollection;
 import com.alertscape.cev.model.EventFilter;
-import com.alertscape.cev.model.IndexedEventCollection;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Event;
+import com.alertscape.common.model.EventCollection;
+import com.alertscape.common.model.IndexedEventCollection;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
 

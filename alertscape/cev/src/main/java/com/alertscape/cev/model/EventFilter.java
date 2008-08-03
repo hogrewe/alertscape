@@ -3,6 +3,8 @@
  */
 package com.alertscape.cev.model;
 
+import com.alertscape.common.model.EventCollection;
+
 /**
  * @author josh
  * @version $Version: $
