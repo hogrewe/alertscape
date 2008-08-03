@@ -10,8 +10,8 @@ import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonT
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.LESS_THAN_OR_EQUAL;
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.NOT_EQUAL;
 import static com.alertscape.common.model.Event.EventStatus.STANDING;
+import junit.framework.TestCase;
 
-import com.alertscape.common.junit.AlertScapeTestCase;
 import com.alertscape.common.model.Event;
 import com.alertscape.common.model.severity.SeverityFactory;
 
@@ -19,7 +19,7 @@ import com.alertscape.common.model.severity.SeverityFactory;
  * @author josh
  * @version $Version: $
  */
-public class ComparisonCriterionTest extends AlertScapeTestCase
+public class ComparisonCriterionTest extends TestCase
 {
   private Event event;
 
