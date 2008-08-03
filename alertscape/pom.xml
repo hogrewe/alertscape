@@ -10,6 +10,7 @@
   <modules>
     <module>cev</module>
     <module>as-common</module>
+    <module>alert-pump</module>
   </modules>
   <build>
     <plugins>  

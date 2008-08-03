@@ -9,9 +9,9 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import com.alertscape.cev.model.EventChange;
-import com.alertscape.cev.model.EventCollection;
 import com.alertscape.cev.model.panel.EventCollectionPanelModel;
 import com.alertscape.common.model.Event;
+import com.alertscape.common.model.EventCollection;
 
 /**
  * @author josh
@@ -84,7 +84,7 @@ public class EventCollectionTableModel extends AbstractTableModel implements
   @Override
   public Class<?> getColumnClass(int columnIndex)
   {
-    Class c = Object.class;
+    Class<?> c = Object.class;
     EventColumn column = columns.get(columnIndex);
     if (column.getPropertyGetter( ) != null)
     {

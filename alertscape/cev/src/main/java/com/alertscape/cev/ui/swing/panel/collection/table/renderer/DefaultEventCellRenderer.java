@@ -21,13 +21,14 @@ public class DefaultEventCellRenderer extends DefaultTableCellRenderer
 {
     private static final long serialVersionUID = 1L;
 
-    @Override
+	@Override
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column)
     {
         Component c = super.getTableCellRendererComponent(table, value,
                 isSelected, hasFocus, row, column);
 
+        @SuppressWarnings("unchecked")
         EventTableModel<Event> model = (EventTableModel<Event>) table.getModel( );
         Event e = model.getElementAt(row);
         Severity sev = e.getSeverity( );

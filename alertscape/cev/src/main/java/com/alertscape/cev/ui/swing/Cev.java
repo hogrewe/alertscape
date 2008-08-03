@@ -25,14 +25,14 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.BevelBorder;
 
 import com.alertscape.cev.common.auth.Authentication;
-import com.alertscape.cev.model.EventCollection;
-import com.alertscape.cev.model.IndexedEventCollection;
 import com.alertscape.cev.ui.swing.panel.CevStatusPanel;
 import com.alertscape.cev.ui.swing.panel.collection.summary.EventCollectionSummaryPanel;
 import com.alertscape.cev.ui.swing.panel.collection.table.EventCollectionTablePanel;
 import com.alertscape.cev.ui.swing.panel.common.ASPanelBuilder;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Event;
+import com.alertscape.common.model.EventCollection;
+import com.alertscape.common.model.IndexedEventCollection;
 import com.alertscape.common.model.Event.EventStatus;
 import com.alertscape.common.model.severity.SeverityFactory;
 import com.alertscape.util.ImageFinder;

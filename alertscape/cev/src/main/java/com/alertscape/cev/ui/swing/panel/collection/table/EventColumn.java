@@ -15,7 +15,7 @@ class EventColumn
   String displayName;
   String propertyName;
   private Method propertyGetter;
-  private Class columnClass;
+  private Class<?> columnClass;
   private int minWidth;
   private int maxWidth;
   private int width;
@@ -26,7 +26,7 @@ class EventColumn
     setPropertyName(propertyName);
   }
 
-  public Class getColumnClass( )
+  public Class<?> getColumnClass( )
   {
     return columnClass;
   }
