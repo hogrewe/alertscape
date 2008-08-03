@@ -3,17 +3,17 @@
  */
 package com.alertscape.cev.model.criterion;
 
-import static com.alertscape.cev.model.Event.EventStatus.STANDING;
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.EQUAL;
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.GREATER_THAN;
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.GREATER_THAN_OR_EQUAL;
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.LESS_THAN;
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.LESS_THAN_OR_EQUAL;
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.NOT_EQUAL;
+import static com.alertscape.common.model.Event.EventStatus.STANDING;
 
-import com.alertscape.cev.model.Event;
-import com.alertscape.cev.model.severity.SeverityFactory;
 import com.alertscape.common.junit.AlertScapeTestCase;
+import com.alertscape.common.model.Event;
+import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
  * @author josh

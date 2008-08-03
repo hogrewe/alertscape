@@ -8,10 +8,10 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.EventChange;
 import com.alertscape.cev.model.EventCollection;
 import com.alertscape.cev.model.panel.EventCollectionPanelModel;
+import com.alertscape.common.model.Event;
 
 /**
  * @author josh

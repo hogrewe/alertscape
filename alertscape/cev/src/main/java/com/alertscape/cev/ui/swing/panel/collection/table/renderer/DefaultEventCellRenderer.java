@@ -10,8 +10,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import ca.odell.glazedlists.swing.EventTableModel;
 
-import com.alertscape.cev.model.Event;
-import com.alertscape.cev.model.severity.Severity;
+import com.alertscape.common.model.Event;
+import com.alertscape.common.model.severity.Severity;
 
 /**
  * @author josh

@@ -5,6 +5,8 @@ package com.alertscape.cev.model;
 
 import java.util.List;
 
+import com.alertscape.common.model.Event;
+
 import ca.odell.glazedlists.EventList;
 
 /**

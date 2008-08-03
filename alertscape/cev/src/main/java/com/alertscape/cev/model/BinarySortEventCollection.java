@@ -6,6 +6,8 @@ package com.alertscape.cev.model;
 import java.util.Collections;
 import java.util.Comparator;
 
+import com.alertscape.common.model.Event;
+
 /**
  * @author josh
  * @version $Version: $

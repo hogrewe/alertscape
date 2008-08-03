@@ -5,8 +5,8 @@ package com.alertscape.cev.ui.swing.panel.collection.table;
 
 import java.lang.reflect.Method;
 
-import com.alertscape.cev.model.Event;
 import com.alertscape.common.logging.ASLogger;
+import com.alertscape.common.model.Event;
 import com.alertscape.util.GetterHelper;
 import com.alertscape.util.PrimitiveHelper;
 
