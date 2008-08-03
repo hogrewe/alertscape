@@ -3,15 +3,13 @@
  */
 package com.alertscape.cev.ui.swing.tree;
 
-import javax.swing.JFrame;
-
-import com.alertscape.common.junit.AlertScapeTestCase;
+import junit.framework.TestCase;
 
 /**
  * @author josh
  * @version $Version: $
  */
-public class CevTreeTest extends AlertScapeTestCase
+public class CevTreeTest extends TestCase
 {
   public CevTreeTest()
   {
@@ -20,7 +18,7 @@ public class CevTreeTest extends AlertScapeTestCase
   
   public void testShowTree()
   {
-    JFrame f = new JFrame();
-    CevTree tree = new CevTree(null);
+//    JFrame f = new JFrame();
+//    CevTree tree = new CevTree(null);
   }
 }

@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.alertscape.common.junit.AlertScapeTestCase;
+import junit.framework.TestCase;
+
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Event;
 import com.alertscape.common.performance.PerformanceRun;
@@ -16,9 +17,9 @@ import com.alertscape.common.performance.PerformanceRun;
  * @author josh
  * @version $Version: $
  */
-public class EventCollectionPerformanceTest extends AlertScapeTestCase
+public class EventCollectionPerformanceTest extends TestCase
 {
-  public static final int NUM_EVENTS = 20000;
+  public static final int NUM_EVENTS = 200;
   public static final int BLOCK_SIZE = 500;
 
   private static final Random rand = new Random( );
