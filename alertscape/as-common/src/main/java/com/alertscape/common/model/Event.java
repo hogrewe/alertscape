@@ -1,11 +1,11 @@
 /*
  * Created on Mar 15, 2006
  */
-package com.alertscape.cev.model;
+package com.alertscape.common.model;
 
 import java.util.Date;
 
-import com.alertscape.cev.model.severity.Severity;
+import com.alertscape.common.model.severity.Severity;
 
 /**
  * @author josh

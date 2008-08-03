@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.criterion.EventCriterion;
-import com.alertscape.cev.model.severity.SeverityFactory;
+import com.alertscape.common.model.Event;
+import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
  * @author josh

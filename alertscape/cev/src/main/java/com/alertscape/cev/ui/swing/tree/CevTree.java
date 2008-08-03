@@ -5,7 +5,7 @@ package com.alertscape.cev.ui.swing.tree;
 
 import javax.swing.JTree;
 
-import com.alertscape.cev.model.Event;
+import com.alertscape.common.model.Event;
 
 /**
  * @author josh

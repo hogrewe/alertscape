@@ -3,6 +3,8 @@
  */
 package com.alertscape.cev.model;
 
+import com.alertscape.common.model.Event;
+
 import ca.odell.glazedlists.util.concurrent.Lock;
 
 /**

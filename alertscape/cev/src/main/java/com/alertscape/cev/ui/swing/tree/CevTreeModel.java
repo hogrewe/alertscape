@@ -7,8 +7,8 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import com.alertscape.cev.model.Event;
 import com.alertscape.cev.model.tree.CevTreeNode;
+import com.alertscape.common.model.Event;
 
 /**
  * @author josh

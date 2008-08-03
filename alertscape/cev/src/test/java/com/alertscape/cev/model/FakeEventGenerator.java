@@ -6,8 +6,9 @@ package com.alertscape.cev.model;
 import java.util.Date;
 import java.util.Random;
 
-import com.alertscape.cev.model.Event.EventStatus;
-import com.alertscape.cev.model.severity.SeverityFactory;
+import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Event.EventStatus;
+import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
  * @author josh

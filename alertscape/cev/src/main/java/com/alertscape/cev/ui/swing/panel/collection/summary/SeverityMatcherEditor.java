@@ -9,15 +9,15 @@ import java.util.Set;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
 
-import com.alertscape.cev.model.severity.Severity;
-import com.alertscape.cev.model.severity.SeverityFactory;
+import com.alertscape.common.model.severity.Severity;
+import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
  * @author josh
  * @version $Version: $
  */
 public class SeverityMatcherEditor extends
-    AbstractMatcherEditor<com.alertscape.cev.model.Event>
+    AbstractMatcherEditor<com.alertscape.common.model.Event>
 {
   private Set<Severity> matchingSeverities = new HashSet<Severity>(
       SeverityFactory.getInstance( ).getNumSeverities( ));
@@ -66,7 +66,7 @@ public class SeverityMatcherEditor extends
   }
 
   private class SeverityMatcher implements
-      Matcher<com.alertscape.cev.model.Event>
+      Matcher<com.alertscape.common.model.Event>
   {
     private Set<Severity> sevs;
 
@@ -75,7 +75,7 @@ public class SeverityMatcherEditor extends
       this.sevs = new HashSet<Severity>(sevs);
     }
 
-    public boolean matches(com.alertscape.cev.model.Event item)
+    public boolean matches(com.alertscape.common.model.Event item)
     {
       return sevs.contains(item.getSeverity( ));
     }
