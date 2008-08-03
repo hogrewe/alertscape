@@ -11,5 +11,5 @@ import com.alertscape.common.model.Event;
  *
  */
 public interface AlertPump {
-	public void addAlert(Event e) throws AlertscapeException;
+	public void processAlert(Event e) throws AlertscapeException;
 }
