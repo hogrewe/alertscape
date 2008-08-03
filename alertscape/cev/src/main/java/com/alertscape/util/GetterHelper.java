@@ -16,14 +16,14 @@ import com.alertscape.common.logging.ASLogger;
  */
 public class GetterHelper
 {
-  private static final Class EVENT_CLASS = Event.class;
+  private static final Class<Event> EVENT_CLASS = Event.class;
 
   public static Method makeEventGetter(String fieldName)
   {
     return makeGetter(EVENT_CLASS, fieldName);
   }
 
-  public static Method makeGetter(Class c, String fieldName)
+  public static Method makeGetter(Class<?> c, String fieldName)
   {
     Method getter = null;
     try
