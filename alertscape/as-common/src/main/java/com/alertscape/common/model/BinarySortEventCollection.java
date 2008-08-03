@@ -1,12 +1,11 @@
 /*
  * Created on Oct 17, 2006
  */
-package com.alertscape.cev.model;
+package com.alertscape.common.model;
 
 import java.util.Collections;
 import java.util.Comparator;
 
-import com.alertscape.common.model.Event;
 
 /**
  * @author josh

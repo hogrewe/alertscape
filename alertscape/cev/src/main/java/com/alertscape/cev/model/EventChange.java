@@ -6,6 +6,7 @@ package com.alertscape.cev.model;
 import java.util.List;
 
 import com.alertscape.common.model.Event;
+import com.alertscape.common.model.EventCollection;
 
 /**
  * @author josh
