@@ -5,12 +5,11 @@ package com.alertscape.cev.model;
 
 import java.util.List;
 
-import com.alertscape.common.model.Event;
-
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.FreezableList;
 import ca.odell.glazedlists.util.concurrent.Lock;
+
+import com.alertscape.common.model.Event;
 
 /**
  * @author josh

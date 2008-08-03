@@ -84,7 +84,7 @@ public class EventCollectionTableModel extends AbstractTableModel implements
   @Override
   public Class<?> getColumnClass(int columnIndex)
   {
-    Class c = Object.class;
+    Class<?> c = Object.class;
     EventColumn column = columns.get(columnIndex);
     if (column.getPropertyGetter( ) != null)
     {
