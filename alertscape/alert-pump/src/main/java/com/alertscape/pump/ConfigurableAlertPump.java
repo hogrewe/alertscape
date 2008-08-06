@@ -5,31 +5,19 @@ package com.alertscape.pump;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Event;
-import com.alertscape.common.model.EventCollection;
+import com.alertscape.pump.offramp.DatabaseOfframp;
+import com.alertscape.pump.offramp.JmsOfframp;
 
 /**
  * @author josh
  *
  */
 public class ConfigurableAlertPump implements AlertPump {
-	EventCollection collection;
+	public DatabaseOfframp dbOfframp;
+	public JmsOfframp jmsOfframp;
 	
 	public void processAlert(Event e) throws AlertscapeException {
 		
-	}
-
-	/**
-	 * @return the collection
-	 */
-	public EventCollection getCollection() {
-		return collection;
-	}
-
-	/**
-	 * @param collection the collection to set
-	 */
-	public void setCollection(EventCollection collection) {
-		this.collection = collection;
 	}
 
 }

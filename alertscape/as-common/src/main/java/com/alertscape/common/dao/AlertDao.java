@@ -14,5 +14,6 @@ import com.alertscape.common.model.Event;
 public interface AlertDao {
 	public void save(Event alert) throws DaoException;
 	public Event get(long alertId) throws DaoException;
+	public Event delete(long alertId) throws DaoException;
 	public List<Event> getAllAlerts() throws DaoException;
 }
