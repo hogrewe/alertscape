@@ -13,37 +13,37 @@ import ca.odell.glazedlists.EventList;
  * @author josh
  * @version $Version: $
  */
-public class IndexedEventCollection extends AbstractEventCollection
+public class IndexedAlertCollection extends AbstractAlertCollection
 {
   private Map<Long, Integer> idToIndex = new HashMap<Long, Integer>( );
   
-  public IndexedEventCollection()
+  public IndexedAlertCollection()
   {
   }
   
-  public IndexedEventCollection(EventList<Event> eventList)
+  public IndexedAlertCollection(EventList<Alert> alertList)
   {
-    super(eventList);
+    super(alertList);
   }
 
   @Override
-  protected void processSingleEvent(Event event)
+  protected void processSingleAlert(Alert alert)
   {
-    Integer index = idToIndex.get(event.getEventId( ));
-    if (event.isStanding( ))
+    Integer index = idToIndex.get(alert.getAlertId( ));
+    if (alert.isStanding( ))
     {
       // Is it new?
       if (index == null)
       {
         System.out.print("N");
-        events.add(event);
-        idToIndex.put(event.getEventId( ), events.size( )-1);
+        alerts.add(alert);
+        idToIndex.put(alert.getAlertId( ), alerts.size( )-1);
       }
       // It's already in the list, just update it
       else
       {
         System.out.print("U");
-        events.set(index, event);
+        alerts.set(index, alert);
       }
     }
     else
@@ -51,15 +51,15 @@ public class IndexedEventCollection extends AbstractEventCollection
       if (index != null)
       {
         System.out.print("C");
-        events.remove(index);
+        alerts.remove(index);
         // Ok, we removed the item at index, so we have to update the map for
         // everything that comes after index
-        for (int i = index; i < events.size( ); i++)
+        for (int i = index; i < alerts.size( ); i++)
         {
-          Event e = events.get(i);
-          int nextIndex = idToIndex.get(e.getEventId( ));
+          Alert e = alerts.get(i);
+          int nextIndex = idToIndex.get(e.getAlertId( ));
           nextIndex--;
-          idToIndex.put(e.getEventId( ), nextIndex);
+          idToIndex.put(e.getAlertId( ), nextIndex);
         }
       }
       else
@@ -70,20 +70,20 @@ public class IndexedEventCollection extends AbstractEventCollection
   }
 
   @Override
-  public void clearEvents( )
+  public void clearAlerts( )
   {
-    super.clearEvents( );
+    super.clearAlerts( );
     idToIndex.clear( );
   }
 
   @Override
-  public Event getEvent(long id)
+  public Alert getAlert(long id)
   {
-    Event e = null;
+    Alert e = null;
     Integer index = idToIndex.get(id);
     if (index != null)
     {
-      e = events.get(index);
+      e = alerts.get(index);
     }
 
     return e;

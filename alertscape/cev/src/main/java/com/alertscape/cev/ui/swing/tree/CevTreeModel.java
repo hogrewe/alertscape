@@ -8,7 +8,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import com.alertscape.cev.model.tree.CevTreeNode;
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Alert;
 
 /**
  * @author josh
@@ -28,12 +28,12 @@ public class CevTreeModel implements TreeModel
         setRoot(root);
     }
     
-    public void addEvent(Event e)
+    public void addEvent(Alert e)
     {
         root.addEvent(e);
     }
     
-    public void removeEvent(Event e)
+    public void removeEvent(Alert e)
     {
         root.removeEvent(e);
     }

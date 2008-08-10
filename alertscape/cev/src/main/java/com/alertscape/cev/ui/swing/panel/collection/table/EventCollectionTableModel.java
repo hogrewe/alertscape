@@ -10,8 +10,8 @@ import javax.swing.table.AbstractTableModel;
 
 import com.alertscape.cev.model.EventChange;
 import com.alertscape.cev.model.panel.EventCollectionPanelModel;
-import com.alertscape.common.model.Event;
-import com.alertscape.common.model.EventCollection;
+import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertCollection;
 
 /**
  * @author josh
@@ -26,19 +26,19 @@ public class EventCollectionTableModel extends AbstractTableModel implements
   private static final long serialVersionUID = 1L;
   private List<EventColumn> columns;
 
-  private EventCollection collection;
+  private AlertCollection collection;
 
   public EventCollectionTableModel(List<EventColumn> columns)
   {
     setColumns(columns);
   }
 
-  public void setCollection(EventCollection collection)
+  public void setCollection(AlertCollection collection)
   {
     this.collection = collection;
   }
 
-  public EventCollection getCollection( )
+  public AlertCollection getCollection( )
   {
     return collection;
   }
@@ -67,7 +67,7 @@ public class EventCollectionTableModel extends AbstractTableModel implements
 
   public int getRowCount( )
   {
-    return getCollection( ).getEventCount( );
+    return getCollection( ).getAlertCount( );
   }
 
   public int getColumnCount( )
@@ -96,13 +96,13 @@ public class EventCollectionTableModel extends AbstractTableModel implements
   public Object getValueAt(int rowIndex, int columnIndex)
   {
     EventColumn column = columns.get(columnIndex);
-    Event e = collection.getEventAt(rowIndex);
+    Alert e = collection.getAlertAt(rowIndex);
     return column.getValue(e);
   }
 
-  public Event getEventAt(int rowIndex)
+  public Alert getEventAt(int rowIndex)
   {
-    return collection.getEventAt(rowIndex);
+    return collection.getAlertAt(rowIndex);
   }
 
   public void setColumns(List<EventColumn> columns)

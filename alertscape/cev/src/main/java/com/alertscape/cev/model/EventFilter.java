@@ -3,7 +3,7 @@
  */
 package com.alertscape.cev.model;
 
-import com.alertscape.common.model.EventCollection;
+import com.alertscape.common.model.AlertCollection;
 
 /**
  * @author josh
@@ -11,5 +11,5 @@ import com.alertscape.common.model.EventCollection;
  */
 public interface EventFilter
 {
-  public EventCollection setMasterCollection(EventCollection master);
+  public AlertCollection setMasterCollection(AlertCollection master);
 }

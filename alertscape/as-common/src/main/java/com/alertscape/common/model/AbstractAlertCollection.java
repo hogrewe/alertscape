@@ -14,29 +14,29 @@ import ca.odell.glazedlists.util.concurrent.Lock;
  * @author josh
  * @version $Version: $
  */
-public abstract class AbstractEventCollection implements EventCollection
+public abstract class AbstractAlertCollection implements AlertCollection
 {
-  protected EventList<Event> events;
+  protected EventList<Alert> alerts;
 
   // protected FreezableList<Event> freezableEvents;
 
-  public AbstractEventCollection( )
+  public AbstractAlertCollection( )
   {
-    setEventList(new BasicEventList<Event>(70000));
+    setEventList(new BasicEventList<Alert>(70000));
   }
 
-  public AbstractEventCollection(EventList<Event> eventList)
+  public AbstractAlertCollection(EventList<Alert> eventList)
   {
     setEventList(eventList);
   }
 
-  public void clearEvents( )
+  public void clearAlerts( )
   {
-    Lock lock = events.getReadWriteLock( ).writeLock( );
+    Lock lock = alerts.getReadWriteLock( ).writeLock( );
     try
     {
       lock.lock( );
-      events.clear( );
+      alerts.clear( );
     }
     finally
     {
@@ -44,15 +44,15 @@ public abstract class AbstractEventCollection implements EventCollection
     }
   }
 
-  public Event getEvent(long id)
+  public Alert getAlert(long id)
   {
-    Lock lock = events.getReadWriteLock( ).readLock( );
+    Lock lock = alerts.getReadWriteLock( ).readLock( );
     try
     {
       lock.lock( );
-      for (Event e : events)
+      for (Alert e : alerts)
       {
-        if (e.getEventId( ) == id)
+        if (e.getAlertId( ) == id)
         {
           return e;
         }
@@ -66,13 +66,13 @@ public abstract class AbstractEventCollection implements EventCollection
     return null;
   }
 
-  public Event getEventAt(int index)
+  public Alert getAlertAt(int index)
   {
-    Lock lock = events.getReadWriteLock( ).readLock( );
+    Lock lock = alerts.getReadWriteLock( ).readLock( );
     try
     {
       lock.lock( );
-      return events.get(index);
+      return alerts.get(index);
     }
     finally
     {
@@ -80,13 +80,13 @@ public abstract class AbstractEventCollection implements EventCollection
     }
   }
 
-  public int getEventCount( )
+  public int getAlertCount( )
   {
-    Lock lock = events.getReadWriteLock( ).readLock( );
+    Lock lock = alerts.getReadWriteLock( ).readLock( );
     try
     {
       lock.lock( );
-      return events.size( );
+      return alerts.size( );
     }
     finally
     {
@@ -94,34 +94,34 @@ public abstract class AbstractEventCollection implements EventCollection
     }
   }
 
-  public EventList<Event> getEventList( )
+  public EventList<Alert> getEventList( )
   {
     // TODO: Do we need to pass back the modifiable list? We may need to wrap
     // this list in other lists and have those lists be transformable
-    return events;
+    return alerts;
   }
 
-  public void setEventList(EventList<Event> list)
+  public void setEventList(EventList<Alert> list)
   {
     // TODO: should we do some sort of defensive copying?!?
-    this.events = list;
+    this.alerts = list;
     // this.freezableEvents = new FreezableList<Event>(list);
   }
 
-  public void processEvents(List<Event> newEvents)
+  public void processAlerts(List<Alert> newAlerts)
   {
     System.out.println( );
-    Lock lock = events.getReadWriteLock( ).writeLock( );
+    Lock lock = alerts.getReadWriteLock( ).writeLock( );
     lock.lock( );
     // freezableEvents.freeze( );
-    for (Event event : newEvents)
+    for (Alert alert : newAlerts)
     {
-      processSingleEvent(event);
+      processSingleAlert(alert);
     }
     // freezableEvents.thaw( );
     lock.unlock( );
     System.out.println( );
   }
 
-  protected abstract void processSingleEvent(Event event);
+  protected abstract void processSingleAlert(Alert alert);
 }

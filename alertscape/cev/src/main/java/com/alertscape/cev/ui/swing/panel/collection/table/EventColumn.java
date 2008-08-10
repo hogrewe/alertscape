@@ -6,7 +6,7 @@ package com.alertscape.cev.ui.swing.panel.collection.table;
 import java.lang.reflect.Method;
 
 import com.alertscape.common.logging.ASLogger;
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Alert;
 import com.alertscape.util.GetterHelper;
 import com.alertscape.util.PrimitiveHelper;
 
@@ -93,7 +93,7 @@ class EventColumn
     this.width = width;
   }
 
-  public Object getValue(Event e)
+  public Object getValue(Alert e)
   {
     Object o = null;
     if (propertyGetter != null)
