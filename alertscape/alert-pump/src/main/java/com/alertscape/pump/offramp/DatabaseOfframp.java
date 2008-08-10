@@ -5,7 +5,7 @@ package com.alertscape.pump.offramp;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.dao.AlertDao;
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Alert;
 
 /**
  * @author josh
@@ -14,7 +14,7 @@ import com.alertscape.common.model.Event;
 public class DatabaseOfframp implements AlertOfframp {
 	private AlertDao alertDao;
 
-	public void processAlert(Event alert) throws AlertscapeException {
+	public void processAlert(Alert alert) throws AlertscapeException {
 		getAlertDao().save(alert);
 	}
 

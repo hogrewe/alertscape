@@ -28,9 +28,9 @@ import ca.odell.glazedlists.util.concurrent.Lock;
 
 import com.alertscape.cev.model.EventFilter;
 import com.alertscape.common.logging.ASLogger;
-import com.alertscape.common.model.Event;
-import com.alertscape.common.model.EventCollection;
-import com.alertscape.common.model.IndexedEventCollection;
+import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertCollection;
+import com.alertscape.common.model.IndexedAlertCollection;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
 
@@ -41,12 +41,12 @@ import com.alertscape.common.model.severity.SeverityFactory;
 public class EventCollectionSummaryPanel extends JPanel implements EventFilter
 {
   private static final long serialVersionUID = 1L;
-  private EventCollection subCollection;
+  private AlertCollection subCollection;
   private JToggleButton[] sevButtons;
   private JLabel totalLabel;
   private SeverityMatcherEditor severityMatcher = new SeverityMatcherEditor( );
   private Map<Severity, Integer> severityCounts;
-  private List<Event> existingEvents = new ArrayList<Event>(70000);
+  private List<Alert> existingEvents = new ArrayList<Alert>(70000);
 
   public EventCollectionSummaryPanel( )
   {
@@ -55,23 +55,23 @@ public class EventCollectionSummaryPanel extends JPanel implements EventFilter
     init( );
   }
 
-  public EventCollection setMasterCollection(EventCollection master)
+  public AlertCollection setMasterCollection(AlertCollection master)
   {
-    EventList<Event> masterList = master.getEventList( );
-    FilterList<Event> filterList = new FilterList<Event>(masterList,
+    EventList<Alert> masterList = master.getEventList( );
+    FilterList<Alert> filterList = new FilterList<Alert>(masterList,
         severityMatcher);
-    subCollection = new IndexedEventCollection(filterList);
+    subCollection = new IndexedAlertCollection(filterList);
     existingEvents.clear( );
     existingEvents.addAll(masterList);
 
-    masterList.addListEventListener(new ListEventListener<Event>( )
+    masterList.addListEventListener(new ListEventListener<Alert>( )
     {
-      public void listChanged(ListEvent<Event> listChanges)
+      public void listChanged(ListEvent<Alert> listChanges)
       {
-        EventList<Event> list = listChanges.getSourceList( );
+        EventList<Alert> list = listChanges.getSourceList( );
         Lock lock = list.getReadWriteLock( ).readLock( );
         lock.lock( );
-        Event e;
+        Alert e;
         Severity s;
         int count;
         while (listChanges.next( ))
@@ -102,7 +102,7 @@ public class EventCollectionSummaryPanel extends JPanel implements EventFilter
               break;
             case ListEvent.UPDATE:
               e = existingEvents.get(listChanges.getIndex( ));
-              Event newEvent = list.get(listChanges.getIndex( ));
+              Alert newEvent = list.get(listChanges.getIndex( ));
               existingEvents.set(listChanges.getIndex( ), newEvent);
               if(newEvent.getSeverity( ) != e.getSeverity( ))
               {
@@ -134,7 +134,7 @@ public class EventCollectionSummaryPanel extends JPanel implements EventFilter
     // Initialize the counts to the current counts in the collection
     Lock lock = getCollection( ).getEventList( ).getReadWriteLock( ).readLock( );
     lock.lock( );
-    for (Event event : getCollection( ).getEventList( ))
+    for (Alert event : getCollection( ).getEventList( ))
     {
       int count = severityCounts.get(event.getSeverity( ));
       count++;
@@ -151,7 +151,7 @@ public class EventCollectionSummaryPanel extends JPanel implements EventFilter
     return subCollection;
   }
 
-  public EventCollection getCollection( )
+  public AlertCollection getCollection( )
   {
     return subCollection;
   }

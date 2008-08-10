@@ -3,7 +3,7 @@
  */
 package com.alertscape.cev.model.panel;
 
-import com.alertscape.common.model.EventCollection;
+import com.alertscape.common.model.AlertCollection;
 
 /**
  * @author josh
@@ -12,14 +12,14 @@ import com.alertscape.common.model.EventCollection;
 public abstract class AbstractEventCollectionPanelModel implements
         EventCollectionPanelModel
 {
-    private EventCollection collection;
+    private AlertCollection collection;
 
-    public void setCollection(EventCollection collection)
+    public void setCollection(AlertCollection collection)
     {
         this.collection = collection;
     }
 
-    public EventCollection getCollection( )
+    public AlertCollection getCollection( )
     {
         return collection;
     }

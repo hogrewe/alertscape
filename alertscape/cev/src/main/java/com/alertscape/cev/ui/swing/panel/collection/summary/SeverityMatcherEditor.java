@@ -17,7 +17,7 @@ import com.alertscape.common.model.severity.SeverityFactory;
  * @version $Version: $
  */
 public class SeverityMatcherEditor extends
-    AbstractMatcherEditor<com.alertscape.common.model.Event>
+    AbstractMatcherEditor<com.alertscape.common.model.Alert>
 {
   private Set<Severity> matchingSeverities = new HashSet<Severity>(
       SeverityFactory.getInstance( ).getNumSeverities( ));
@@ -66,7 +66,7 @@ public class SeverityMatcherEditor extends
   }
 
   private class SeverityMatcher implements
-      Matcher<com.alertscape.common.model.Event>
+      Matcher<com.alertscape.common.model.Alert>
   {
     private Set<Severity> sevs;
 
@@ -75,7 +75,7 @@ public class SeverityMatcherEditor extends
       this.sevs = new HashSet<Severity>(sevs);
     }
 
-    public boolean matches(com.alertscape.common.model.Event item)
+    public boolean matches(com.alertscape.common.model.Alert item)
     {
       return sevs.contains(item.getSeverity( ));
     }

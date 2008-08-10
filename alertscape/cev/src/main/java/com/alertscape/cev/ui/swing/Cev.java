@@ -30,10 +30,11 @@ import com.alertscape.cev.ui.swing.panel.collection.summary.EventCollectionSumma
 import com.alertscape.cev.ui.swing.panel.collection.table.EventCollectionTablePanel;
 import com.alertscape.cev.ui.swing.panel.common.ASPanelBuilder;
 import com.alertscape.common.logging.ASLogger;
-import com.alertscape.common.model.Event;
-import com.alertscape.common.model.EventCollection;
-import com.alertscape.common.model.IndexedEventCollection;
-import com.alertscape.common.model.Event.EventStatus;
+import com.alertscape.common.model.AlertSource;
+import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertCollection;
+import com.alertscape.common.model.IndexedAlertCollection;
+import com.alertscape.common.model.Alert.AlertStatus;
 import com.alertscape.common.model.severity.SeverityFactory;
 import com.alertscape.util.ImageFinder;
 
@@ -45,7 +46,7 @@ public class Cev extends JFrame
 {
   private static final long serialVersionUID = 1L;
 
-  private EventCollection collection;
+  private AlertCollection collection;
 
   public Cev( )
   {
@@ -86,11 +87,11 @@ public class Cev extends JFrame
     }
     setSize(800, 600);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
-    collection = new IndexedEventCollection( );
+    collection = new IndexedAlertCollection( );
     JPanel p = new JPanel( );
     p.setLayout(new BorderLayout( ));
     EventCollectionSummaryPanel summaryPanel = new EventCollectionSummaryPanel( );
-    EventCollection subCollection = summaryPanel
+    AlertCollection subCollection = summaryPanel
         .setMasterCollection(collection);
     EventCollectionTablePanel tablePanel = new EventCollectionTablePanel(
         subCollection);
@@ -138,18 +139,18 @@ public class Cev extends JFrame
 
     GenerateEvents gen = new GenerateEvents(collection);
     int groupSize = 1000;
-    List<Event> events = new ArrayList<Event>(groupSize);
+    List<Alert> events = new ArrayList<Alert>(groupSize);
     for (int i = 0; i < 50000; i++)
     {
       events.add(gen.buildNewEvent( ));
       if (i % groupSize == 0)
       {
         ASLogger.debug(i);
-        collection.processEvents(events);
+        collection.processAlerts(events);
         events.clear( );
       }
     }
-    collection.processEvents(events);
+    collection.processAlerts(events);
 
     Thread t = new Thread(gen);
     t.start( );
@@ -161,20 +162,20 @@ public class Cev extends JFrame
     private long id = 1000000;
     private SeverityFactory sevFactory = SeverityFactory.getInstance( );
     private Random rand = new Random( );
-    private EventCollection c;
-    private List<Event> newEvents = new ArrayList<Event>(NUM_EVENTS_TO_CACHE);
+    private AlertCollection c;
+    private List<Alert> newEvents = new ArrayList<Alert>(NUM_EVENTS_TO_CACHE);
 
-    public GenerateEvents(EventCollection collection)
+    public GenerateEvents(AlertCollection collection)
     {
       c = collection;
     }
 
-    public Event buildNewEvent( )
+    public Alert buildNewEvent( )
     {
       int sevLevel = rand.nextInt(sevFactory.getNumSeverities( ));
-      Event e = new Event( );
+      Alert e = new Alert( );
       e.setCount(rand.nextInt(1000));
-      e.setEventId(id++);
+      e.setAlertId(id++);
       e.setFirstOccurence(new Date( ));
       e.setItem("Some item");
       e.setItemManager("Some item manager");
@@ -184,23 +185,23 @@ public class Cev extends JFrame
       e.setLongDescription("Some long desription");
       e.setSeverity(sevFactory.getSeverity(sevLevel));
       e.setShortDescription("Some short description");
-      e.setSourceId(1);
-      e.setStatus(Event.EventStatus.STANDING);
+      e.setSource(new AlertSource(1, "Source 1"));
+      e.setStatus(Alert.AlertStatus.STANDING);
       e.setType("Some type");
 
       return e;
     }
 
-    private Event buildUpdateToExistingEvent(List<Event> events)
+    private Alert buildUpdateToExistingEvent(List<Alert> events)
     {
-      Event e = new Event( );
+      Alert e = new Alert( );
       if (events.size( ) > 1)
       {
         int eventIndex = rand.nextInt(events.size( ) - 1);
-        Event old = events.get(eventIndex);
+        Alert old = events.get(eventIndex);
 
         e.setCount(old.getCount( ) + 1);
-        e.setEventId(old.getEventId( ));
+        e.setAlertId(old.getAlertId( ));
         e.setFirstOccurence(old.getFirstOccurence( ));
         e.setItem(old.getItem( ));
         e.setItemManager(old.getItemManager( ));
@@ -210,15 +211,15 @@ public class Cev extends JFrame
         e.setLongDescription(old.getLongDescription( ));
         e.setSeverity(old.getSeverity( ));
         e.setShortDescription(old.getShortDescription( ));
-        e.setSourceId(old.getSourceId( ));
+        e.setSource(old.getSource( ));
         if (rand.nextBoolean( ))
         {
-          e.setStatus(EventStatus.STANDING);
+          e.setStatus(AlertStatus.STANDING);
           System.out.print("U");
         }
         else
         {
-          e.setStatus(EventStatus.CLEARED);
+          e.setStatus(AlertStatus.CLEARED);
           System.out.print("C");
         }
         e.setType(old.getType( ));
@@ -234,13 +235,13 @@ public class Cev extends JFrame
     public void run( )
     {
       Random rand = new Random();
-      List<Event> allEvents = new ArrayList<Event>(100000);
+      List<Alert> allEvents = new ArrayList<Alert>(100000);
       allEvents.addAll(c.getEventList( ));
       for(int i=0; i<NUM_EVENTS_TO_CACHE; i++)
       {
         boolean val = rand.nextBoolean( );
 
-        Event e = null;
+        Alert e = null;
 
         if (val)
         {
@@ -261,13 +262,13 @@ public class Cev extends JFrame
       while (true)
       {
         int groupSize = rand.nextInt(100);
-        List<Event> events = new ArrayList<Event>( );
+        List<Alert> events = new ArrayList<Alert>( );
         for (int i = 0; i < groupSize; i++)
         {
           events.add(newEvents.get(newEventPointer + i));
         }
         newEventPointer+=groupSize;
-        c.processEvents(events);
+        c.processAlerts(events);
         System.out.println("Processed: " + events.size( ) + " events");
 
         try

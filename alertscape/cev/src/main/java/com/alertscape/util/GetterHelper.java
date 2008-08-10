@@ -8,7 +8,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
 import com.alertscape.common.logging.ASLogger;
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Alert;
 
 /**
  * @author josh
@@ -16,7 +16,7 @@ import com.alertscape.common.model.Event;
  */
 public class GetterHelper
 {
-  private static final Class<Event> EVENT_CLASS = Event.class;
+  private static final Class<Alert> EVENT_CLASS = Alert.class;
 
   public static Method makeEventGetter(String fieldName)
   {

@@ -6,7 +6,7 @@ package com.alertscape.cev.model.criterion;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Alert;
 
 /**
  * @author josh
@@ -36,7 +36,7 @@ public class CompositeCriterion implements EventCriterion
     criteria.remove(c);
   }
 
-  public boolean matches(Event e)
+  public boolean matches(Alert e)
   {
     return type.matches(criteria, e);
   }
@@ -46,7 +46,7 @@ public class CompositeCriterion implements EventCriterion
     private static CompositeType AND = new CompositeType("AND")
     {
       @Override
-      boolean matches(List<EventCriterion> criteria, Event e)
+      boolean matches(List<EventCriterion> criteria, Alert e)
       {
         for (int i = 0, size = criteria.size( ); i < size; i++)
         {
@@ -65,7 +65,7 @@ public class CompositeCriterion implements EventCriterion
     private static CompositeType OR = new CompositeType("OR")
     {
       @Override
-      boolean matches(List<EventCriterion> criteria, Event e)
+      boolean matches(List<EventCriterion> criteria, Alert e)
       {
         for (int i = 0, size = criteria.size( ); i < size; i++)
         {
@@ -94,7 +94,7 @@ public class CompositeCriterion implements EventCriterion
       return type;
     }
 
-    abstract boolean matches(List<EventCriterion> criteria, Event e);
+    abstract boolean matches(List<EventCriterion> criteria, Alert e);
   }
 
 }

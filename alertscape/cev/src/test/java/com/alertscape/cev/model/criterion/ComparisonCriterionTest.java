@@ -9,10 +9,11 @@ import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonT
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.LESS_THAN;
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.LESS_THAN_OR_EQUAL;
 import static com.alertscape.cev.model.criterion.ComparisonCriterion.ComparisonType.NOT_EQUAL;
-import static com.alertscape.common.model.Event.EventStatus.STANDING;
+import static com.alertscape.common.model.Alert.AlertStatus.STANDING;
 import junit.framework.TestCase;
 
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.AlertSource;
+import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
@@ -21,7 +22,7 @@ import com.alertscape.common.model.severity.SeverityFactory;
  */
 public class ComparisonCriterionTest extends TestCase
 {
-  private Event event;
+  private Alert event;
 
   public ComparisonCriterionTest( )
   {
@@ -31,9 +32,9 @@ public class ComparisonCriterionTest extends TestCase
   @Override
   protected void setUp( ) throws Exception
   {
-    event = new Event( );
+    event = new Alert( );
     event.setCount(100);
-    event.setEventId(20);
+    event.setAlertId(20);
     // event.setFirstOccurence(firstOccurence);
     event.setItem("Item1");
     event.setItemType("ItemType1");
@@ -43,7 +44,7 @@ public class ComparisonCriterionTest extends TestCase
     event.setLongDescription("Long Description");
     event.setSeverity(SeverityFactory.getInstance( ).getSeverity(1));
     event.setShortDescription("Short Description");
-    event.setSourceId(3);
+    event.setSource(new AlertSource(3, "AS 3"));
     event.setStatus(STANDING);
     event.setType("Type");
   }
@@ -62,7 +63,7 @@ public class ComparisonCriterionTest extends TestCase
     ComparisonCriterion cLessThanEqual = new ComparisonCriterion("eventId",
         "20", LESS_THAN_OR_EQUAL);
 
-    event.setEventId(20);
+    event.setAlertId(20);
     assertTrue("The event ID should be equal", cEqual.matches(event));
     assertFalse("The event ID should not be equal", cNotEqual.matches(event));
     assertFalse("The event ID should not be greater than", cGreaterThan
@@ -74,7 +75,7 @@ public class ComparisonCriterionTest extends TestCase
     assertTrue("The event ID should be less than or equal", cLessThanEqual
         .matches(event));
 
-    event.setEventId(19);
+    event.setAlertId(19);
     assertFalse("The event ID should not be equal", cEqual.matches(event));
     assertTrue("The event ID should not be equal", cNotEqual.matches(event));
     assertFalse("The event ID should not be greater than", cGreaterThan
@@ -85,7 +86,7 @@ public class ComparisonCriterionTest extends TestCase
     assertTrue("The event ID should be less than or equal", cLessThanEqual
         .matches(event));
 
-    event.setEventId(21);
+    event.setAlertId(21);
     assertFalse("The event ID should not be equal", cEqual.matches(event));
     assertTrue("The event ID should not be equal", cNotEqual.matches(event));
     assertTrue("The event ID should be greater than", cGreaterThan

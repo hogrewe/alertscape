@@ -3,7 +3,7 @@
  */
 package com.alertscape.cev.ui.swing.panel.collection;
 
-import com.alertscape.common.model.EventCollection;
+import com.alertscape.common.model.AlertCollection;
 
 /**
  * @author josh
@@ -11,5 +11,5 @@ import com.alertscape.common.model.EventCollection;
  */
 public interface EventCollectionPanel
 {
-    public EventCollection getCollection();
+    public AlertCollection getCollection();
 }

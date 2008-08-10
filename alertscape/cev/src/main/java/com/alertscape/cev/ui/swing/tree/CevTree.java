@@ -5,7 +5,7 @@ package com.alertscape.cev.ui.swing.tree;
 
 import javax.swing.JTree;
 
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Alert;
 
 /**
  * @author josh
@@ -21,13 +21,13 @@ public class CevTree extends JTree
         setCellRenderer(new CevTreeNodeRenderer());
     }
 
-    public void addEvent(Event e)
+    public void addEvent(Alert e)
     {
         CevTreeModel model = (CevTreeModel) getModel();
         model.addEvent(e);
     }
     
-    public void removeEvent(Event e)
+    public void removeEvent(Alert e)
     {
         CevTreeModel model = (CevTreeModel) getModel();
         model.removeEvent(e);
