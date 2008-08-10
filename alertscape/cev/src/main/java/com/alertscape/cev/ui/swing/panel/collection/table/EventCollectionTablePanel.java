@@ -21,8 +21,8 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.alertscape.cev.ui.swing.panel.collection.EventCollectionPanel;
 import com.alertscape.cev.ui.swing.panel.collection.table.renderer.DefaultEventCellRenderer;
 import com.alertscape.cev.ui.swing.panel.collection.table.renderer.SeverityEventCellRenderer;
-import com.alertscape.common.model.Event;
-import com.alertscape.common.model.EventCollection;
+import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.severity.Severity;
 
 /**
@@ -35,13 +35,13 @@ public class EventCollectionTablePanel extends JPanel implements
   private static final long serialVersionUID = 1L;
 
   private JTable collectionTable;
-  private EventCollection collection;
-  private SortedList<Event> sortedList;
+  private AlertCollection collection;
+  private SortedList<Alert> sortedList;
 
   // private EventCollectionTableModel model;
   // private TableRowSorter<EventCollectionTableModel> sorter;
 
-  public EventCollectionTablePanel(EventCollection collection)
+  public EventCollectionTablePanel(AlertCollection collection)
   {
     setCollection(collection);
     init( );
@@ -49,7 +49,7 @@ public class EventCollectionTablePanel extends JPanel implements
 
   public void init( )
   {
-    sortedList = new SortedList<Event>(getCollection( ).getEventList( ), null);
+    sortedList = new SortedList<Alert>(getCollection( ).getEventList( ), null);
     String[] propertyNames = new String[] { "eventId", "type",
         "longDescription", "severity", "count", "sourceId", "item",
         "itemManager", "itemType", "itemManagerType", "firstOccurence",
@@ -57,11 +57,11 @@ public class EventCollectionTablePanel extends JPanel implements
     String[] columnLabels = new String[] { "Event ID", "Type", "Description",
         "Severity", "Count", "Source", "Item", "Manager", "Item Type",
         "Manager Type", "First", "Last" };
-    TableFormat<Event> tf = GlazedLists.tableFormat(Event.class, propertyNames,
+    TableFormat<Alert> tf = GlazedLists.tableFormat(Alert.class, propertyNames,
         columnLabels);
-    collectionTable = new JTable(new EventTableModel<Event>(sortedList, tf));
+    collectionTable = new JTable(new EventTableModel<Alert>(sortedList, tf));
 
-    new TableComparatorChooser<Event>(collectionTable, sortedList, true);
+    new TableComparatorChooser<Alert>(collectionTable, sortedList, true);
 
     TableCellRenderer defaultRenderer = new DefaultEventCellRenderer( );
     TableCellRenderer sevRenderer = new SeverityEventCellRenderer( );
@@ -144,7 +144,7 @@ public class EventCollectionTablePanel extends JPanel implements
   /**
    * @return Returns the collection.
    */
-  public EventCollection getCollection( )
+  public AlertCollection getCollection( )
   {
     return collection;
   }
@@ -153,7 +153,7 @@ public class EventCollectionTablePanel extends JPanel implements
    * @param collection
    *          The collection to set.
    */
-  private void setCollection(EventCollection collection)
+  private void setCollection(AlertCollection collection)
   {
     this.collection = collection;
   }

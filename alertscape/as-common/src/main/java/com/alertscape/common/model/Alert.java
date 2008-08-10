@@ -13,19 +13,19 @@ import com.alertscape.common.model.severity.Severity;
  * @author josh
  * @version $Version: $
  */
-public class Event {
-	public enum EventStatus {
+public class Alert {
+	public enum AlertStatus {
 		STANDING, CLEARED;
 	}
 
-	private long eventId;
-	private EventStatus status;
+	private long alertId;
+	private AlertStatus status;
 	private String shortDescription;
 	private String longDescription;
 	private String type;
 	private Severity severity;
 	private long count;
-	private String sourceId;
+	private AlertSource source;
 	private String item;
 	private String itemManager;
 	private String itemType;
@@ -100,12 +100,18 @@ public class Event {
 		this.severity = severity;
 	}
 
-	public String getSourceId() {
-		return sourceId;
+	/**
+	 * @return the source
+	 */
+	public AlertSource getSource() {
+		return source;
 	}
 
-	public void setSourceId(String sourceId) {
-		this.sourceId = sourceId;
+	/**
+	 * @param source the source to set
+	 */
+	public void setSource(AlertSource source) {
+		this.source = source;
 	}
 
 	public String getType() {
@@ -117,15 +123,15 @@ public class Event {
 	}
 
 	public boolean isStanding() {
-		return getStatus() == EventStatus.STANDING;
+		return getStatus() == AlertStatus.STANDING;
 	}
 
-	public long getEventId() {
-		return eventId;
+	public long getAlertId() {
+		return alertId;
 	}
 
-	public void setEventId(long eventId) {
-		this.eventId = eventId;
+	public void setAlertId(long alertId) {
+		this.alertId = alertId;
 	}
 
 	public String getLongDescription() {
@@ -144,11 +150,11 @@ public class Event {
 		this.shortDescription = shortDescription;
 	}
 
-	public EventStatus getStatus() {
+	public AlertStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(EventStatus status) {
+	public void setStatus(AlertStatus status) {
 		this.status = status;
 	}
 
@@ -206,12 +212,12 @@ public class Event {
 
 	@Override
 	public boolean equals(Object o) {
-		return getEventId() == ((Event) o).getEventId();
+		return getAlertId() == ((Alert) o).getAlertId();
 	}
 
 	@Override
 	public int hashCode() {
-		return Long.valueOf(getEventId()).hashCode();
+		return Long.valueOf(getAlertId()).hashCode();
 	}
 
 }

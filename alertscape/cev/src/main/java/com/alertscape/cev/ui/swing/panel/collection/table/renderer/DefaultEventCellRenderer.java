@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import ca.odell.glazedlists.swing.EventTableModel;
 
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.severity.Severity;
 
 /**
@@ -29,8 +29,8 @@ public class DefaultEventCellRenderer extends DefaultTableCellRenderer
                 isSelected, hasFocus, row, column);
 
         @SuppressWarnings("unchecked")
-        EventTableModel<Event> model = (EventTableModel<Event>) table.getModel( );
-        Event e = model.getElementAt(row);
+        EventTableModel<Alert> model = (EventTableModel<Alert>) table.getModel( );
+        Alert e = model.getElementAt(row);
         Severity sev = e.getSeverity( );
         if (isSelected)
         {

@@ -5,8 +5,8 @@ package com.alertscape.cev.model;
 
 import java.util.List;
 
-import com.alertscape.common.model.Event;
-import com.alertscape.common.model.EventCollection;
+import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertCollection;
 
 /**
  * @author josh
@@ -15,12 +15,12 @@ import com.alertscape.common.model.EventCollection;
 public class EventChange
 {
   private EventChangeType type;
-  private List<Event> events;
+  private List<Alert> events;
   private List<Integer> indices;
-  private EventCollection source;
+  private AlertCollection source;
 
-  public EventChange(EventChangeType type, List<Event> events,
-      List<Integer> indices, EventCollection source)
+  public EventChange(EventChangeType type, List<Alert> events,
+      List<Integer> indices, AlertCollection source)
   {
     this.type = type;
     this.events = events;
@@ -28,12 +28,12 @@ public class EventChange
     this.source = source;
   }
 
-  public EventCollection getSource( )
+  public AlertCollection getSource( )
   {
     return source;
   }
 
-  public List<Event> getEvents( )
+  public List<Alert> getEvents( )
   {
     return events;
   }

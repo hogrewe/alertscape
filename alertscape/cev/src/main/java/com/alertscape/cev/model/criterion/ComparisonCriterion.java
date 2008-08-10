@@ -7,7 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.alertscape.common.logging.ASLogger;
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Alert;
 import com.alertscape.util.GetterHelper;
 
 /**
@@ -42,7 +42,7 @@ public class ComparisonCriterion implements EventCriterion
   }
 
   @SuppressWarnings("unchecked")
-  public boolean matches(Event e)
+  public boolean matches(Alert e)
   {
     boolean matches = false;
 

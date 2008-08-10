@@ -10,9 +10,9 @@ import java.util.Random;
 import junit.framework.TestCase;
 
 import com.alertscape.common.logging.ASLogger;
-import com.alertscape.common.model.Event;
-import com.alertscape.common.model.EventCollection;
-import com.alertscape.common.model.IndexedEventCollection;
+import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertCollection;
+import com.alertscape.common.model.IndexedAlertCollection;
 import com.alertscape.common.performance.PerformanceRun;
 
 /**
@@ -46,11 +46,11 @@ public class EventCollectionPerformanceTest extends TestCase
 
   public void testSteadyStateCollection( )
   {
-    EventCollection c = new IndexedEventCollection( );
+    AlertCollection c = new IndexedAlertCollection( );
 //    EventCollection c = new BinarySortEventCollection( );
 
     // Send the inserts to get it built up
-    List<Event> events = buildEventList(NUM_EVENTS, false, null);
+    List<Alert> events = buildEventList(NUM_EVENTS, false, null);
 
     PerformanceRun run = new PerformanceRun( );
     run.setNumOperations(NUM_EVENTS);
@@ -78,16 +78,16 @@ public class EventCollectionPerformanceTest extends TestCase
         + " events/ms");
   }
 
-  private void sendEvents(List<Event> events, EventCollection c)
+  private void sendEvents(List<Alert> events, AlertCollection c)
   {
-    List<Event> eventsToSend = new ArrayList<Event>(BLOCK_SIZE);
+    List<Alert> eventsToSend = new ArrayList<Alert>(BLOCK_SIZE);
     for (int i = 0; i < NUM_EVENTS; i++)
     {
       eventsToSend.add(events.get(i));
       // If we have BLOCK_SIZE number of events, send them and clear them out
       if (eventsToSend.size( ) >= BLOCK_SIZE)
       {
-        c.processEvents(eventsToSend);
+        c.processAlerts(eventsToSend);
         eventsToSend.clear( );
       }
     }
@@ -95,24 +95,24 @@ public class EventCollectionPerformanceTest extends TestCase
     // Check to see if we have any leftover events to send
     if (eventsToSend.size( ) > 0)
     {
-      c.processEvents(eventsToSend);
+      c.processAlerts(eventsToSend);
     }
 
   }
 
-  private List<Event> buildEventList(int size, boolean includeUpdates,
-      EventCollection c)
+  private List<Alert> buildEventList(int size, boolean includeUpdates,
+      AlertCollection c)
   {
-    List<Event> events = new ArrayList<Event>(size);
+    List<Alert> events = new ArrayList<Alert>(size);
 
     while (events.size( ) < size)
     {
-      Event e = null;
+      Alert e = null;
       if (includeUpdates)
       {
-        if (rand.nextBoolean( ) == true && c.getEventCount( ) > 0)
+        if (rand.nextBoolean( ) == true && c.getAlertCount( ) > 0)
         {
-          Event old = c.getEventAt(rand.nextInt(c.getEventCount( )));
+          Alert old = c.getAlertAt(rand.nextInt(c.getAlertCount( )));
           e = FakeEventGenerator.buildUpdateToExistingEvent(old);
         }
         else

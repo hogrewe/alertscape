@@ -3,7 +3,7 @@
  */
 package com.alertscape.cev.model.panel;
 
-import com.alertscape.common.model.EventCollection;
+import com.alertscape.common.model.AlertCollection;
 
 /**
  * @author josh
@@ -11,7 +11,7 @@ import com.alertscape.common.model.EventCollection;
  */
 public interface EventCollectionPanelModel
 {
-    public void setCollection(EventCollection collection);
+    public void setCollection(AlertCollection collection);
 
-    public EventCollection getCollection( );
+    public AlertCollection getCollection( );
 }

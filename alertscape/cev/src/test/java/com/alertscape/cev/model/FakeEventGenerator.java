@@ -6,8 +6,9 @@ package com.alertscape.cev.model;
 import java.util.Date;
 import java.util.Random;
 
-import com.alertscape.common.model.Event;
-import com.alertscape.common.model.Event.EventStatus;
+import com.alertscape.common.model.AlertSource;
+import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.Alert.AlertStatus;
 import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
@@ -22,12 +23,12 @@ public class FakeEventGenerator
 
   private static long id = 10000;
 
-  public static Event buildNewEvent( )
+  public static Alert buildNewEvent( )
   {
     int sevLevel = rand.nextInt(sevFactory.getNumSeverities( ));
-    Event e = new Event( );
+    Alert e = new Alert( );
     e.setCount(rand.nextInt(1000));
-    e.setEventId(id++);
+    e.setAlertId(id++);
     e.setFirstOccurence(new Date( ));
     e.setItem("Item " + rand.nextInt(500));
     e.setItemManager("Item manager " + rand.nextInt(25));
@@ -37,19 +38,19 @@ public class FakeEventGenerator
     e.setLongDescription("Some long desription");
     e.setSeverity(sevFactory.getSeverity(sevLevel));
     e.setShortDescription("Some short description");
-    e.setSourceId(1);
-    e.setStatus(Event.EventStatus.STANDING);
+    e.setSource(new AlertSource(1, "Source 1"));
+    e.setStatus(Alert.AlertStatus.STANDING);
     e.setType("Type " + rand.nextInt(10));
 
     return e;
   }
 
-  public static Event buildUpdateToExistingEvent(Event old)
+  public static Alert buildUpdateToExistingEvent(Alert old)
   {
-    Event e = new Event( );
+    Alert e = new Alert( );
 
     e.setCount(old.getCount( ) + 1);
-    e.setEventId(old.getEventId( ));
+    e.setAlertId(old.getAlertId( ));
     e.setFirstOccurence(old.getFirstOccurence( ));
     e.setItem(old.getItem( ));
     e.setItemManager(old.getItemManager( ));
@@ -59,14 +60,14 @@ public class FakeEventGenerator
     e.setLongDescription(old.getLongDescription( ));
     e.setSeverity(old.getSeverity( ));
     e.setShortDescription(old.getShortDescription( ));
-    e.setSourceId(old.getSourceId( ));
+    e.setSource(old.getSource( ));
     if (rand.nextBoolean( ))
     {
-      e.setStatus(EventStatus.STANDING);
+      e.setStatus(AlertStatus.STANDING);
     }
     else
     {
-      e.setStatus(EventStatus.CLEARED);
+      e.setStatus(AlertStatus.CLEARED);
     }
     e.setType(old.getType( ));
     

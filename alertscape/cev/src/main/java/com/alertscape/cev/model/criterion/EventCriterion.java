@@ -3,7 +3,7 @@
  */
 package com.alertscape.cev.model.criterion;
 
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Alert;
 
 /**
  * @author josh
@@ -20,5 +20,5 @@ public interface EventCriterion
      * @return true if the <code>Event</code> matches this criterion, false
      *         otherwise
      */
-    public boolean matches(Event e);
+    public boolean matches(Alert e);
 }

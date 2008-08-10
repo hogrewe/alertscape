@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alertscape.cev.model.criterion.EventCriterion;
-import com.alertscape.common.model.Event;
+import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
@@ -32,9 +32,9 @@ public class CevTreeNode
     /** This is the order that we should try to add the events to the children */
     private List<CevTreeNode> childAddOrder;
     private CevTreeNode noMatchNode;
-    private List<Event> events;
+    private List<Alert> events;
     /** Trade off space for speed in handling severity changes */
-    private Map<String, Event>[] severityEvents;
+    private Map<String, Alert>[] severityEvents;
     private EventCriterion eventCriterion;
     private BlinkCriterion blinkCriterion;
     private int maxSeverity;
@@ -50,7 +50,7 @@ public class CevTreeNode
         severityEvents = new Map[numsevs];
         for (int i = 0; i < numsevs; i++)
         {
-            severityEvents[i] = new HashMap<String, Event>( );
+            severityEvents[i] = new HashMap<String, Alert>( );
         }
         children = new ArrayList<CevTreeNode>( );
     }
@@ -63,7 +63,7 @@ public class CevTreeNode
      * @param e The event to add to the node
      * @return true if the event was added, false otherwise
      */
-    public boolean addEvent(Event e)
+    public boolean addEvent(Alert e)
     {
         boolean added = false;
 
@@ -74,7 +74,7 @@ public class CevTreeNode
         return added;
     }
 
-    public void removeEvent(Event e)
+    public void removeEvent(Alert e)
     {
         synchronized (eventLock)
         {
@@ -129,7 +129,7 @@ public class CevTreeNode
         synchronized (eventLock)
         {
             events.clear( );
-            for (Map<String, Event> element : severityEvents)
+            for (Map<String, Alert> element : severityEvents)
             {
                 element.clear( );
             }
@@ -209,7 +209,7 @@ public class CevTreeNode
     /**
      * @return Returns the events.
      */
-    public List<Event> getEvents( )
+    public List<Alert> getEvents( )
     {
         return events;
     }
@@ -218,7 +218,7 @@ public class CevTreeNode
      * @param events
      *            The events to set.
      */
-    public void setEvents(List<Event> events)
+    public void setEvents(List<Alert> events)
     {
         this.events = events;
     }
