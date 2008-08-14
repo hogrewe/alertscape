@@ -11,6 +11,7 @@
     <module>cev</module>
     <module>as-common</module>
     <module>alert-pump</module>
+    <module>alert-onramp</module>
   </modules>
   <build>
     <plugins>  
@@ -28,6 +29,11 @@
       <dependency>
 	    <groupId>com.alertscape</groupId>
 	    <artifactId>as-common</artifactId>
+	    <version>${project.version}</version>
+	  </dependency>
+      <dependency>
+	    <groupId>com.alertscape.pump</groupId>
+	    <artifactId>alert-onramp</artifactId>
 	    <version>${project.version}</version>
 	  </dependency>
       <dependency>
