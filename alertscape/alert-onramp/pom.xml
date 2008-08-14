@@ -6,15 +6,11 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.alertscape.pump</groupId>
-  <artifactId>alert-pump</artifactId>
-  <name>alert-pump</name>
+  <artifactId>alert-onramp</artifactId>
+  <name>alert-onramp</name>
   <version>0.1-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <dependencies>
-    <dependency>
-      <groupId>com.alertscape.pump</groupId>
-      <artifactId>alert-onramp</artifactId>
-    </dependency>
     <dependency>
       <groupId>com.alertscape</groupId>
       <artifactId>as-common</artifactId>
@@ -22,6 +18,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
