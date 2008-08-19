@@ -37,12 +37,21 @@ public class ConfigurableAlertPump implements AlertPump {
 	 */
 	public void setDbOfframp(DatabaseOfframp dbOfframp) {
 		this.dbOfframp = dbOfframp;
+	}
 
 	/**
 	 * @return the jmsOfframp
 	 */
 	public JmsOfframp getJmsOfframp() {
 		return jmsOfframp;
+	}
+
+	/**
+	 * @param jmsOfframp
+	 *            the jmsOfframp to set
+	 */
+	public void setJmsOfframp(JmsOfframp jmsOfframp) {
+		this.jmsOfframp = jmsOfframp;
 	}
 
 	/**
