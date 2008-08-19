@@ -33,6 +33,11 @@
 	  </dependency>
       <dependency>
 	    <groupId>com.alertscape.pump</groupId>
+	    <artifactId>alert-pump</artifactId>
+	    <version>${project.version}</version>
+	  </dependency>
+      <dependency>
+	    <groupId>com.alertscape.pump</groupId>
 	    <artifactId>alert-onramp</artifactId>
 	    <version>${project.version}</version>
 	  </dependency>
