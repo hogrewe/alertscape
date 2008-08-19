@@ -11,5 +11,5 @@ import com.alertscape.common.model.Alert;
  *
  */
 public interface AlertPump {
-	public void processAlert(Alert e) throws AlertscapeException;
+	public void processAlert(Alert a) throws AlertscapeException;
 }

@@ -2,6 +2,7 @@
   <name>alert-onramp</name>
   <comment/>
   <projects>
+    <project>alert-pump</project>
     <project>as-common</project>
   </projects>
   <buildSpec>
