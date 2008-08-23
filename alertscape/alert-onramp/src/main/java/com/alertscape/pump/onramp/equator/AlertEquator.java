@@ -20,12 +20,10 @@ public class AlertEquator {
       AttributeEquator eq = new AttributeEquator(attr);
       equators.add(eq);
     }
-
     for (String majorTag : majorTags) {
       MajorTagEquator eq = new MajorTagEquator(majorTag);
       equators.add(eq);
     }
-
     for (String minorTag : minorTags) {
       MinorTagEquator eq = new MinorTagEquator(minorTag);
       equators.add(eq);

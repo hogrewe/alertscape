@@ -12,6 +12,10 @@
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
+      <groupId>com.alertscape.pump</groupId>
+      <artifactId>alert-onramp</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.alertscape</groupId>
       <artifactId>as-common</artifactId>
     </dependency>

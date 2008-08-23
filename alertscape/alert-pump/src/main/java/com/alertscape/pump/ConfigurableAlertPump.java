@@ -3,6 +3,11 @@
  */
 package com.alertscape.pump;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.pump.offramp.DatabaseOfframp;
@@ -51,4 +56,19 @@ public class ConfigurableAlertPump implements AlertPump {
 		this.jmsOfframp = jmsOfframp;
 	}
 
+	/**
+	 * @param jmsOfframp
+	 *            the jmsOfframp to set
+	 */
+	public void setJmsOfframp(JmsOfframp jmsOfframp) {
+		this.jmsOfframp = jmsOfframp;
+	}
+
+	/**
+	 * @param jmsOfframp
+	 *            the jmsOfframp to set
+	 */
+	public void setJmsOfframp(JmsOfframp jmsOfframp) {
+		this.jmsOfframp = jmsOfframp;
+	}
 }
