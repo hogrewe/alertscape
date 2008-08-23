@@ -55,20 +55,4 @@ public class ConfigurableAlertPump implements AlertPump {
 	public void setJmsOfframp(JmsOfframp jmsOfframp) {
 		this.jmsOfframp = jmsOfframp;
 	}
-
-	/**
-	 * @param jmsOfframp
-	 *            the jmsOfframp to set
-	 */
-	public void setJmsOfframp(JmsOfframp jmsOfframp) {
-		this.jmsOfframp = jmsOfframp;
-	}
-
-	/**
-	 * @param jmsOfframp
-	 *            the jmsOfframp to set
-	 */
-	public void setJmsOfframp(JmsOfframp jmsOfframp) {
-		this.jmsOfframp = jmsOfframp;
-	}
 }
