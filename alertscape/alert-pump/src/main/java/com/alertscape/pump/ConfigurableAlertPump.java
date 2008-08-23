@@ -22,6 +22,8 @@ public class ConfigurableAlertPump implements AlertPump {
 	private JmsOfframp jmsOfframp;
 
 	public void processAlert(Alert a) throws AlertscapeException {
+	  dbOfframp.processAlert(a);
+	  jmsOfframp.processAlert(a);
 	}
 
 	/**
@@ -44,6 +46,14 @@ public class ConfigurableAlertPump implements AlertPump {
 	 */
 	public JmsOfframp getJmsOfframp() {
 		return jmsOfframp;
+	}
+
+	/**
+	 * @param jmsOfframp
+	 *            the jmsOfframp to set
+	 */
+	public void setJmsOfframp(JmsOfframp jmsOfframp) {
+		this.jmsOfframp = jmsOfframp;
 	}
 
 	/**

@@ -51,16 +51,16 @@ public class ComparisonCriterionTest extends TestCase
 
   public void testLong( )
   {
-    ComparisonCriterion cEqual = new ComparisonCriterion("eventId", "20", EQUAL);
-    ComparisonCriterion cNotEqual = new ComparisonCriterion("eventId", "20",
+    ComparisonCriterion cEqual = new ComparisonCriterion("alertId", "20", EQUAL);
+    ComparisonCriterion cNotEqual = new ComparisonCriterion("alertId", "20",
         NOT_EQUAL);
-    ComparisonCriterion cGreaterThan = new ComparisonCriterion("eventId", "20",
+    ComparisonCriterion cGreaterThan = new ComparisonCriterion("alertId", "20",
         GREATER_THAN);
-    ComparisonCriterion cLessThan = new ComparisonCriterion("eventId", "20",
+    ComparisonCriterion cLessThan = new ComparisonCriterion("alertId", "20",
         LESS_THAN);
-    ComparisonCriterion cGreaterThanEqual = new ComparisonCriterion("eventId",
+    ComparisonCriterion cGreaterThanEqual = new ComparisonCriterion("alertId",
         "20", GREATER_THAN_OR_EQUAL);
-    ComparisonCriterion cLessThanEqual = new ComparisonCriterion("eventId",
+    ComparisonCriterion cLessThanEqual = new ComparisonCriterion("alertId",
         "20", LESS_THAN_OR_EQUAL);
 
     event.setAlertId(20);
