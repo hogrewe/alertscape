@@ -20,12 +20,10 @@ public class AlertEquator {
       AttributeEquator eq = new AttributeEquator(attr);
       equators.add(eq);
     }
-    
     for (String majorTag : majorTags) {
       MajorTagEquator eq = new MajorTagEquator(majorTag);
       equators.add(eq);
     }
-    
     for (String minorTag : minorTags) {
       MinorTagEquator eq = new MinorTagEquator(minorTag);
       equators.add(eq);
@@ -33,6 +31,12 @@ public class AlertEquator {
   }
 
   public boolean equal(Alert a1, Alert a2) {
+    if (a1 == a2) {
+      return true;
+    }
+    if (equators.isEmpty()) {
+      return false;
+    }
     for (AlertPropertyEquator eq : equators) {
       if (!eq.equal(a1, a2)) {
         return false;
