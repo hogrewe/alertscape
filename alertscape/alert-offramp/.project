@@ -1,8 +1,7 @@
 <projectDescription>
-  <name>alert-pump</name>
+  <name>alert-offramp</name>
   <comment/>
   <projects>
-    <project>alert-offramp</project>
     <project>as-common</project>
   </projects>
   <buildSpec>
