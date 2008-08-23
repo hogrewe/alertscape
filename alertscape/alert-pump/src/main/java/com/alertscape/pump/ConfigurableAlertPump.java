@@ -3,11 +3,6 @@
  */
 package com.alertscape.pump;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.pump.offramp.DatabaseOfframp;

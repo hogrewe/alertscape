@@ -6,6 +6,7 @@ package com.alertscape.common.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -27,7 +28,12 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   private static final String DELETE_ALERT_SQL = "delete from alerts where alertid=?";
   private static final String GET_ALERT_SQL = "select * from alerts where alertid=?";
   private static final String GET_ALL_ALERTS_SQL = "select * from alerts";
-  private static final String INSERT_ALERT_SQL = null;
+  private static final String INSERT_ALERT_SQL = "insert into alerts "
+      + "(alertid, short_description, long_description, severity, count, source_id, first_occurence, last_occurence) "
+      + "values (?,?,?,?,?,(select alert_source_id from alert_sources where alert_source_name=?),?,?)";
+  private static final String UPDATE_ALERT_SQL = "update alerts set short_description=?, long_description=?, "
+      + "severity=?, count=?, last_occurence=?) where alertid=?";
+
   private RowMapper alertMapper = new AlertMapper();
 
   public void delete(final long alertId) throws DaoException {
@@ -76,23 +82,43 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   /**
    * @param alert
    */
-  private void insert(Alert alert) {
+  private void insert(final Alert alert) {
     PreparedStatementSetter pss = new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
+        int i = 1;
+        ps.setLong(i++, alert.getAlertId());
+        ps.setString(i++, alert.getShortDescription());
+        ps.setString(i++, alert.getLongDescription());
+        ps.setInt(i++, alert.getSeverity().getLevel());
+        ps.setLong(i++, alert.getCount());
+        ps.setString(i++, alert.getSource().getSourceName());
+        Timestamp firstOccur = new Timestamp(alert.getFirstOccurence().getTime());
+        ps.setTimestamp(i++, firstOccur);
+        Timestamp lastOccur = new Timestamp(alert.getLastOccurence().getTime());
+        ps.setTimestamp(i++, lastOccur);
       }
     };
     getJdbcTemplate().update(INSERT_ALERT_SQL, pss);
-    // TODO Auto-generated method stub
-
   }
 
   /**
    * @param alert
    * @return
    */
-  private int update(Alert alert) {
-    // TODO Auto-generated method stub
-    return 0;
+  private int update(final Alert alert) {
+    PreparedStatementSetter pss = new PreparedStatementSetter() {
+      public void setValues(PreparedStatement ps) throws SQLException {
+        int i = 1;
+        ps.setString(i++, alert.getShortDescription());
+        ps.setString(i++, alert.getLongDescription());
+        ps.setInt(i++, alert.getSeverity().getLevel());
+        ps.setLong(i++, alert.getCount());
+        Timestamp lastOccur = new Timestamp(alert.getLastOccurence().getTime());
+        ps.setTimestamp(i++, lastOccur);
+        ps.setLong(i++, alert.getAlertId());
+      }
+    };
+    return getJdbcTemplate().update(UPDATE_ALERT_SQL, pss);
   }
 
   private final class AlertMapper implements RowMapper {
