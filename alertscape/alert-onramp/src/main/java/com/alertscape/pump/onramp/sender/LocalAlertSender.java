@@ -22,4 +22,12 @@ public class LocalAlertSender implements AlertSender {
     }
   }
 
+  public AlertPump getPump() {
+    return pump;
+  }
+
+  public void setPump(AlertPump pump) {
+    this.pump = pump;
+  }
+
 }
