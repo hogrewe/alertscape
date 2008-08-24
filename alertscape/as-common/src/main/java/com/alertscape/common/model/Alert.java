@@ -19,7 +19,7 @@ public class Alert {
 	}
 
 	private long alertId;
-	private AlertStatus status;
+	private AlertStatus status = AlertStatus.STANDING;
 	private String shortDescription;
 	private String longDescription;
 	private String type;
