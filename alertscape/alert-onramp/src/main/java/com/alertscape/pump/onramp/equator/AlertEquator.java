@@ -15,7 +15,11 @@ public class AlertEquator {
 
   private List<AlertPropertyEquator> equators;
 
-  private AlertEquator(List<String> attributes, List<String> majorTags, List<String> minorTags) {
+  public AlertEquator() {
+
+  }
+
+  public AlertEquator(List<String> attributes, List<String> majorTags, List<String> minorTags) {
     for (String attr : attributes) {
       AttributeEquator eq = new AttributeEquator(attr);
       equators.add(eq);
@@ -34,7 +38,7 @@ public class AlertEquator {
     if (a1 == a2) {
       return true;
     }
-    if (equators.isEmpty()) {
+    if (equators == null || equators.isEmpty()) {
       return false;
     }
     for (AlertPropertyEquator eq : equators) {
@@ -46,6 +50,10 @@ public class AlertEquator {
   }
 
   public int hashAlert(Alert a) {
+    if (equators == null || equators.isEmpty()) {
+      return a.hashCode();
+    }
+
     final int prime = 31;
     int result = 1;
     for (AlertPropertyEquator eq : equators) {

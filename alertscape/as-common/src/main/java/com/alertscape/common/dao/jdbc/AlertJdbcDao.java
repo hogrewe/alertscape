@@ -32,7 +32,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       + "(alertid, short_description, long_description, severity, count, source_id, first_occurence, last_occurence) "
       + "values (?,?,?,?,?,(select alert_source_id from alert_sources where alert_source_name=?),?,?)";
   private static final String UPDATE_ALERT_SQL = "update alerts set short_description=?, long_description=?, "
-      + "severity=?, count=?, last_occurence=?) where alertid=?";
+      + "severity=?, count=?, last_occurence=? where alertid=?";
 
   private RowMapper alertMapper = new AlertMapper();
 
@@ -69,11 +69,9 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   }
 
   public void save(Alert alert) throws DaoException {
-    if (alert.getAlertId() > 0) {
-      int updated = update(alert);
-      if (updated < 1) {
-        throw new DaoException("No existing alert found with id: " + alert.getAlertId());
-      }
+    Alert existing = get(alert.getAlertId());
+    if (existing != null) {
+      update(alert);
     } else {
       insert(alert);
     }
