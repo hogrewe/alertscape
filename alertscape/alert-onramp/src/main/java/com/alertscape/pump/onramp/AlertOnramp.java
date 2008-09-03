@@ -67,7 +67,7 @@ public final class AlertOnramp {
           alert.setSource(source);
           sendAlert(alert);
           try {
-            sleep(1000);
+            sleep(100);
           } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
