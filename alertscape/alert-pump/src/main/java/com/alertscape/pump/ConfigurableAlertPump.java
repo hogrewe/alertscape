@@ -5,6 +5,7 @@ package com.alertscape.pump;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertSource;
 import com.alertscape.pump.offramp.DatabaseOfframp;
 import com.alertscape.pump.offramp.JmsOfframp;
 
@@ -13,10 +14,17 @@ import com.alertscape.pump.offramp.JmsOfframp;
  * 
  */
 public class ConfigurableAlertPump implements AlertPump {
+  private static final long SOURCE_MULTIPLIER = 1000000000000000000L;
   private DatabaseOfframp dbOfframp;
   private JmsOfframp jmsOfframp;
 
   public void processAlert(Alert a) throws AlertscapeException {
+    AlertSource source = a.getSource();
+    long alertId = a.getAlertId();
+    
+    // Calculate the prefix for the alert source
+    alertId = source.getSourceId() * SOURCE_MULTIPLIER + alertId;
+    
     dbOfframp.processAlert(a);
     if (jmsOfframp != null) {
       jmsOfframp.processAlert(a);

@@ -9,7 +9,6 @@
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/2.0.8/spring-core-2.0.8.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-jdbc/2.0.8/spring-jdbc-2.0.8.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-context/2.0.8/spring-context-2.0.8.jar"/>
-  <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-dao/2.0.8/spring-dao-2.0.8.jar"/>
   <classpathentry kind="var" path="M2_REPO/avalon-framework/avalon-framework/4.1.3/avalon-framework-4.1.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/logkit/logkit/1.0.1/logkit-1.0.1.jar"/>
