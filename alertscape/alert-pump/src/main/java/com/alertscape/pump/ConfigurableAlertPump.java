@@ -3,6 +3,8 @@
  */
 package com.alertscape.pump;
 
+import java.util.List;
+
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
@@ -21,14 +23,18 @@ public class ConfigurableAlertPump implements AlertPump {
   public void processAlert(Alert a) throws AlertscapeException {
     AlertSource source = a.getSource();
     long alertId = a.getAlertId();
-    
+
     // Calculate the prefix for the alert source
     alertId = source.getSourceId() * SOURCE_MULTIPLIER + alertId;
-    
+
     dbOfframp.processAlert(a);
     if (jmsOfframp != null) {
       jmsOfframp.processAlert(a);
     }
+  }
+
+  public List<Alert> getAlerts(AlertSource source) throws AlertscapeException {
+    return getDbOfframp().getAlertsForSource(source);
   }
 
   /**
@@ -60,4 +66,5 @@ public class ConfigurableAlertPump implements AlertPump {
   public void setJmsOfframp(JmsOfframp jmsOfframp) {
     this.jmsOfframp = jmsOfframp;
   }
+
 }

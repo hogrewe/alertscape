@@ -3,9 +3,12 @@
  */
 package com.alertscape.pump.offramp;
 
+import java.util.List;
+
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.dao.AlertDao;
 import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertSource;
 
 /**
  * @author josh
@@ -21,6 +24,10 @@ public class DatabaseOfframp implements AlertOfframp {
       // Might we want to just update with a cleared status then have an alert reaper?
       getAlertDao().delete(alert.getAlertId());
     }
+  }
+
+  public List<Alert> getAlertsForSource(AlertSource source) throws AlertscapeException {
+    return getAlertDao().getAlertsForSource(source);
   }
 
   /**
