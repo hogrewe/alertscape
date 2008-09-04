@@ -18,8 +18,8 @@ public class DefaultAlertSourceRepository implements AlertSourceRepository {
   }
 
   public AlertSource getAlertSource(String name) {
-    AlertSource alertSource = alertSources.get(name);
-    
+    AlertSource alertSource = alertSources == null ? null : alertSources.get(name);
+
     return alertSource == null ? DEFAULT_SOURCE : alertSource;
   }
 }

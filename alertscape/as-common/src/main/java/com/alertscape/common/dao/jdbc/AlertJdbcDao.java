@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import com.alertscape.common.dao.AlertDao;
 import com.alertscape.common.dao.DaoException;
 import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.Alert.AlertStatus;
 import com.alertscape.common.model.severity.SeverityFactory;
 
@@ -28,6 +29,8 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   private static final String DELETE_ALERT_SQL = "delete from alerts where alertid=?";
   private static final String GET_ALERT_SQL = "select * from alerts where alertid=?";
   private static final String GET_ALL_ALERTS_SQL = "select * from alerts";
+  private static final String GET_ALERTS_FOR_SOURCE_SQL = "select * from alerts where alert_source_id="
+      + "(select alert_source_id from alert_sources where alert_source_name=?)";
   private static final String INSERT_ALERT_SQL = "insert into alerts "
       + "(alertid, short_description, long_description, severity, count, source_id, first_occurence, last_occurence) "
       + "values (?,?,?,?,?,(select alert_source_id from alert_sources where alert_source_name=?),?,?)";
@@ -66,6 +69,11 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   @SuppressWarnings("unchecked")
   public List<Alert> getAllAlerts() throws DaoException {
     return getJdbcTemplate().query(GET_ALL_ALERTS_SQL, alertMapper);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Alert> getAlertsForSource(AlertSource source) throws DaoException {
+    return getJdbcTemplate().query(GET_ALERTS_FOR_SOURCE_SQL, new Object[] { source.getSourceName() }, alertMapper);
   }
 
   public void save(Alert alert) throws DaoException {

@@ -5,6 +5,7 @@ package com.alertscape.pump.onramp;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.alertscape.common.model.Alert;
@@ -28,7 +29,11 @@ public final class AlertOnramp {
 
   public void sendAlert(Alert alert) {
     AlertDedupWrapper alertWrapper = new AlertDedupWrapper(equator, alert);
-    Alert existing = alertMap.get(alertWrapper);
+    Alert existing;
+    synchronized (alertMap) {
+      existing = alertMap.get(alertWrapper);
+      alertMap.put(alertWrapper, alert);
+    }
     Date now = new Date();
 
     if (existing != null) {
@@ -53,14 +58,25 @@ public final class AlertOnramp {
     }
   }
 
-  // TODO: take this out please
   public void init() {
+    final AlertSource source = new AlertSource(0, "UNKNOWN");
+    try {
+      List<Alert> alerts = sender.getAlerts(source);
+      for (Alert alert : alerts) {
+        AlertDedupWrapper alertWrapper = new AlertDedupWrapper(equator, alert);
+        alertMap.put(alertWrapper, alert);
+      }
+    } catch (AlertSendingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    // TODO: take this out please
     Thread t = new Thread() {
 
       @Override
       public void run() {
         Severity sev = SeverityFactory.getInstance().getSeverity(2);
-        AlertSource source = new AlertSource(0, "UNKNOWN");
         while (true) {
           Alert alert = new Alert();
           alert.setSeverity(sev);
