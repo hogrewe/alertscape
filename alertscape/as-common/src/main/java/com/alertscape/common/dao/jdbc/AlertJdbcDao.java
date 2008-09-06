@@ -29,7 +29,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   private static final String DELETE_ALERT_SQL = "delete from alerts where alertid=?";
   private static final String GET_ALERT_SQL = "select * from alerts where alertid=?";
   private static final String GET_ALL_ALERTS_SQL = "select * from alerts";
-  private static final String GET_ALERTS_FOR_SOURCE_SQL = "select * from alerts where alert_source_id="
+  private static final String GET_ALERTS_FOR_SOURCE_SQL = "select * from alerts where source_id="
       + "(select alert_source_id from alert_sources where alert_source_name=?)";
   private static final String INSERT_ALERT_SQL = "insert into alerts "
       + "(alertid, short_description, long_description, severity, count, source_id, first_occurence, last_occurence) "

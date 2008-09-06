@@ -59,7 +59,7 @@ public final class AlertOnramp {
   }
 
   public void init() {
-    final AlertSource source = new AlertSource(0, "UNKNOWN");
+    final AlertSource source = new AlertSource(1, "UNKNOWN");
     try {
       List<Alert> alerts = sender.getAlerts(source);
       for (Alert alert : alerts) {
