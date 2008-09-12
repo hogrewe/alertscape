@@ -50,11 +50,11 @@ public class EventCollectionTablePanel extends JPanel implements
   public void init( )
   {
     sortedList = new SortedList<Alert>(getCollection( ).getEventList( ), null);
-    String[] propertyNames = new String[] { "eventId", "type",
-        "longDescription", "severity", "count", "sourceId", "item",
+    String[] propertyNames = new String[] { "alertId", "type",
+        "longDescription", "severity", "count", "source", "item",
         "itemManager", "itemType", "itemManagerType", "firstOccurence",
         "lastOccurence" };
-    String[] columnLabels = new String[] { "Event ID", "Type", "Description",
+    String[] columnLabels = new String[] { "Alert ID", "Type", "Description",
         "Severity", "Count", "Source", "Item", "Manager", "Item Type",
         "Manager Type", "First", "Last" };
     TableFormat<Alert> tf = GlazedLists.tableFormat(Alert.class, propertyNames,
