@@ -30,4 +30,8 @@ public class AlertSource {
 	public String getSourceName() {
 		return sourceName;
 	}
+	
+	public String toString() {
+	  return sourceName;
+	}
 }
