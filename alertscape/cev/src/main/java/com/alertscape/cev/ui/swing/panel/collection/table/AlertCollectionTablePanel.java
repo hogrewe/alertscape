@@ -19,6 +19,7 @@ import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 
 import com.alertscape.cev.ui.swing.panel.collection.AlertCollectionPanel;
+import com.alertscape.cev.ui.swing.panel.collection.table.renderer.DateAlertCellRenderer;
 import com.alertscape.cev.ui.swing.panel.collection.table.renderer.DefaultAlertCellRenderer;
 import com.alertscape.cev.ui.swing.panel.collection.table.renderer.SeverityAlertCellRenderer;
 import com.alertscape.common.model.Alert;
@@ -65,11 +66,12 @@ public class AlertCollectionTablePanel extends JPanel implements
 
     TableCellRenderer defaultRenderer = new DefaultAlertCellRenderer( );
     TableCellRenderer sevRenderer = new SeverityAlertCellRenderer( );
-
+    TableCellRenderer dateRenderer = new DateAlertCellRenderer( );
+    
     collectionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     collectionTable.setDefaultRenderer(Long.class, defaultRenderer);
     collectionTable.setDefaultRenderer(Object.class, defaultRenderer);
-    collectionTable.setDefaultRenderer(Date.class, defaultRenderer);
+    collectionTable.setDefaultRenderer(Date.class, dateRenderer);
     collectionTable.setDefaultRenderer(Severity.class, sevRenderer);
     collectionTable
         .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
