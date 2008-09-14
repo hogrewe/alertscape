@@ -17,18 +17,18 @@ import com.alertscape.common.model.AlertCollection;
  * @author josh
  * @version $Version: $
  */
-public class EventCollectionTableModel extends AbstractTableModel implements
+public class AlertCollectionTableModel extends AbstractTableModel implements
     EventCollectionPanelModel
 {
   // private static Logger logger = Logger
   // .getLogger(EventCollectionTableModel.class);
 
   private static final long serialVersionUID = 1L;
-  private List<EventColumn> columns;
+  private List<AlertColumn> columns;
 
   private AlertCollection collection;
 
-  public EventCollectionTableModel(List<EventColumn> columns)
+  public AlertCollectionTableModel(List<AlertColumn> columns)
   {
     setColumns(columns);
   }
@@ -85,7 +85,7 @@ public class EventCollectionTableModel extends AbstractTableModel implements
   public Class<?> getColumnClass(int columnIndex)
   {
     Class<?> c = Object.class;
-    EventColumn column = columns.get(columnIndex);
+    AlertColumn column = columns.get(columnIndex);
     if (column.getPropertyGetter( ) != null)
     {
       c = column.getColumnClass( );
@@ -95,7 +95,7 @@ public class EventCollectionTableModel extends AbstractTableModel implements
 
   public Object getValueAt(int rowIndex, int columnIndex)
   {
-    EventColumn column = columns.get(columnIndex);
+    AlertColumn column = columns.get(columnIndex);
     Alert e = collection.getAlertAt(rowIndex);
     return column.getValue(e);
   }
@@ -105,12 +105,12 @@ public class EventCollectionTableModel extends AbstractTableModel implements
     return collection.getAlertAt(rowIndex);
   }
 
-  public void setColumns(List<EventColumn> columns)
+  public void setColumns(List<AlertColumn> columns)
   {
     this.columns = columns;
   }
 
-  public List<EventColumn> getColumns( )
+  public List<AlertColumn> getColumns( )
   {
     return Collections.unmodifiableList(columns);
   }

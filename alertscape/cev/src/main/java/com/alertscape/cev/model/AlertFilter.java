@@ -9,7 +9,7 @@ import com.alertscape.common.model.AlertCollection;
  * @author josh
  * @version $Version: $
  */
-public interface EventFilter
+public interface AlertFilter
 {
   public AlertCollection setMasterCollection(AlertCollection master);
 }

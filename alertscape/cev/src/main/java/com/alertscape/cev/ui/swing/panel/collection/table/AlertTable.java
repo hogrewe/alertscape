@@ -16,13 +16,13 @@ import com.alertscape.common.logging.ASLogger;
  * @author josh
  * @version $Version: $
  */
-public class EventTable extends JTable {
+public class AlertTable extends JTable {
 	private static final long serialVersionUID = 1L;
 
 	/**
    * 
    */
-	public EventTable() {
+	public AlertTable() {
 		this(null);
 	}
 
@@ -31,7 +31,7 @@ public class EventTable extends JTable {
 	 * @param cm
 	 * @param sm
 	 */
-	public EventTable(TableModel dm, TableColumnModel cm, ListSelectionModel sm) {
+	public AlertTable(TableModel dm, TableColumnModel cm, ListSelectionModel sm) {
 		super(dm, cm, sm);
 	}
 
@@ -39,7 +39,7 @@ public class EventTable extends JTable {
 	 * @param dm
 	 * @param cm
 	 */
-	public EventTable(TableModel dm, TableColumnModel cm) {
+	public AlertTable(TableModel dm, TableColumnModel cm) {
 		this(dm, cm, null);
 		// this(dm, cm, new CustomListSelectionModel( ));
 	}
@@ -47,7 +47,7 @@ public class EventTable extends JTable {
 	/**
 	 * @param dm
 	 */
-	public EventTable(TableModel dm) {
+	public AlertTable(TableModel dm) {
 		this(dm, null);
 	}
 
