@@ -10,7 +10,7 @@ import com.alertscape.common.model.Alert;
 import com.alertscape.util.GetterHelper;
 import com.alertscape.util.PrimitiveHelper;
 
-class EventColumn
+class AlertColumn
 {
   String displayName;
   String propertyName;
@@ -20,7 +20,7 @@ class EventColumn
   private int maxWidth;
   private int width;
 
-  public EventColumn(String displayName, String propertyName)
+  public AlertColumn(String displayName, String propertyName)
   {
     setDisplayName(displayName);
     setPropertyName(propertyName);

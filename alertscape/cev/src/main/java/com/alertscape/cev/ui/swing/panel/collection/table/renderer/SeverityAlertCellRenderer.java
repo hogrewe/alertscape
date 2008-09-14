@@ -13,7 +13,7 @@ import com.alertscape.common.model.severity.Severity;
  * @author josh
  * @version $Version: $
  */
-public class SeverityEventCellRenderer extends DefaultEventCellRenderer
+public class SeverityAlertCellRenderer extends DefaultAlertCellRenderer
 {
     private static final long serialVersionUID = 1L;
 
