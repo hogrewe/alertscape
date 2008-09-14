@@ -51,13 +51,41 @@ public class AlertCollectionTablePanel extends JPanel implements
   public void init( )
   {
     sortedList = new SortedList<Alert>(getCollection( ).getEventList( ), null);
-    String[] propertyNames = new String[] { "alertId", "type",
-        "longDescription", "severity", "count", "source", "item",
-        "itemManager", "itemType", "itemManagerType", "firstOccurence",
-        "lastOccurence" };
-    String[] columnLabels = new String[] { "Alert ID", "Type", "Description",
-        "Severity", "Count", "Source", "Item", "Manager", "Item Type",
-        "Manager Type", "First", "Last" };
+    //String[] propertyNames = new String[] { "alertId", "type",
+//        "longDescription", "severity", "count", "source", "item",
+//        "itemManager", "itemType", "itemManagerType", "firstOccurence",
+//        "lastOccurence" };
+    //String[] columnLabels = new String[] { "Alert ID", "Type", "Description",
+//        "Severity", "Count", "Source", "Item", "Manager", "Item Type",
+//        "Manager Type", "First", "Last" };
+        
+    String[] propertyNames = new String[] { 
+    		"lastOccurence" ,
+    		"firstOccurence",
+    		"type",
+    		"item",
+    		"severity",    		
+    		"longDescription",
+    		"count",
+    		"itemManager",
+    		"itemType",
+    		"itemManagerType",    		    		
+    		"alertId", 
+    		"source"};
+    String[] columnLabels = new String[] { 
+    		"Last Event", 
+    		"First Event", 
+    		"Type",
+    		"Item", 
+    		"Severity", 
+    		"Description", 
+    		"Count", 
+    		"Manager", 
+    		"Item Type",
+    		"Manager Type", 
+    		"Alert ID", 
+    		"Source" };        
+        
     TableFormat<Alert> tf = GlazedLists.tableFormat(Alert.class, propertyNames,
         columnLabels);
     collectionTable = new JTable(new EventTableModel<Alert>(sortedList, tf));
