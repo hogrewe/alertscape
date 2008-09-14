@@ -9,7 +9,7 @@ import com.alertscape.common.model.AlertCollection;
  * @author josh
  * @version $Version: $
  */
-public interface EventCollectionPanel
+public interface AlertCollectionPanel
 {
     public AlertCollection getCollection();
 }

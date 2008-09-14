@@ -18,9 +18,9 @@ import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 
-import com.alertscape.cev.ui.swing.panel.collection.EventCollectionPanel;
-import com.alertscape.cev.ui.swing.panel.collection.table.renderer.DefaultEventCellRenderer;
-import com.alertscape.cev.ui.swing.panel.collection.table.renderer.SeverityEventCellRenderer;
+import com.alertscape.cev.ui.swing.panel.collection.AlertCollectionPanel;
+import com.alertscape.cev.ui.swing.panel.collection.table.renderer.DefaultAlertCellRenderer;
+import com.alertscape.cev.ui.swing.panel.collection.table.renderer.SeverityAlertCellRenderer;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.severity.Severity;
@@ -29,8 +29,8 @@ import com.alertscape.common.model.severity.Severity;
  * @author josh
  * @version $Version: $
  */
-public class EventCollectionTablePanel extends JPanel implements
-    EventCollectionPanel
+public class AlertCollectionTablePanel extends JPanel implements
+    AlertCollectionPanel
 {
   private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class EventCollectionTablePanel extends JPanel implements
   // private EventCollectionTableModel model;
   // private TableRowSorter<EventCollectionTableModel> sorter;
 
-  public EventCollectionTablePanel(AlertCollection collection)
+  public AlertCollectionTablePanel(AlertCollection collection)
   {
     setCollection(collection);
     init( );
@@ -63,8 +63,8 @@ public class EventCollectionTablePanel extends JPanel implements
 
     new TableComparatorChooser<Alert>(collectionTable, sortedList, true);
 
-    TableCellRenderer defaultRenderer = new DefaultEventCellRenderer( );
-    TableCellRenderer sevRenderer = new SeverityEventCellRenderer( );
+    TableCellRenderer defaultRenderer = new DefaultAlertCellRenderer( );
+    TableCellRenderer sevRenderer = new SeverityAlertCellRenderer( );
 
     collectionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     collectionTable.setDefaultRenderer(Long.class, defaultRenderer);

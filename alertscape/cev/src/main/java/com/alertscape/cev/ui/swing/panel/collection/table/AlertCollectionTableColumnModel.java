@@ -13,21 +13,21 @@ import javax.swing.table.TableColumn;
  * @author josh
  * @version $Version: $
  */
-public class EventCollectionTableColumnModel extends DefaultTableColumnModel
+public class AlertCollectionTableColumnModel extends DefaultTableColumnModel
 {
     private static final long serialVersionUID = 1L;
 //    private static final Logger logger = Logger
 //            .getLogger(EventCollectionTableColumnModel.class);
-    private List<EventColumn> eventColumns;
+    private List<AlertColumn> eventColumns;
     private List<TableColumn> tableColumns;
     
-    public EventCollectionTableColumnModel(List<EventColumn> columns)
+    public AlertCollectionTableColumnModel(List<AlertColumn> columns)
     {
         this.eventColumns = columns;
         tableColumns = new ArrayList<TableColumn>();
         for(int i=0; i<columns.size(); i++)
         {
-            EventColumn c = columns.get(i);
+            AlertColumn c = columns.get(i);
             TableColumn tc = buildTableColumn(c);
             tc.setModelIndex(i);
             tableColumns.add(i, tc);
@@ -35,7 +35,7 @@ public class EventCollectionTableColumnModel extends DefaultTableColumnModel
         }
     }
 
-    public void addEventColumn(EventColumn column)
+    public void addEventColumn(AlertColumn column)
     {
         eventColumns.add(0, column);
         TableColumn tc = buildTableColumn(column);
@@ -43,7 +43,7 @@ public class EventCollectionTableColumnModel extends DefaultTableColumnModel
         addColumn(tc);
     }
     
-    public void addEventColumn(EventColumn column, int index)
+    public void addEventColumn(AlertColumn column, int index)
     {
         eventColumns.add(index, column);
         TableColumn tc = buildTableColumn(column);
@@ -51,7 +51,7 @@ public class EventCollectionTableColumnModel extends DefaultTableColumnModel
         addColumn(tc);
     }
 
-    protected TableColumn buildTableColumn(EventColumn column)
+    protected TableColumn buildTableColumn(AlertColumn column)
     {
         TableColumn tc = new TableColumn();
         

@@ -26,7 +26,7 @@ import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.util.concurrent.Lock;
 
-import com.alertscape.cev.model.EventFilter;
+import com.alertscape.cev.model.AlertFilter;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
@@ -38,7 +38,7 @@ import com.alertscape.common.model.severity.SeverityFactory;
  * @author josh
  * @version $Version: $
  */
-public class EventCollectionSummaryPanel extends JPanel implements EventFilter
+public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
 {
   private static final long serialVersionUID = 1L;
   private AlertCollection subCollection;
@@ -48,7 +48,7 @@ public class EventCollectionSummaryPanel extends JPanel implements EventFilter
   private Map<Severity, Integer> severityCounts;
   private List<Alert> existingEvents = new ArrayList<Alert>(70000);
 
-  public EventCollectionSummaryPanel( )
+  public AlertCollectionSummaryPanel( )
   {
     severityCounts = new HashMap<Severity, Integer>(SeverityFactory
         .getInstance( ).getNumSeverities( ));
