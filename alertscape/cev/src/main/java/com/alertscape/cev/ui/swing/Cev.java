@@ -129,7 +129,7 @@ public class Cev extends JFrame {
     setContentPane(p);
 
     Authentication.login("CEV", "john.doe", null);
-    setTitle("alertscape Event Browser");
+    setTitle("AMP - Alertscape Management Portal");
     URL cevImageUrl = getClass().getResource("/com/alertscape/images/common/as_logo2_32.png");
     ImageIcon cevImage = new ImageIcon(cevImageUrl);
     setIconImage(cevImage.getImage());
