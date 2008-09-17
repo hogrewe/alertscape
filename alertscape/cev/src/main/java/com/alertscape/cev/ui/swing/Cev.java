@@ -83,7 +83,7 @@ public class Cev extends JFrame {
     
     // Filter
     JPanel outerFilterPanel = new JPanel();
-    outerFilterPanel.setBorder(BorderFactory.createTitledBorder("Filter"));
+    outerFilterPanel.setBorder(BorderFactory.createTitledBorder("Quick Filter"));
     outerFilterPanel.setLayout(new GridLayout(1,1));
     outerFilterPanel.add(filterPanel);
 
@@ -129,7 +129,7 @@ public class Cev extends JFrame {
     setContentPane(p);
 
     Authentication.login("CEV", "john.doe", null);
-    setTitle("alertscape Event Browser");
+    setTitle("Alertscape Browser");
     URL cevImageUrl = getClass().getResource("/com/alertscape/images/common/as_logo2_32.png");
     ImageIcon cevImage = new ImageIcon(cevImageUrl);
     setIconImage(cevImage.getImage());
