@@ -83,7 +83,7 @@ public class Cev extends JFrame {
     
     // Filter
     JPanel outerFilterPanel = new JPanel();
-    outerFilterPanel.setBorder(BorderFactory.createTitledBorder("Filter"));
+    outerFilterPanel.setBorder(BorderFactory.createTitledBorder("Quick Filter"));
     outerFilterPanel.setLayout(new GridLayout(1,1));
     outerFilterPanel.add(filterPanel);
 
@@ -138,7 +138,7 @@ public class Cev extends JFrame {
     GenerateEvents gen = new GenerateEvents(collection);
     int groupSize = 1000;
     List<Alert> events = new ArrayList<Alert>(groupSize);
-    for (int i = 0; i < 50000; i++) {
+    for (int i = 0; i < 30000; i++) {
       events.add(gen.buildNewEvent());
       if (i % groupSize == 0) {
         ASLogger.debug(i);
