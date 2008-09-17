@@ -23,10 +23,12 @@ public class GenerateEvents implements Runnable {
   private long id = 1000000;
   private SeverityFactory sevFactory = SeverityFactory.getInstance();
   private Random rand = new Random();
+  private AlertSource source = new AlertSource(1, "Source 1");
   private AlertCollection c;
   private List<Alert> newEvents = new ArrayList<Alert>(NUM_EVENTS_TO_CACHE);
   private List<String> words;
   private int wordCount;
+  private LogFileReader reader;
 
   private String[] itemLookup;
   private String[] itemManagerLookup;
@@ -38,10 +40,36 @@ public class GenerateEvents implements Runnable {
 
   public GenerateEvents(AlertCollection collection) {
     c = collection;
+    reader = new LogFileReader();
     initLookupTable();
   }
 
   public Alert buildNewEvent() {
+    Alert a = null;
+    try {
+      a = reader.readAlert();
+    } catch (IOException e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    
+    if(a == null) {
+      a = buildRandomEvent();
+    }
+
+    int sevLevel = rand.nextInt(sevFactory.getNumSeverities());
+    a.setCount(rand.nextInt(1000));
+    a.setAlertId(id++);
+    a.setFirstOccurence(new Date());
+    a.setLastOccurence(new Date());
+    a.setSeverity(sevFactory.getSeverity(sevLevel));
+    a.setSource(source);
+    a.setStatus(Alert.AlertStatus.STANDING);
+    
+    return a;
+  }
+  
+  private Alert buildRandomEvent() {
     int sevLevel = rand.nextInt(sevFactory.getNumSeverities());
     Alert e = new Alert();
     e.setCount(rand.nextInt(1000));
@@ -55,7 +83,7 @@ public class GenerateEvents implements Runnable {
     e.setLongDescription(longDescriptionLookup[rand.nextInt(longDescriptionLookup.length)]);
     e.setSeverity(sevFactory.getSeverity(sevLevel));
     e.setShortDescription(shortDescriptionLookup[rand.nextInt(shortDescriptionLookup.length)]);
-    e.setSource(new AlertSource(1, "Source 1"));
+    e.setSource(source);
     e.setStatus(Alert.AlertStatus.STANDING);
     e.setType(typeLookup[rand.nextInt(typeLookup.length)]);
 
