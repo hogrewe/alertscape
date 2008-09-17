@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class FormatHelper
 {
-  private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z");
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("M-d-yy H:m:s z");
   private FormatHelper()
   {
     // some text inserted here to test out svn via eclipse
