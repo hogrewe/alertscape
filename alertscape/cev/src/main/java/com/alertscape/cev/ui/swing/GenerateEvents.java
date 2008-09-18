@@ -19,7 +19,7 @@ import com.alertscape.common.model.Alert.AlertStatus;
 import com.alertscape.common.model.severity.SeverityFactory;
 
 public class GenerateEvents implements Runnable {
-  private static final int NUM_EVENTS_TO_CACHE = 50000;
+  private static final int NUM_EVENTS_TO_CACHE = 30000;
   private long id = 1000000;
   private SeverityFactory sevFactory = SeverityFactory.getInstance();
   private Random rand = new Random();
@@ -52,8 +52,8 @@ public class GenerateEvents implements Runnable {
       // TODO Auto-generated catch block
       e1.printStackTrace();
     }
-    
-    if(a == null) {
+
+    if (a == null) {
       a = buildRandomEvent();
     }
 
@@ -65,10 +65,10 @@ public class GenerateEvents implements Runnable {
     a.setSeverity(sevFactory.getSeverity(sevLevel));
     a.setSource(source);
     a.setStatus(Alert.AlertStatus.STANDING);
-    
+
     return a;
   }
-  
+
   private Alert buildRandomEvent() {
     int sevLevel = rand.nextInt(sevFactory.getNumSeverities());
     Alert e = new Alert();
@@ -125,7 +125,7 @@ public class GenerateEvents implements Runnable {
 
   public void run() {
     Random rand = new Random();
-    List<Alert> allEvents = new ArrayList<Alert>(100000);
+    List<Alert> allEvents = new ArrayList<Alert>(1000);
     allEvents.addAll(c.getEventList());
     for (int i = 0; i < NUM_EVENTS_TO_CACHE; i++) {
       boolean val = rand.nextBoolean();
@@ -149,6 +149,9 @@ public class GenerateEvents implements Runnable {
       int groupSize = rand.nextInt(100);
       List<Alert> events = new ArrayList<Alert>();
       for (int i = 0; i < groupSize; i++) {
+        if(newEventPointer+i+1 >= newEvents.size()) {
+          return;
+        }
         events.add(newEvents.get(newEventPointer + i));
       }
       newEventPointer += groupSize;
@@ -160,6 +163,11 @@ public class GenerateEvents implements Runnable {
       } catch (InterruptedException e1) {
         e1.printStackTrace();
       }
+      Runtime runtime = Runtime.getRuntime();
+      long totalMemory = runtime.totalMemory() / (1024*1024);
+      long freeMemory = runtime.freeMemory() / (1024*1024);
+      
+      System.out.println("Memory: " + totalMemory +"MB, Free: " + freeMemory + "MB");
     }
   }
 
@@ -184,10 +192,10 @@ public class GenerateEvents implements Runnable {
 
     return phrases;
   }
-  
+
   private void initLookupTable() {
     initWordList();
-    
+
     itemLookup = createPhraseLookup(100, 2);
     itemManagerLookup = createPhraseLookup(100, 2);
     itemManagerTypeLookup = createPhraseLookup(100, 2);
@@ -195,7 +203,7 @@ public class GenerateEvents implements Runnable {
     longDescriptionLookup = createPhraseLookup(50, 15);
     shortDescriptionLookup = createPhraseLookup(100, 5);
     typeLookup = createPhraseLookup(100, 2);
-    
+
     words = null;
     System.gc();
   }

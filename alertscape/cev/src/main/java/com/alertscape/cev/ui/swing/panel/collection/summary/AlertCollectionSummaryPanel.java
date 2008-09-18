@@ -27,7 +27,6 @@ import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.util.concurrent.Lock;
 
 import com.alertscape.cev.model.AlertFilter;
-import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.IndexedAlertCollection;
@@ -77,33 +76,27 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
         while (listChanges.next( ))
         {
           int index = listChanges.getIndex( );
-          if (index >= list.size( ) || index < 0)
-          {
-            ASLogger.debug("WTF??? index: " + index + " size: " + list.size( )
-                + ", change: " + listChanges);
-            continue;
-          }
           switch (listChanges.getType( ))
           {
             case ListEvent.INSERT:
-              e = list.get(listChanges.getIndex( ));
-              existingEvents.add(listChanges.getIndex( ), e);
+              e = list.get(index);
+              existingEvents.add(index, e);
               s = e.getSeverity( );
               count = severityCounts.get(s);
               count++;
               severityCounts.put(s, count);
               break;
             case ListEvent.DELETE:
-              e = existingEvents.get(listChanges.getIndex( ));
+              e = existingEvents.remove(index);
               s = e.getSeverity( );
               count = severityCounts.get(s);
               count--;
               severityCounts.put(s, count);
               break;
             case ListEvent.UPDATE:
-              e = existingEvents.get(listChanges.getIndex( ));
-              Alert newEvent = list.get(listChanges.getIndex( ));
-              existingEvents.set(listChanges.getIndex( ), newEvent);
+              e = existingEvents.get(index);
+              Alert newEvent = list.get(index);
+              existingEvents.set(index, newEvent);
               if(newEvent.getSeverity( ) != e.getSeverity( ))
               {
                 // Decrement the old severity
@@ -120,6 +113,7 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
           }
 
         }
+        
         lock.unlock( );
 
         for (Severity sev : severityCounts.keySet( ))
