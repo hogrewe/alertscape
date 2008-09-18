@@ -42,7 +42,7 @@ public class LogFileReader {
     if (line == null) {
       return null;
     }
-    
+
     // Get rid of the SNMP raw info
     String[] split = line.split("[\\{\\}]");
 
@@ -97,7 +97,12 @@ public class LogFileReader {
     String description = "";
     // Take the description as the SNMP raw
     if (split.length > 1) {
-      description = split[1].intern();
+      description = split[1];
+
+      if (description.length() > 50) {
+        description = description.substring(0, 50);
+      }
+      description.intern();
     }
 
     Alert a = new Alert();

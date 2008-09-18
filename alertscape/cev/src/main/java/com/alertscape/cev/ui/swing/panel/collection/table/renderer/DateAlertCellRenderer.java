@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.swing.JTable;
 
-import com.alertscape.common.model.severity.Severity;
 import com.alertscape.util.FormatHelper;
 
 public class DateAlertCellRenderer extends DefaultAlertCellRenderer
