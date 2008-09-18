@@ -46,9 +46,10 @@ public class TextFilterPanel extends JPanel implements AlertFilter {
     add(searchPanel);
 
     String[] propertyNames = { "shortDescription", "longDescription", "type", "item", "itemManager", "itemType",
-        "itemManagerType" };
+        "itemManagerType",  "severity", "source"};
     TextFilterator<Alert> textFilterator = GlazedLists.textFilterator(propertyNames);
     matcherEditor = new TextComponentMatcherEditor<Alert>(searchText, textFilterator);
+//    matcherEditor.setLive(false);
   }
 
   public AlertCollection setMasterCollection(AlertCollection master) {
