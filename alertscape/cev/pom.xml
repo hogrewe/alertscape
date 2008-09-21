@@ -17,6 +17,10 @@
 	  <artifactId>as-common</artifactId>
 	</dependency>
     <dependency>
+	  <groupId>com.alertscape</groupId>
+	  <artifactId>alert-tester</artifactId>
+	</dependency>
+    <dependency>
 	  <groupId>com.odell</groupId>
 	  <artifactId>glazedlists</artifactId>
 	</dependency>
@@ -29,4 +33,49 @@
       <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
+    <build>
+	<!--
+        <plugins>
+            <plugin>
+                <groupId>com.pyx4me</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <executions>
+                   <execution>
+                       <phase>package</phase>
+                       <goals><goal>proguard</goal></goals>
+                   </execution>
+                </executions>
+                <configuration>
+                    <options>
+                        <option>-allowaccessmodification</option>
+                        <option>-keep public class com.alertscape.cev.ui.swing.Cev { *; }</option>
+                    </options>
+                    <libs>
+                        <lib>${java.home}/../Classes/classes.jar</lib>
+                    </libs>
+                </configuration>
+            </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo.webstart</groupId>
+        <artifactId>webstart-maven-plugin</artifactId>
+        <executions>
+           <execution>
+              <goals>
+                 <goal>jnlp</goal> 
+              </goals>
+           </execution>
+        </executions>
+        <configuration>
+           
+           <jnlp>
+             <outputFile>alertscape.jnlp</outputFile> 
+
+             <mainClass>com.alertscape.cev.ui.swing.Cev</mainClass>
+           </jnlp>
+        </configuration>
+      </plugin>
+
+        </plugins>
+		-->
+    </build>
 </project>

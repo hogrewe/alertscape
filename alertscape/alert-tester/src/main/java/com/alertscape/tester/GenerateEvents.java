@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.alertscape.cev.ui.swing;
+package com.alertscape.tester;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,8 +28,7 @@ public class GenerateEvents implements Runnable {
   private List<Alert> newEvents = new ArrayList<Alert>(NUM_EVENTS_TO_CACHE);
   private List<String> words;
   private int wordCount;
-//  private LogFileReader reader;
-  private RandomTransportAlertGenerator transportGen;
+  private AlertGenerator[] generators;
 
   private String[] itemLookup;
   private String[] itemManagerLookup;
@@ -41,15 +40,18 @@ public class GenerateEvents implements Runnable {
 
   public GenerateEvents(AlertCollection collection) {
     c = collection;
-//    reader = new LogFileReader();
-    transportGen = new RandomTransportAlertGenerator();
-//    initLookupTable();
+    generators = new AlertGenerator[3];
+    generators[0] = new RandomTransportAlertGenerator();
+    generators[1] = new IPAlertGenerator();
+    generators[2] = new NagiosAlertGenerator();
+    // initLookupTable();
   }
 
   public Alert buildNewEvent() {
     Alert a = null;
+    AlertGenerator gen = generators[rand.nextInt(generators.length)];
     try {
-      a = transportGen.readAlert();
+      a = gen.readAlert();
     } catch (Exception e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();
@@ -151,7 +153,7 @@ public class GenerateEvents implements Runnable {
       int groupSize = rand.nextInt(100);
       List<Alert> events = new ArrayList<Alert>();
       for (int i = 0; i < groupSize; i++) {
-        if(newEventPointer+i+1 >= newEvents.size()) {
+        if (newEventPointer + i + 1 >= newEvents.size()) {
           return;
         }
         events.add(newEvents.get(newEventPointer + i));
@@ -166,10 +168,10 @@ public class GenerateEvents implements Runnable {
         e1.printStackTrace();
       }
       Runtime runtime = Runtime.getRuntime();
-      long totalMemory = runtime.totalMemory() / (1024*1024);
-      long freeMemory = runtime.freeMemory() / (1024*1024);
-      
-      System.out.println("Memory: " + totalMemory +"MB, Free: " + freeMemory + "MB");
+      long totalMemory = runtime.totalMemory() / (1024 * 1024);
+      long freeMemory = runtime.freeMemory() / (1024 * 1024);
+
+      System.out.println("Memory: " + totalMemory + "MB, Free: " + freeMemory + "MB");
     }
   }
 
@@ -195,6 +197,7 @@ public class GenerateEvents implements Runnable {
     return phrases;
   }
 
+  @SuppressWarnings("unused")
   private void initLookupTable() {
     initWordList();
 

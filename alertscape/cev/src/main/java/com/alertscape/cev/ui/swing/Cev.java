@@ -32,6 +32,7 @@ import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.IndexedAlertCollection;
+import com.alertscape.tester.GenerateEvents;
 import com.alertscape.util.ImageFinder;
 
 /**

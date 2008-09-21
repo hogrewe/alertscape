@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.alertscape.cev.ui.swing;
+package com.alertscape.tester;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,14 +14,14 @@ import com.alertscape.common.model.Alert;
  * @author josh
  * 
  */
-public class LogFileReader {
+public class LogFileAlertGenerator implements AlertGenerator {
   private BufferedReader fileReader;
 
   /**
    * @param args
    */
   public static void main(String[] args) {
-    LogFileReader reader = new LogFileReader();
+    LogFileAlertGenerator reader = new LogFileAlertGenerator();
     try {
       reader.readFile();
     } catch (IOException e) {
@@ -31,14 +31,19 @@ public class LogFileReader {
 
   }
 
-  public LogFileReader() {
+  public LogFileAlertGenerator() {
     InputStream is = getClass().getResourceAsStream("/traplog2.txt");
     InputStreamReader isr = new InputStreamReader(is);
     fileReader = new BufferedReader(isr);
   }
 
-  public Alert readAlert() throws IOException {
-    String line = fileReader.readLine();
+  public Alert readAlert() {
+    String line;
+    try {
+      line = fileReader.readLine();
+    } catch (IOException e) {
+      throw new RuntimeException("Trouble reading next line of log", e);
+    }
     if (line == null) {
       return null;
     }

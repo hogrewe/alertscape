@@ -2,6 +2,7 @@
   <name>cev</name>
   <comment/>
   <projects>
+    <project>alert-tester</project>
     <project>as-common</project>
   </projects>
   <buildSpec>
