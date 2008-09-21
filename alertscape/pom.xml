@@ -8,7 +8,7 @@
   <name>alertscape</name>
   <url>http://alertscape.com</url>
   <modules>
-    <module>cev</module>
+    <module>alert-browser</module>
     <module>as-common</module>
     <module>alert-pump</module>
     <module>alert-onramp</module>
