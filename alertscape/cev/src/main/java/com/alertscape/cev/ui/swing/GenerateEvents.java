@@ -28,7 +28,8 @@ public class GenerateEvents implements Runnable {
   private List<Alert> newEvents = new ArrayList<Alert>(NUM_EVENTS_TO_CACHE);
   private List<String> words;
   private int wordCount;
-  private LogFileReader reader;
+//  private LogFileReader reader;
+  private RandomTransportAlertGenerator transportGen;
 
   private String[] itemLookup;
   private String[] itemManagerLookup;
@@ -40,15 +41,16 @@ public class GenerateEvents implements Runnable {
 
   public GenerateEvents(AlertCollection collection) {
     c = collection;
-    reader = new LogFileReader();
-    initLookupTable();
+//    reader = new LogFileReader();
+    transportGen = new RandomTransportAlertGenerator();
+//    initLookupTable();
   }
 
   public Alert buildNewEvent() {
     Alert a = null;
     try {
-      a = reader.readAlert();
-    } catch (IOException e1) {
+      a = transportGen.readAlert();
+    } catch (Exception e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();
     }
