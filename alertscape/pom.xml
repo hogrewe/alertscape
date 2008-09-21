@@ -14,6 +14,7 @@
     <module>alert-onramp</module>
     <module>alert-offramp</module>
     <module>alertscape-app</module>
+    <module>alert-tester</module>
   </modules>
   <build>
     <plugins>  
@@ -28,6 +29,11 @@
   </build>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+	    <groupId>com.alertscape</groupId>
+	    <artifactId>alert-tester</artifactId>
+	    <version>${project.version}</version>
+	  </dependency>
       <dependency>
 	    <groupId>com.alertscape</groupId>
 	    <artifactId>as-common</artifactId>

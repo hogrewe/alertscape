@@ -3,8 +3,8 @@
   <comment/>
   <projects>
     <project>alert-offramp</project>
-    <project>alert-pump</project>
     <project>as-common</project>
+    <project>alert-pump</project>
   </projects>
   <buildSpec>
     <buildCommand>
