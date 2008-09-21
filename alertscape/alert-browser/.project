@@ -1,10 +1,8 @@
 <projectDescription>
-  <name>alertscape-app</name>
+  <name>alert-browser</name>
   <comment/>
   <projects>
-    <project>alert-pump</project>
-    <project>alert-onramp</project>
-    <project>alert-offramp</project>
+    <project>alert-tester</project>
     <project>as-common</project>
   </projects>
   <buildSpec>
