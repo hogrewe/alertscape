@@ -3,20 +3,20 @@
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="var" path="M2_REPO/commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-context/2.5.5/spring-context-2.5.5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-jdbc/2.5.5/spring-jdbc-2.5.5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-pool/commons-pool/1.3/commons-pool-1.3.jar"/>
-  <classpathentry kind="src" path="/alert-offramp"/>
-  <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
-  <classpathentry kind="var" path="M2_REPO/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-beans/2.5.5/spring-beans-2.5.5.jar"/>
-  <classpathentry kind="src" path="/as-common"/>
   <classpathentry kind="var" path="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar"/>
-  <classpathentry kind="src" path="/alert-onramp"/>
-  <classpathentry kind="var" path="M2_REPO/com/odell/glazedlists/1.7.0/glazedlists-1.7.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-tx/2.5.5/spring-tx-2.5.5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.5.5/spring-2.5.5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
   <classpathentry kind="src" path="/alert-pump"/>
+  <classpathentry kind="src" path="/alert-onramp"/>
+  <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-tx/2.5.5/spring-tx-2.5.5.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/2.5.5/spring-core-2.5.5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/odell/glazedlists/1.7.0/glazedlists-1.7.0.jar"/>
+  <classpathentry kind="src" path="/alert-offramp"/>
+  <classpathentry kind="src" path="/as-common"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.5.5/spring-2.5.5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-jdbc/2.5.5/spring-jdbc-2.5.5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/spring-context/2.5.5/spring-context-2.5.5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-pool/commons-pool/1.3/commons-pool-1.3.jar"/>
 </classpath>
