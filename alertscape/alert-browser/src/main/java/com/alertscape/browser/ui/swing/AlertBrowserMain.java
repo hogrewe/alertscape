@@ -9,7 +9,6 @@ package com.alertscape.browser.ui.swing;
  */
 public class AlertBrowserMain
 {
-
     /**
      * @param args
      */
@@ -17,5 +16,4 @@ public class AlertBrowserMain
     {
         new AlertBrowser();
     }
-
 }

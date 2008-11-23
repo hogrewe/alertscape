@@ -8,31 +8,32 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.BevelBorder;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
+
+import com.alertscape.AlertscapeException;
 import com.alertscape.browser.common.auth.Authentication;
+import com.alertscape.browser.model.JmsAlertListener;
 import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
 import com.alertscape.browser.ui.swing.panel.collection.filter.TextFilterPanel;
 import com.alertscape.browser.ui.swing.panel.collection.summary.AlertCollectionSummaryPanel;
 import com.alertscape.browser.ui.swing.panel.collection.table.AlertCollectionTablePanel;
 import com.alertscape.browser.ui.swing.panel.common.ASPanelBuilder;
 import com.alertscape.common.logging.ASLogger;
-import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.IndexedAlertCollection;
-import com.alertscape.tester.GenerateEvents;
 import com.alertscape.util.ImageFinder;
 
 /**
@@ -81,11 +82,11 @@ public class AlertBrowser extends JFrame {
     AlertCollectionTablePanel tablePanel = new AlertCollectionTablePanel(summaryCollection);
 
     Icon bgImage = ImageFinder.getInstance().findImage("/com/alertscape/images/common/hdr_background_small.png");
-    
+
     // Filter
     JPanel outerFilterPanel = new JPanel();
     outerFilterPanel.setBorder(BorderFactory.createTitledBorder("Quick Filter"));
-    outerFilterPanel.setLayout(new GridLayout(1,1));
+    outerFilterPanel.setLayout(new GridLayout(1, 1));
     outerFilterPanel.add(filterPanel);
 
     // Summary
@@ -93,7 +94,7 @@ public class AlertBrowser extends JFrame {
     outerSummaryPanel.setBorder(BorderFactory.createTitledBorder("Summary"));
     outerSummaryPanel.setLayout(new GridLayout(1, 1));
     outerSummaryPanel.add(summaryPanel);
-    
+
     // Table
     JPanel outerTablePanel = new JPanel();
     outerTablePanel.setLayout(new BorderLayout());
@@ -117,13 +118,13 @@ public class AlertBrowser extends JFrame {
     bgPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
     outerTablePanel.add(bgPanel, BorderLayout.NORTH);
     outerTablePanel.add(tablePanel, BorderLayout.CENTER);
-    
+
     // North
     JPanel northPanel = new JPanel();
-    northPanel.setLayout(new GridLayout(2,1));
+    northPanel.setLayout(new GridLayout(2, 1));
     northPanel.add(outerFilterPanel);
     northPanel.add(outerSummaryPanel);
-    
+
     p.add(northPanel, BorderLayout.NORTH);
     p.add(outerTablePanel, BorderLayout.CENTER);
     p.add(new AlertBrowserStatusPanel(), BorderLayout.SOUTH);
@@ -136,20 +137,40 @@ public class AlertBrowser extends JFrame {
     setIconImage(cevImage.getImage());
     setVisible(true);
 
-    GenerateEvents gen = new GenerateEvents(collection);
-    int groupSize = 1000;
-    List<Alert> events = new ArrayList<Alert>(groupSize);
-    for (int i = 0; i < 30000; i++) {
-      events.add(gen.buildNewEvent());
-      if (i % groupSize == 0) {
-        ASLogger.debug(i);
-        collection.processAlerts(events);
-        events.clear();
-      }
-    }
-    collection.processAlerts(events);
+    initJms();
 
-    Thread t = new Thread(gen);
-    t.start();
+    // GenerateEvents gen = new GenerateEvents(collection);
+    // int groupSize = 1000;
+    // List<Alert> events = new ArrayList<Alert>(groupSize);
+    // for (int i = 0; i < 30000; i++) {
+    // events.add(gen.buildNewEvent());
+    // if (i % groupSize == 0) {
+    // ASLogger.debug(i);
+    // collection.processAlerts(events);
+    // events.clear();
+    // }
+    // }
+    // collection.processAlerts(events);
+    //
+    // Thread t = new Thread(gen);
+    // t.start();
   }
+
+  private void initJms() {
+    JmsAlertListener listener = new JmsAlertListener();
+    listener.setCollection(collection);
+    
+    // TODO: this should be injected
+    ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://alertscape.hogrewe.com:7777");
+    
+    listener.setFactory(factory);
+    
+    try {
+      listener.startListening();
+    } catch (AlertscapeException e) {
+      JOptionPane.showMessageDialog(this, "Couldn't initalize alert listener", "Alert Listener Error",
+          JOptionPane.ERROR_MESSAGE);
+    }
+  }
+
 }
