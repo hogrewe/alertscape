@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.alertscape.pump.onramp;
+package com.alertscape.pump.onramp.equator;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +12,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import com.alertscape.common.model.Alert;
+import com.alertscape.pump.onramp.equator.AlertEquator;
 
 /**
  * @author josh
@@ -32,6 +33,7 @@ public class AlertEquatorTest extends TestCase {
 		a1 = new Alert();
 		a1.setItem("item 1");
 		a1.setShortDescription("short desc 1");
+    a1.setLongDescription("long desc 1");
 		Map<String, Object> majorTags1 = new HashMap<String, Object>();
 		majorTags1.put("major1", "major 1 1");
 		majorTags1.put("major2", "major 2 1");
@@ -46,6 +48,7 @@ public class AlertEquatorTest extends TestCase {
 		a2 = new Alert();
 		a2.setItem("item 2");
 		a2.setShortDescription("short desc 2");
+    a2.setLongDescription("long desc 2");
 		Map<String, Object> majorTags2 = new HashMap<String, Object>();
 		majorTags2.put("major1", "major 1 2");
 		majorTags2.put("major2", "major 2 2");
@@ -73,6 +76,7 @@ public class AlertEquatorTest extends TestCase {
 		a4 = new Alert();
 		a4.setItem("item 1");
 		a4.setShortDescription("short desc 1");
+    a4.setLongDescription("long desc 1");
 		Map<String, Object> majorTags4 = new HashMap<String, Object>();
 		majorTags4.put("major1", "major 1 1");
 		majorTags4.put("major3", "major 3 1");
@@ -86,6 +90,7 @@ public class AlertEquatorTest extends TestCase {
 		sameAsa1 = new Alert();
 		sameAsa1.setItem("item 1");
 		sameAsa1.setShortDescription("short desc 1");
+    sameAsa1.setLongDescription("long desc 1");
 		Map<String, Object> majorTags1dup = new HashMap<String, Object>();
 		majorTags1dup.put("major1", "major 1 1");
 		majorTags1dup.put("major2", "major 2 1");
@@ -99,9 +104,9 @@ public class AlertEquatorTest extends TestCase {
 
 		List<String> emptyList = Collections.emptyList();
 		itemDescEquator = new AlertEquator(Arrays.asList("item",
-				"shortDescription"), emptyList, emptyList);
+				"longDescription"), emptyList, emptyList);
 		allEquator = new AlertEquator(
-				Arrays.asList("item", "shortDescription"), Arrays.asList(
+				Arrays.asList("item", "longDescription"), Arrays.asList(
 						"major1", "major2"), Arrays.asList("minor2"));
 	}
 

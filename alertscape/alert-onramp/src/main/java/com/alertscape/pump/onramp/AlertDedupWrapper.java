@@ -32,8 +32,14 @@ public class AlertDedupWrapper {
     if (obj == null) {
       return false;
     }
+    
+    if(!(obj instanceof AlertDedupWrapper)) {
+      return false;
+    }
+    
+    AlertDedupWrapper dedup = (AlertDedupWrapper) obj;
 
-    return obj instanceof Alert ? equator.equal(alert, (Alert) obj) : false;
+    return equator.equal(alert, dedup.alert);
   }
 
 }

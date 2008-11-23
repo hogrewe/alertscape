@@ -3,8 +3,11 @@
  */
 package com.alertscape.pump.onramp.equator;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.alertscape.AlertscapeException;
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 
 /**
@@ -13,17 +16,15 @@ import com.alertscape.common.model.Alert;
  */
 public class AlertEquator {
 
-  private List<AlertPropertyEquator> equators;
+  private List<AlertPropertyEquator> equators = new ArrayList<AlertPropertyEquator>();
 
   public AlertEquator() {
 
   }
 
-  public AlertEquator(List<String> attributes, List<String> majorTags, List<String> minorTags) {
-    for (String attr : attributes) {
-      AttributeEquator eq = new AttributeEquator(attr);
-      equators.add(eq);
-    }
+  public AlertEquator(List<String> attributes, List<String> majorTags, List<String> minorTags)
+      throws AlertscapeException {
+    setAttributes(attributes);
     for (String majorTag : majorTags) {
       MajorTagEquator eq = new MajorTagEquator(majorTag);
       equators.add(eq);
@@ -31,6 +32,17 @@ public class AlertEquator {
     for (String minorTag : minorTags) {
       MinorTagEquator eq = new MinorTagEquator(minorTag);
       equators.add(eq);
+    }
+  }
+
+  public void setAttributes(List<String> attributes) throws AlertscapeException {
+    if (attributes == null) {
+      return;
+    }
+    for (String attr : attributes) {
+      AttributeEquator eq = new AttributeEquator(attr);
+      equators.add(eq);
+      ASLogger.info("Setting new attribute equator: " + eq);
     }
   }
 
