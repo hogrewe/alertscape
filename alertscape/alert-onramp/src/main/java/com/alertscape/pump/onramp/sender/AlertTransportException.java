@@ -9,7 +9,7 @@ import com.alertscape.AlertscapeException;
  * @author josh
  * 
  */
-public class AlertSendingException extends AlertscapeException {
+public class AlertTransportException extends AlertscapeException {
 
   /**
    * 
@@ -19,20 +19,20 @@ public class AlertSendingException extends AlertscapeException {
   /**
    * 
    */
-  public AlertSendingException() {
+  public AlertTransportException() {
   }
 
   /**
    * @param message
    */
-  public AlertSendingException(String message) {
+  public AlertTransportException(String message) {
     super(message);
   }
 
   /**
    * @param cause
    */
-  public AlertSendingException(Throwable cause) {
+  public AlertTransportException(Throwable cause) {
     super(cause);
   }
 
@@ -40,7 +40,7 @@ public class AlertSendingException extends AlertscapeException {
    * @param message
    * @param cause
    */
-  public AlertSendingException(String message, Throwable cause) {
+  public AlertTransportException(String message, Throwable cause) {
     super(message, cause);
   }
 }

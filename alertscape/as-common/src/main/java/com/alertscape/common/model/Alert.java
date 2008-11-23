@@ -3,6 +3,7 @@
  */
 package com.alertscape.common.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +14,10 @@ import com.alertscape.common.model.severity.Severity;
  * @author josh
  * @version $Version: $
  */
-public class Alert {
-	public enum AlertStatus {
+public class Alert implements Serializable {
+  private static final long serialVersionUID = -1396527085374975231L;
+
+  public enum AlertStatus {
 		STANDING, CLEARED;
 	}
 

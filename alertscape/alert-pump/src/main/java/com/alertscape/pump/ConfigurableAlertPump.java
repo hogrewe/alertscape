@@ -24,11 +24,15 @@ public class ConfigurableAlertPump implements AlertPump {
     AlertSource source = a.getSource();
     long alertId = a.getAlertId();
 
-    // Calculate the prefix for the alert source
-    alertId = source.getSourceId() * SOURCE_MULTIPLIER + alertId;
-    a.setAlertId(alertId);
+    // Calculate the prefix for the alert source, if necessary
+    if ((source.getSourceId() * SOURCE_MULTIPLIER) > alertId) {
+      alertId = (source.getSourceId() * SOURCE_MULTIPLIER) + alertId;
+      a.setAlertId(alertId);
+    }
 
-    dbOfframp.processAlert(a);
+    if (dbOfframp != null) {
+      dbOfframp.processAlert(a);
+    }
     if (jmsOfframp != null) {
       jmsOfframp.processAlert(a);
     }

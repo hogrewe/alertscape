@@ -14,22 +14,22 @@ import com.alertscape.pump.AlertPump;
  * @author josh
  * 
  */
-public class LocalAlertSender implements AlertSender {
+public class LocalAlertTransport implements AlertTransport {
   private AlertPump pump;
 
-  public void sendAlert(Alert a) throws AlertSendingException {
+  public void sendAlert(Alert a) throws AlertTransportException {
     try {
       pump.processAlert(a);
     } catch (AlertscapeException e) {
-      throw new AlertSendingException("Couldn't send alert to the pump", e);
+      throw new AlertTransportException("Couldn't send alert to the pump", e);
     }
   }
 
-  public List<Alert> getAlerts(AlertSource source) throws AlertSendingException {
+  public List<Alert> getAlerts(AlertSource source) throws AlertTransportException {
     try {
       return pump.getAlerts(source);
     } catch (AlertscapeException e) {
-      throw new AlertSendingException("Couldn't get alerts from the pump", e);
+      throw new AlertTransportException("Couldn't get alerts from the pump", e);
     }
   }
 

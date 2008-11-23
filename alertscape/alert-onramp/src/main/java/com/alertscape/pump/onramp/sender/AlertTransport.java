@@ -12,7 +12,7 @@ import com.alertscape.common.model.AlertSource;
  * @author josh
  *
  */
-public interface AlertSender {
-  void sendAlert(Alert a) throws AlertSendingException;
-  List<Alert> getAlerts(AlertSource source) throws AlertSendingException;
+public interface AlertTransport {
+  void sendAlert(Alert a) throws AlertTransportException;
+  List<Alert> getAlerts(AlertSource source) throws AlertTransportException;
 }

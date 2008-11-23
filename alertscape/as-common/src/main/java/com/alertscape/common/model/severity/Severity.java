@@ -4,13 +4,14 @@
 package com.alertscape.common.model.severity;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * @author josh
  * @version $Version: $
  */
-public class Severity implements Comparable<Severity>
-{
+public class Severity implements Comparable<Severity>, Serializable {
+  private static final long serialVersionUID = -4475963054463898427L;
   private int level;
   private String smallIcon;
   private String largeIcon;
@@ -20,16 +21,14 @@ public class Severity implements Comparable<Severity>
   private Color selectionForegroundColor;
   private Color selectionBackgroundColor;
 
-  Severity( )
-  {
+  Severity() {
 
   }
 
   /**
    * @return Returns the backgroundColor.
    */
-  public Color getBackgroundColor( )
-  {
+  public Color getBackgroundColor() {
     return backgroundColor;
   }
 
@@ -37,16 +36,14 @@ public class Severity implements Comparable<Severity>
    * @param backgroundColor
    *          The backgroundColor to set.
    */
-  void setBackgroundColor(Color backgroundColor)
-  {
+  void setBackgroundColor(Color backgroundColor) {
     this.backgroundColor = backgroundColor;
   }
 
   /**
    * @return Returns the foregroundColor.
    */
-  public Color getForegroundColor( )
-  {
+  public Color getForegroundColor() {
     return foregroundColor;
   }
 
@@ -54,16 +51,14 @@ public class Severity implements Comparable<Severity>
    * @param foregroundColor
    *          The foregroundColor to set.
    */
-  void setForegroundColor(Color foregroundColor)
-  {
+  void setForegroundColor(Color foregroundColor) {
     this.foregroundColor = foregroundColor;
   }
 
   /**
    * @return Returns the largeIcon.
    */
-  public String getLargeIcon( )
-  {
+  public String getLargeIcon() {
     return largeIcon;
   }
 
@@ -71,16 +66,14 @@ public class Severity implements Comparable<Severity>
    * @param largeIcon
    *          The largeIcon to set.
    */
-  void setLargeIcon(String largeIcon)
-  {
+  void setLargeIcon(String largeIcon) {
     this.largeIcon = largeIcon;
   }
 
   /**
    * @return Returns the level.
    */
-  public int getLevel( )
-  {
+  public int getLevel() {
     return level;
   }
 
@@ -88,16 +81,14 @@ public class Severity implements Comparable<Severity>
    * @param level
    *          The level to set.
    */
-  void setLevel(int level)
-  {
+  void setLevel(int level) {
     this.level = level;
   }
 
   /**
    * @return Returns the name.
    */
-  public String getName( )
-  {
+  public String getName() {
     return name;
   }
 
@@ -105,16 +96,14 @@ public class Severity implements Comparable<Severity>
    * @param name
    *          The name to set.
    */
-  void setName(String name)
-  {
+  void setName(String name) {
     this.name = name;
   }
 
   /**
    * @return Returns the smallIcon.
    */
-  public String getSmallIcon( )
-  {
+  public String getSmallIcon() {
     return smallIcon;
   }
 
@@ -122,39 +111,54 @@ public class Severity implements Comparable<Severity>
    * @param smallIcon
    *          The smallIcon to set.
    */
-  void setSmallIcon(String smallIcon)
-  {
+  void setSmallIcon(String smallIcon) {
     this.smallIcon = smallIcon;
   }
 
-  public Color getSelectionBackgroundColor( )
-  {
+  public Color getSelectionBackgroundColor() {
     return selectionBackgroundColor;
   }
 
-  void setSelectionBackgroundColor(Color selectionBackgroundColor)
-  {
+  void setSelectionBackgroundColor(Color selectionBackgroundColor) {
     this.selectionBackgroundColor = selectionBackgroundColor;
   }
 
-  public Color getSelectionForegroundColor( )
-  {
+  public Color getSelectionForegroundColor() {
     return selectionForegroundColor;
   }
 
-  void setSelectionForegroundColor(Color selectionForegroundColor)
-  {
+  void setSelectionForegroundColor(Color selectionForegroundColor) {
     this.selectionForegroundColor = selectionForegroundColor;
   }
 
-  public int compareTo(Severity s)
-  {
-    return getLevel( ) - s.getLevel( );
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Severity other = (Severity) obj;
+    if (level != other.level)
+      return false;
+    return true;
   }
 
   @Override
-  public String toString( )
-  {
-    return getName( );
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + level;
+    return result;
+  }
+
+  public int compareTo(Severity s) {
+    return getLevel() - s.getLevel();
+  }
+
+  @Override
+  public String toString() {
+    return getName();
   }
 }

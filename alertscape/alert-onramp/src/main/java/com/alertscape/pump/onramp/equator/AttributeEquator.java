@@ -8,6 +8,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
 
 final class AttributeEquator extends AbstractAlertPropertyEquator {
@@ -16,14 +17,13 @@ final class AttributeEquator extends AbstractAlertPropertyEquator {
   private String attributeName;
   private Method method;
 
-  public AttributeEquator(String attributeName) {
+  public AttributeEquator(String attributeName) throws AlertscapeException {
     try {
       this.attributeName = attributeName;
       PropertyDescriptor descriptor = new PropertyDescriptor(attributeName, Alert.class);
       method = descriptor.getReadMethod();
     } catch (IntrospectionException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new AlertscapeException("Couldn't create equator for attribute: " + attributeName, e);
     }
   }
 

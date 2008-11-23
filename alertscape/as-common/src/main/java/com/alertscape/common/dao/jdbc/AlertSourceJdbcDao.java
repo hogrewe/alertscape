@@ -25,8 +25,7 @@ public class AlertSourceJdbcDao extends JdbcDaoSupport implements AlertSourceDao
   private AlertSourceMapper sourceMapper = new AlertSourceMapper();
 
   public AlertSource get(int sourceId) throws DaoException {
-    // TODO Auto-generated method stub
-    return null;
+    return (AlertSource) getJdbcTemplate().query(GET_SOURCE_SQL, new Object[] { sourceId }, sourceMapper);
   }
 
   @SuppressWarnings("unchecked")
