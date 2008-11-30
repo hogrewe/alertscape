@@ -42,6 +42,10 @@ public class ConfigurableAlertPump implements AlertPump {
     return getDbOfframp().getAlertsForSource(source);
   }
 
+  public List<Alert> getAllAlerts() throws AlertscapeException {
+    return getDbOfframp().getAllAlerts();
+  }
+
   /**
    * @return the dbOfframp
    */
