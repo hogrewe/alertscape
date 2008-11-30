@@ -2,9 +2,9 @@
   <name>alertscape-app</name>
   <comment/>
   <projects>
+    <project>alert-onramp</project>
     <project>alert-pump</project>
     <project>alert-offramp</project>
-    <project>alert-onramp</project>
     <project>as-common</project>
   </projects>
   <buildSpec>

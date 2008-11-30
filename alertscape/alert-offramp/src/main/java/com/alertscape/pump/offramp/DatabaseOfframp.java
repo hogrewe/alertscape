@@ -29,6 +29,10 @@ public class DatabaseOfframp implements AlertOfframp {
   public List<Alert> getAlertsForSource(AlertSource source) throws AlertscapeException {
     return getAlertDao().getAlertsForSource(source);
   }
+  
+  public List<Alert> getAllAlerts() throws AlertscapeException {
+    return getAlertDao().getAllAlerts();
+  }
 
   /**
    * @return the alertDao
