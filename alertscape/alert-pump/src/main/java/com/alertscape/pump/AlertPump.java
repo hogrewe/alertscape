@@ -16,4 +16,5 @@ import com.alertscape.common.model.AlertSource;
 public interface AlertPump {
 	public void processAlert(Alert a) throws AlertscapeException;
 	public List<Alert> getAlerts(AlertSource source) throws AlertscapeException;
+	public List<Alert> getAllAlerts() throws AlertscapeException;
 }
