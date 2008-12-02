@@ -2,9 +2,21 @@
 <web-app>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/alertscape-beans.xml</param-value>
+		<param-value>/WEB-INF/alertscape-beans.xml
+		</param-value>
 	</context-param>
 	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+		<listener-class>org.springframework.web.context.ContextLoaderListener
+		</listener-class>
 	</listener>
+	<servlet>
+		<servlet-name>alertExporter</servlet-name>
+		<servlet-class>
+			org.springframework.web.context.support.HttpRequestHandlerServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>alertExporter</servlet-name>
+		<url-pattern>/r/AlertService</url-pattern>
+	</servlet-mapping>
 </web-app>

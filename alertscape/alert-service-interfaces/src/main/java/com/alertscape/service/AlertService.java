@@ -3,7 +3,7 @@
  */
 package com.alertscape.service;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
@@ -13,5 +13,5 @@ import com.alertscape.common.model.Alert;
  *
  */
 public interface AlertService {
-  public Collection<Alert> getAllAlerts() throws AlertscapeException;
+  public List<Alert> getAllAlerts() throws AlertscapeException;
 }

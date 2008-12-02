@@ -12,6 +12,7 @@ import javax.jms.Session;
 import javax.jms.Topic;
 
 import com.alertscape.AlertscapeException;
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 
 /**
@@ -41,7 +42,7 @@ public class JmsOfframp implements AlertOfframp {
     try {
       connection.close();
     } catch (JMSException e) {
-      throw new AlertscapeException("Couldn't close JMS connection", e);
+      ASLogger.error("Couldn't close JMS connection", e);
     }
   }
 
@@ -51,7 +52,15 @@ public class JmsOfframp implements AlertOfframp {
 
       producer.send(message);
     } catch (JMSException e) {
-      throw new AlertscapeException("Couldn't send alert: " + alert, e);
+      shutdown();
+      init();
+      try {
+        ObjectMessage message = session.createObjectMessage(alert);
+
+        producer.send(message);
+      } catch (JMSException e1) {
+        throw new AlertscapeException("Couldn't send alert after attempted reconnect", e);
+      }
     }
   }
 
@@ -78,7 +87,8 @@ public class JmsOfframp implements AlertOfframp {
   }
 
   /**
-   * @param topic the topic to set
+   * @param topic
+   *          the topic to set
    */
   public void setTopic(Topic topic) {
     this.topic = topic;
