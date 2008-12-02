@@ -237,4 +237,49 @@ private void initComponents() {
        gridBagConstraints.insets = new  Insets(3, 3, 3, 3);
        add(sendButton, gridBagConstraints);
    }
+   
+   public void setFromFieldText(String text)
+   {
+	   fromField.setText(text);
+   }
+   public void setToFieldText(String text)
+   {
+	   toField.setText(text);
+   }
+   public void setCCFieldText(String text)
+   {
+	   ccField.setText(text);
+   }
+   public void setSubjectFieldText(String text)
+   {
+	   subjectField.setText(text);
+   }
+   public void setMessageFieldText(String text)
+   {
+	   messageTextPane.setText(text);
+   }
+   
+   public String getFromFieldText()
+   {
+	   return fromField.getText();
+   }
+   public String getToFieldText()
+   {
+	   return toField.getText();
+   }
+   public String getCCFieldText()
+   {
+	   return ccField.getText();
+   }
+   public String getSubjectFieldText()
+   {
+	   return subjectField.getText();
+   }
+   public String getMessageFieldText()
+   {
+	   return messageTextPane.getText();
+   }
+   
+   
+   
 }
