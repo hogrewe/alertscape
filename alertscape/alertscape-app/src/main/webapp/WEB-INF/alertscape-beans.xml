@@ -70,7 +70,7 @@
 	<bean id="alertService" class="com.alertscape.service.ConfigurableAlertService">
 		<property name="pump" ref="alertpump" />
 	</bean>
-	<bean name="/AlertService"
+	<bean name="alertExporter"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service" ref="alertService" />
 		<property name="serviceInterface" value="com.alertscape.service.AlertService" />

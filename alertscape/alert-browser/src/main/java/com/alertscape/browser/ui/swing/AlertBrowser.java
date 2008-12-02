@@ -8,7 +8,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.net.URL;
+import java.util.List;
 
+import javax.jms.ConnectionFactory;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -21,8 +23,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.BevelBorder;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-
 import com.alertscape.AlertscapeException;
 import com.alertscape.browser.common.auth.Authentication;
 import com.alertscape.browser.model.JmsAlertListener;
@@ -32,8 +32,10 @@ import com.alertscape.browser.ui.swing.panel.collection.summary.AlertCollectionS
 import com.alertscape.browser.ui.swing.panel.collection.table.AlertCollectionTablePanel;
 import com.alertscape.browser.ui.swing.panel.common.ASPanelBuilder;
 import com.alertscape.common.logging.ASLogger;
+import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.IndexedAlertCollection;
+import com.alertscape.service.AlertService;
 import com.alertscape.util.ImageFinder;
 
 /**
@@ -44,9 +46,10 @@ public class AlertBrowser extends JFrame {
   private static final long serialVersionUID = 1L;
 
   private AlertCollection collection;
+  private ConnectionFactory jmsFactory;
+  private AlertService alertService;
 
   public AlertBrowser() {
-    init();
   }
 
   public void init() {
@@ -160,17 +163,45 @@ public class AlertBrowser extends JFrame {
     JmsAlertListener listener = new JmsAlertListener();
     listener.setCollection(collection);
     
-    // TODO: this should be injected
-    ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://alertscape.hogrewe.com:7777");
-    
-    listener.setFactory(factory);
+    listener.setFactory(jmsFactory);
     
     try {
       listener.startListening();
+      // GET ALL ALERTS
+      List<Alert> alerts = alertService.getAllAlerts();
+      collection.processAlerts(alerts);
+      listener.startProcessing();
     } catch (AlertscapeException e) {
       JOptionPane.showMessageDialog(this, "Couldn't initalize alert listener", "Alert Listener Error",
           JOptionPane.ERROR_MESSAGE);
     }
   }
 
+  /**
+   * @return the jmsFactory
+   */
+  public ConnectionFactory getJmsFactory() {
+    return jmsFactory;
+  }
+
+  /**
+   * @param jmsFactory the jmsFactory to set
+   */
+  public void setJmsFactory(ConnectionFactory jmsFactory) {
+    this.jmsFactory = jmsFactory;
+  }
+
+  /**
+   * @return the alertService
+   */
+  public AlertService getAlertService() {
+    return alertService;
+  }
+
+  /**
+   * @param alertService the alertService to set
+   */
+  public void setAlertService(AlertService alertService) {
+    this.alertService = alertService;
+  }
 }

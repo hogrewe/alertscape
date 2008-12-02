@@ -15,6 +15,7 @@
     <module>alert-offramp</module>
     <module>alertscape-app</module>
     <module>alert-tester</module>
+    <module>alert-service-interfaces</module>
   </modules>
   <build>
     <plugins>  
@@ -37,6 +38,11 @@
       <dependency>
 	    <groupId>com.alertscape</groupId>
 	    <artifactId>as-common</artifactId>
+	    <version>${project.version}</version>
+	  </dependency>
+      <dependency>
+	    <groupId>com.alertscape.service</groupId>
+	    <artifactId>alert-service-interfaces</artifactId>
 	    <version>${project.version}</version>
 	  </dependency>
       <dependency>
@@ -73,6 +79,11 @@
 	    <groupId>org.springframework</groupId>
 		<artifactId>spring-jdbc</artifactId>
 		<version>2.5.5</version>
+	  </dependency>
+	  <dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-webmvc</artifactId>
+	    <version>2.5.5</version>
 	  </dependency>
 	  <dependency>
 	    <groupId>mysql</groupId>
