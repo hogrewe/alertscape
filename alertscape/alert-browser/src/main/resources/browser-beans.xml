@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://activemq.apache.org/schema/core 
+           http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd">
+	<context:property-placeholder location="classpath:alertscape.properties" />
+	<bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL">
+			<value>${jms.url}</value>
+		</property>
+	</bean>
+	<amq:topic id="uiAlertStream" physicalName="com.alertscape.pump.Alerts" />
+	<bean id="alertService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl" value="${remote.service.url}" />
+		<property name="serviceInterface" value="com.alertscape.service.AlertService" />
+	</bean>
+	<bean id="browser" class="com.alertscape.browser.ui.swing.AlertBrowser"
+		init-method="init">
+		<property name="alertService" ref="alertService" />
+		<property name="jmsFactory" ref="jmsFactory" />
+	</bean>
+</beans>

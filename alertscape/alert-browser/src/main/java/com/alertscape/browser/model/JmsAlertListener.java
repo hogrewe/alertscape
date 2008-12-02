@@ -4,7 +4,8 @@
 package com.alertscape.browser.model;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -34,16 +35,19 @@ public class JmsAlertListener implements AlertListener {
   private Destination topic;
   private MessageConsumer consumer;
   private MessageListener listener;
+  private List<Alert> alertQueue = new ArrayList<Alert>();
+  private AlertProcessor processor;
 
   public void init() throws AlertscapeException {
     try {
+      processor = new AlertProcessor();
       connection = factory.createConnection();
       connection.start();
       session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-      
+
       // TODO: this should be injected
       topic = session.createTopic("com.alertscape.pump.Alerts");
-      
+
       consumer = session.createConsumer(topic);
       listener = new AlertMessageListener();
       consumer.setMessageListener(listener);
@@ -67,6 +71,14 @@ public class JmsAlertListener implements AlertListener {
 
   public void startListening() throws AlertscapeException {
     init();
+  }
+
+  public void startProcessing() throws AlertscapeException {
+    processor.start();
+  }
+
+  public void stopProcessing() throws AlertscapeException {
+    processor.setRunning(false);
   }
 
   /**
@@ -96,8 +108,8 @@ public class JmsAlertListener implements AlertListener {
           Serializable object = om.getObject();
           if (object instanceof Alert) {
             Alert alert = (Alert) object;
-            if (collection != null) {
-              collection.processAlerts(Arrays.asList(alert));
+            synchronized (alertQueue) {
+              alertQueue.add(alert);
             }
           }
         } catch (JMSException e) {
@@ -105,6 +117,40 @@ public class JmsAlertListener implements AlertListener {
         }
       }
     }
+  }
+
+  private final class AlertProcessor extends Thread {
+    private boolean running;
+
+    @Override
+    public void run() {
+      running = true;
+      while (running) {
+        synchronized (alertQueue) {
+          if (!alertQueue.isEmpty()) {
+            collection.processAlerts(alertQueue);
+            alertQueue.clear();
+          }
+        }
+
+        synchronized (this) {
+          try {
+            wait(3000);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+      }
+    }
+
+    public void setRunning(boolean running) {
+      this.running = running;
+      synchronized (this) {
+        notifyAll();
+      }
+    }
+
   }
 
   /**
@@ -115,7 +161,8 @@ public class JmsAlertListener implements AlertListener {
   }
 
   /**
-   * @param factory the factory to set
+   * @param factory
+   *          the factory to set
    */
   public void setFactory(ConnectionFactory factory) {
     this.factory = factory;
