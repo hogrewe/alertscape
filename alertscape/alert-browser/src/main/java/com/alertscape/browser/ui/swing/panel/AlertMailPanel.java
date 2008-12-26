@@ -74,12 +74,12 @@ public class AlertMailPanel extends JPanel {
 	{
 		List<Alert> alerts = context.getSelectedAlerts();
 		StringBuffer value = new StringBuffer();		
-		Iterator it = alerts.iterator();
+		Iterator<Alert> it = alerts.iterator();
 		
 		int count = 0;
 		while (it.hasNext())
 		{
-			Alert a = (Alert)it.next(); // TODO: this is gay, why do I have to cast this?
+			Alert a = it.next(); 
 			count++;
 
 			// TODO: this is not done, need to look at the modes and act accordingly
@@ -99,12 +99,12 @@ public class AlertMailPanel extends JPanel {
 	{
 		List<Alert> alerts = context.getSelectedAlerts();
 		StringBuffer value = new StringBuffer();		
-		Iterator it = alerts.iterator();
+		Iterator<Alert> it = alerts.iterator();
 		
 		int count = 0;
 		while (it.hasNext())
 		{
-			Alert a = (Alert)it.next(); // TODO: this is gay, why do I have to cast this?
+			Alert a = it.next();
 			count++;
 			
 			if (bodyModeVal == BodyMode.KEY_VALS)
