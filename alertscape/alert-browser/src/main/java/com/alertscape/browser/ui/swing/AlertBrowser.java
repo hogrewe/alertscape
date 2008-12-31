@@ -25,6 +25,7 @@ import javax.swing.border.BevelBorder;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.browser.common.auth.Authentication;
+import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.model.JmsAlertListener;
 import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
 import com.alertscape.browser.ui.swing.panel.collection.filter.TextFilterPanel;
@@ -48,6 +49,7 @@ public class AlertBrowser extends JFrame {
   private AlertCollection collection;
   private ConnectionFactory jmsFactory;
   private AlertService alertService;
+  private static BrowserContext currentContext = new BrowserContext();
 
   public AlertBrowser() {
   }
@@ -204,4 +206,14 @@ public class AlertBrowser extends JFrame {
   public void setAlertService(AlertService alertService) {
     this.alertService = alertService;
   }
+
+public static void setCurrentContext(BrowserContext currentContext)
+{
+	AlertBrowser.currentContext = currentContext;
+}
+
+public static BrowserContext getCurrentContext()
+{
+	return currentContext;
+}
 }

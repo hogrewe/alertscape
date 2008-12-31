@@ -13,6 +13,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
 *
@@ -38,6 +40,9 @@ public class MailPanel extends JPanel {
 	private JLabel subjectLabel;
 	private JTextField toField;
 	private JLabel toLabel;
+	
+	private boolean sendPressed = false;
+	
 	// End of variables declaration
 	
    /** Creates new form MailPanel */
@@ -236,6 +241,13 @@ private void initComponents() {
        gridBagConstraints.anchor =  GridBagConstraints.EAST;
        gridBagConstraints.insets = new  Insets(3, 3, 3, 3);
        add(sendButton, gridBagConstraints);
+       
+       sendButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0)
+			{
+				sendPressed = true;
+			}
+		});
    }
    
    public void setFromFieldText(String text)
@@ -279,7 +291,20 @@ private void initComponents() {
    {
 	   return messageTextPane.getText();
    }
-   
-   
-   
+
+	public void setSendPressed(boolean sendPressed)
+	{
+		this.sendPressed = sendPressed;
+	}
+	
+	public boolean isSendPressed()
+	{
+		return sendPressed;
+	}
+	
+	public void associateHideListener(ActionListener listener)
+	{
+		sendButton.addActionListener(listener);
+		cancelButton.addActionListener(listener);
+	}
 }
