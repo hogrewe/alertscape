@@ -3,8 +3,11 @@
  */
 package com.alertscape.browser.ui.swing.panel.collection.filter;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -36,11 +39,14 @@ public class TextFilterPanel extends JPanel implements AlertFilter {
   }
 
   public void init() {
-    setLayout(new GridBagLayout());
+    //setLayout(new GridBagLayout());
+  	//setLayout(new FlowLayout());
+  	//setLayout(new BorderLayout());
+  	setLayout(new GridLayout(1,1));
     JPanel searchPanel = new JPanel();
     searchText = new JTextField();
-    searchText.setMinimumSize(new Dimension(200,20));
-    searchText.setPreferredSize(new Dimension(500,20));
+    searchText.setMinimumSize(new Dimension(100,20));
+    searchText.setPreferredSize(new Dimension(300,20));    
     searchPanel.add(searchText);
     
     add(searchPanel);

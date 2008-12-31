@@ -25,6 +25,7 @@ public class Authentication {
 		// TODO: actually login somehow
 		User u = new User();
 		u.setUsername(user);
+		u.setEmail(user + "@alertscape.com");
 
 		appUsers.put(application, u);
 
