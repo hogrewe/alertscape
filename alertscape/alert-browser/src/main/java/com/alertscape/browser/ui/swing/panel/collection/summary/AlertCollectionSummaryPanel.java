@@ -4,6 +4,7 @@
 package com.alertscape.browser.ui.swing.panel.collection.summary;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
@@ -41,7 +42,7 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
 {
   private static final long serialVersionUID = 1L;
   private AlertCollection subCollection;
-  private JToggleButton[] sevButtons;
+  private JLabel[] sevButtons;
   private JLabel totalLabel;
   private SeverityMatcherEditor severityMatcher = new SeverityMatcherEditor( );
   private Map<Severity, Integer> severityCounts;
@@ -118,10 +119,12 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
 
         for (Severity sev : severityCounts.keySet( ))
         {
-          sevButtons[sev.getLevel( )].setText(sev.getName( ) + ": "
-              + severityCounts.get(sev));
+          //sevButtons[sev.getLevel( )].setText(sev.getName( ) + ": " + severityCounts.get(sev));
+          sevButtons[sev.getLevel( )].setText("" + severityCounts.get(sev));
+          sevButtons[sev.getLevel( )].setToolTipText(severityCounts.get(sev) + " " + sev.getName( ) + " alerts");
         }
-        totalLabel.setText("Total: " + list.size( ));
+        totalLabel.setText(list.size( ) + "");
+        totalLabel.setToolTipText(list.size( ) + " total alerts");
       }
     });
 
@@ -138,8 +141,9 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
 
     for (Severity sev : severityCounts.keySet( ))
     {
-      sevButtons[sev.getLevel( )].setText(sev.getName( ) + ":"
-          + severityCounts.get(sev));
+      //sevButtons[sev.getLevel( )].setText(sev.getName( ) + ":" + severityCounts.get(sev));
+      sevButtons[sev.getLevel( )].setText(severityCounts.get(sev) + "");
+      sevButtons[sev.getLevel( )].setToolTipText(severityCounts.get(sev) + " " + sev.getName( ) + " alerts");
     }
 
     return subCollection;
@@ -157,26 +161,43 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
     summaryPanel.setLayout(new GridLayout( ));
     SeverityFactory fact = SeverityFactory.getInstance( );
     int max = fact.getNumSeverities( );
-    sevButtons = new JToggleButton[max];
+    sevButtons = new JLabel[max];
     for (int i = 0; i < max; i++)
     {
       Severity s = fact.getSeverity(i);
       severityCounts.put(s, 0);
+      
+      JPanel wrapperPanel = new JPanel(new BorderLayout());      
       JToggleButton sevButton = new JToggleButton( );
-      sevButton.setForeground(s.getForegroundColor( ));
-      sevButton.setBackground(s.getBackgroundColor( ));
+//      sevButton.setForeground(s.getForegroundColor( ));
+//      sevButton.setBackground(s.getBackgroundColor( ));
       sevButton.setText(s.getName( ));
+      sevButton.setToolTipText("Show/Hide " + s.getName() + " alerts");
       sevButton.addItemListener(new SeverityItemListener(s));
       sevButton.setSelected(true);
-      summaryPanel.add(sevButton);
-      sevButtons[i] = sevButton;
+      JLabel sevTotal = new JLabel();
+      sevTotal.setBorder(BorderFactory.createEtchedBorder());
+      sevTotal.setHorizontalAlignment(SwingConstants.CENTER);
+      wrapperPanel.add(sevButton, BorderLayout.NORTH);
+      wrapperPanel.add(sevTotal, BorderLayout.SOUTH);
+      
+      summaryPanel.add(wrapperPanel);
+      sevButtons[i] = sevTotal;  
     }
+    JPanel totalPanel = new JPanel(new BorderLayout());    
+    JLabel totalHeader = new JLabel();
+    totalHeader.setText("Total");
+    totalHeader.setHorizontalAlignment(SwingConstants.CENTER);
+    totalHeader.setFont(totalHeader.getFont( ).deriveFont(Font.BOLD));
     totalLabel = new JLabel( );
     totalLabel.setHorizontalAlignment(SwingConstants.CENTER);
     totalLabel.setFont(totalLabel.getFont( ).deriveFont(Font.BOLD));
-    totalLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-    totalLabel.setText("Total: ");
-    summaryPanel.add(totalLabel);
+    totalLabel.setText("0");
+    
+    totalPanel.add(totalHeader, BorderLayout.NORTH);
+    totalPanel.add(totalLabel, BorderLayout.SOUTH);
+    totalPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+    summaryPanel.add(totalPanel);
 
     setLayout(new BorderLayout( ));
     // add(headerPanel, BorderLayout.NORTH);

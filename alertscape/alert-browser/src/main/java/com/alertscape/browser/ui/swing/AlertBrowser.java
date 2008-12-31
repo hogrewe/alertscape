@@ -14,10 +14,12 @@ import javax.jms.ConnectionFactory;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -25,6 +27,7 @@ import javax.swing.border.BevelBorder;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.browser.common.auth.Authentication;
+import com.alertscape.browser.common.auth.User;
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.model.JmsAlertListener;
 import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
@@ -32,6 +35,7 @@ import com.alertscape.browser.ui.swing.panel.collection.filter.TextFilterPanel;
 import com.alertscape.browser.ui.swing.panel.collection.summary.AlertCollectionSummaryPanel;
 import com.alertscape.browser.ui.swing.panel.collection.table.AlertCollectionTablePanel;
 import com.alertscape.browser.ui.swing.panel.common.ASPanelBuilder;
+import com.alertscape.browser.upramp.firstparty.mail.AlertMailAction;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
@@ -50,6 +54,7 @@ public class AlertBrowser extends JFrame {
   private ConnectionFactory jmsFactory;
   private AlertService alertService;
   private static BrowserContext currentContext = new BrowserContext();
+  private static AlertCollectionTablePanel tablePanel;
 
   public AlertBrowser() {
   }
@@ -78,20 +83,23 @@ public class AlertBrowser extends JFrame {
     setSize(800, 600);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     collection = new IndexedAlertCollection();
+    
     JPanel p = new JPanel();
     p.setLayout(new BorderLayout());
     TextFilterPanel filterPanel = new TextFilterPanel();
     AlertCollection filterCollection = filterPanel.setMasterCollection(collection);
     AlertCollectionSummaryPanel summaryPanel = new AlertCollectionSummaryPanel();
     AlertCollection summaryCollection = summaryPanel.setMasterCollection(filterCollection);
-    AlertCollectionTablePanel tablePanel = new AlertCollectionTablePanel(summaryCollection);
+    tablePanel = new AlertCollectionTablePanel(summaryCollection);
 
     Icon bgImage = ImageFinder.getInstance().findImage("/com/alertscape/images/common/hdr_background_small.png");
 
     // Filter
     JPanel outerFilterPanel = new JPanel();
     outerFilterPanel.setBorder(BorderFactory.createTitledBorder("Quick Filter"));
-    outerFilterPanel.setLayout(new GridLayout(1, 1));
+    //outerFilterPanel.setLayout(new GridLayout(1, 1));
+    //outerFilterPanel.add(filterPanel);
+    outerFilterPanel.setLayout(new GridLayout(1,1));
     outerFilterPanel.add(filterPanel);
 
     // Summary
@@ -100,6 +108,17 @@ public class AlertBrowser extends JFrame {
     outerSummaryPanel.setLayout(new GridLayout(1, 1));
     outerSummaryPanel.add(summaryPanel);
 
+    // toolbar
+    JToolBar actionToolbar = new JToolBar();    
+    actionToolbar.setOpaque(false);
+    actionToolbar.setFloatable(false);
+    AlertMailAction action = new AlertMailAction();
+    action.setParentFrame(this);
+    
+    JButton mailButton = actionToolbar.add(action);
+    mailButton.setOpaque(false);
+    //mailButton.setBorder(BorderFactory.createEtchedBorder());
+    
     // Table
     JPanel outerTablePanel = new JPanel();
     outerTablePanel.setLayout(new BorderLayout());
@@ -112,8 +131,9 @@ public class AlertBrowser extends JFrame {
     JPanel headerPanel = new JPanel();
     headerPanel.setBorder(BorderFactory.createEmptyBorder(7, 15, 1, 3));
     headerPanel.setOpaque(false);
-    headerPanel.setLayout(new GridLayout(1, 1));
+    headerPanel.setLayout(new GridLayout(1, 2));
     headerPanel.add(hdrLabel);
+    headerPanel.add(actionToolbar);
 
     JPanel imagePanel = ASPanelBuilder.wrapInBackgroundImage(headerPanel, bgImage);
     imagePanel.setBackground(Color.white);
@@ -126,16 +146,20 @@ public class AlertBrowser extends JFrame {
 
     // North
     JPanel northPanel = new JPanel();
-    northPanel.setLayout(new GridLayout(2, 1));
-    northPanel.add(outerFilterPanel);
+    northPanel.setLayout(new GridLayout(1, 2));    
     northPanel.add(outerSummaryPanel);
+    northPanel.add(outerFilterPanel);
 
     p.add(northPanel, BorderLayout.NORTH);
     p.add(outerTablePanel, BorderLayout.CENTER);
     p.add(new AlertBrowserStatusPanel(), BorderLayout.SOUTH);
     setContentPane(p);
 
-    Authentication.login("CEV", "john.doe", null);
+    User jd = Authentication.login("CEV", "john.doe", null);
+    
+    // TODO: remove this demo hack
+    currentContext.setCurrentUser(jd);
+    
     setTitle("AMP - Alertscape Management Portal");
     URL cevImageUrl = getClass().getResource("/com/alertscape/images/common/as_logo2_32.png");
     ImageIcon cevImage = new ImageIcon(cevImageUrl);
@@ -214,6 +238,8 @@ public static void setCurrentContext(BrowserContext currentContext)
 
 public static BrowserContext getCurrentContext()
 {
+	List<Alert> curAlerts = tablePanel.getSelectedAlerts();
+	currentContext.setSelectedAlerts(curAlerts);
 	return currentContext;
 }
 }
