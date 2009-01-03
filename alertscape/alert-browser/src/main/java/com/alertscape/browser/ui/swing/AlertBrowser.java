@@ -44,6 +44,7 @@ import com.alertscape.browser.ui.swing.panel.common.ASPanelBuilder;
 import com.alertscape.browser.upramp.firstparty.customtag.CustomTagAction;
 import com.alertscape.browser.upramp.firstparty.login.LoginAction;
 import com.alertscape.browser.upramp.firstparty.mail.AlertMailAction;
+import com.alertscape.browser.upramp.firstparty.predefinedtag.PredefinedTagAction;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
@@ -127,12 +128,17 @@ public class AlertBrowser extends JFrame {
     mailAction.setParentFrame(this);
     JButton mailButton = actionToolbar.add(mailAction);
     mailButton.setOpaque(false);
+ 
+    PredefinedTagAction predefinedTagAction = new PredefinedTagAction();
+    predefinedTagAction.setParentFrame(this);
+    JButton predefinedTagButton = actionToolbar.add(predefinedTagAction);
+    predefinedTagButton.setOpaque(false);
     
     CustomTagAction customTagAction = new CustomTagAction();
     customTagAction.setParentFrame(this);
     JButton customTagButton = actionToolbar.add(customTagAction);
     customTagButton.setOpaque(false);
-    
+      
     // Table
     JPanel outerTablePanel = new JPanel();
     outerTablePanel.setLayout(new BorderLayout());
@@ -207,6 +213,7 @@ public class AlertBrowser extends JFrame {
     JMenu actionsMenu = new JMenu("Actions");
     //actionsMenu.setMnemonic(KeyEvent.VK_A);
     actionsMenu.add(mailAction);
+    actionsMenu.add(predefinedTagAction);
     actionsMenu.add(customTagAction);
     
     // - email alerts
