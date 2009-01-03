@@ -16,6 +16,8 @@ public class LoginUpRamp implements UpRamp
 	{
   	// TODO make this actually work (call the server to get this info), the below is just for demo purposes
 		// not sure at this point when/why we would need to initialize - back to the most recent login, from disk? don't know
+		// actually, one thing that might come down from the server in the map is the method of authentication: use LDAP, or basic authentication via alertscape, or?
+		// and then this would drive how the submit method works....
 		HashMap map = new HashMap();
 		return map;
 	}
@@ -29,7 +31,8 @@ public class LoginUpRamp implements UpRamp
 	public boolean submit(BrowserContext context, Map keyvals)
 	{
 		// TODO Auto-generated method stub - make this work for real, this is just a demo hack below
-		String username = (String)keyvals.get(LoginConstants.USER_ID);		
+		String username = (String)keyvals.get(LoginConstants.USER_ID);
+		String password = (String)keyvals.get(LoginConstants.PASSWORD);
 		User user = Authentication.login("CEV", username, null);    
     AlertBrowser.getCurrentContext().setCurrentUser(user);
 		

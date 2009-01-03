@@ -78,6 +78,7 @@ public class LoginPanel extends AbstractUpRampPanel
 		userLabel.setToolTipText("The username you would like to login with");
 		userLabel.setFocusable(false);
 		userLabel.setPreferredSize(new Dimension(50, 20));
+		userLabel.setMinimumSize(new Dimension(50, 20));
 		useridPanel.add(userLabel);
 		useridPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		userField = new JTextField();
@@ -95,6 +96,7 @@ public class LoginPanel extends AbstractUpRampPanel
 		passwordLabel.setToolTipText("The password for the userid you would like to login with");
 		passwordLabel.setFocusable(false);
 		passwordLabel.setPreferredSize(new Dimension(50, 20));
+		passwordLabel.setMinimumSize(new Dimension(50, 20));
 		passwordPanel.add(passwordLabel);
 		passwordPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		passwordField = new JPasswordField();
@@ -105,8 +107,15 @@ public class LoginPanel extends AbstractUpRampPanel
 		this.add(passwordPanel);
 		this.add(Box.createRigidArea(new Dimension(0,5)));
 		
+		JPanel buttonSeparatorPanel = new JPanel();
+		BoxLayout buttonSepBoxLayout = new BoxLayout(buttonSeparatorPanel, BoxLayout.X_AXIS);
+		buttonSeparatorPanel.setLayout(buttonSepBoxLayout);
 		buttonSeparator = new JSeparator();
-		this.add(buttonSeparator);
+		buttonSeparatorPanel.add(Box.createRigidArea(new Dimension(5,0)));
+		buttonSeparatorPanel.add(buttonSeparator);
+		buttonSeparatorPanel.add(Box.createRigidArea(new Dimension(5,0)));
+		
+		this.add(buttonSeparatorPanel);
 		this.add(Box.createRigidArea(new Dimension(0,5)));
 		
 		JPanel buttonPanel = new JPanel();
