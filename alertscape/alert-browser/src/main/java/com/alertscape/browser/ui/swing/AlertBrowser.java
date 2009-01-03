@@ -41,6 +41,7 @@ import com.alertscape.browser.ui.swing.panel.collection.filter.TextFilterPanel;
 import com.alertscape.browser.ui.swing.panel.collection.summary.AlertCollectionSummaryPanel;
 import com.alertscape.browser.ui.swing.panel.collection.table.AlertCollectionTablePanel;
 import com.alertscape.browser.ui.swing.panel.common.ASPanelBuilder;
+import com.alertscape.browser.upramp.firstparty.customtag.CustomTagAction;
 import com.alertscape.browser.upramp.firstparty.login.LoginAction;
 import com.alertscape.browser.upramp.firstparty.mail.AlertMailAction;
 import com.alertscape.common.logging.ASLogger;
@@ -127,6 +128,11 @@ public class AlertBrowser extends JFrame {
     JButton mailButton = actionToolbar.add(mailAction);
     mailButton.setOpaque(false);
     
+    CustomTagAction customTagAction = new CustomTagAction();
+    customTagAction.setParentFrame(this);
+    JButton customTagButton = actionToolbar.add(customTagAction);
+    customTagButton.setOpaque(false);
+    
     // Table
     JPanel outerTablePanel = new JPanel();
     outerTablePanel.setLayout(new BorderLayout());
@@ -201,6 +207,7 @@ public class AlertBrowser extends JFrame {
     JMenu actionsMenu = new JMenu("Actions");
     //actionsMenu.setMnemonic(KeyEvent.VK_A);
     actionsMenu.add(mailAction);
+    actionsMenu.add(customTagAction);
     
     // - email alerts
     // - quick tags:
