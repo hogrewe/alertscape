@@ -7,6 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.List;
 
@@ -17,9 +19,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -112,10 +118,10 @@ public class AlertBrowser extends JFrame {
     JToolBar actionToolbar = new JToolBar();    
     actionToolbar.setOpaque(false);
     actionToolbar.setFloatable(false);
-    AlertMailAction action = new AlertMailAction();
-    action.setParentFrame(this);
+    AlertMailAction mailAction = new AlertMailAction();
+    mailAction.setParentFrame(this);
     
-    JButton mailButton = actionToolbar.add(action);
+    JButton mailButton = actionToolbar.add(mailAction);
     mailButton.setOpaque(false);
     //mailButton.setBorder(BorderFactory.createEtchedBorder());
     
@@ -159,6 +165,78 @@ public class AlertBrowser extends JFrame {
     
     // TODO: remove this demo hack
     currentContext.setCurrentUser(jd);
+    
+    // create the menubar
+    JMenuBar menubar = new JMenuBar();
+    
+    JMenu fileMenu = new JMenu("File");
+    //fileMenu.setMnemonic(KeyEvent.VK_F);
+    
+    JMenuItem loginItem = new JMenuItem("Switch User", new ImageIcon(getClass().getResource("/com/alertscape/images/mini/icon_user.gif"))); 
+    loginItem.setMnemonic(KeyEvent.VK_U);		
+    loginItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.ALT_MASK));
+    loginItem.getAccessibleContext().setAccessibleDescription("Log a new user into Alertscape");
+    loginItem.setToolTipText("Log a new user into Alertscape");
+    fileMenu.add(loginItem);
+
+    JMenuItem exitItem = new JMenuItem("Exit", new ImageIcon(getClass().getResource("/com/alertscape/images/mini/action_stop.gif"))); 
+    exitItem.setMnemonic(KeyEvent.VK_X);	    
+    exitItem.getAccessibleContext().setAccessibleDescription("Close AMP");
+    exitItem.setToolTipText("Close AMP");
+    fileMenu.add(exitItem);  
+    
+    // other ideas for the file menu
+    // - Switch user
+    // - Logoff
+    // - Export (to CSV, Excel)
+    // - Print (selected alerts or all alerts in view) 
+    
+    
+    JMenu editMenu = new JMenu("Edit");
+    //editMenu.setMnemonic(KeyEvent.VK_E);
+    // ideas for the edit menu
+    // - Copy
+    // - Paste
+    // - Cut
+    // - Select All
+    // - Find (search for alert: in the tree, in the table, in the history)
+    // - window configurations (dock type stuff)
+    
+    JMenu actionsMenu = new JMenu("Actions");
+    //actionsMenu.setMnemonic(KeyEvent.VK_A);
+    actionsMenu.add(mailAction);
+    
+    // - email alerts
+    // - quick tags:
+    //   - acknowledge alerts (acknowledged by field is just a tag)
+    //   - unacknowledge alerts (acknowledged by field is just a tag)
+    //   - assign alerts (name is just a tag)
+    //   - move alerts (folder is just a tag)
+    // - view comments
+    // - add comment
+    // - view history
+    // - view ticket
+    // - clear/delete alerts
+    // - tag alerts (major/minor?)
+    
+    JMenu helpMenu = new JMenu("Help");
+    //helpMenu.setMnemonic(KeyEvent.VK_H);
+    // - About AMP
+    // - Software Updates
+    // - Report a bug or enhancement
+    // - Release Notes
+    // - Forums (Link to website Forums)
+    // - User Guide (Link to versioned user guide doc online)
+    
+    menubar.add(fileMenu);
+    menubar.add(editMenu);
+    menubar.add(actionsMenu);
+    menubar.add(helpMenu);    
+    
+    this.setJMenuBar(menubar);
+    
+    
+    
     
     setTitle("AMP - Alertscape Management Portal");
     URL cevImageUrl = getClass().getResource("/com/alertscape/images/common/as_logo2_32.png");
