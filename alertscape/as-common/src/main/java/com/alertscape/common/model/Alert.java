@@ -164,7 +164,12 @@ public class Alert implements Serializable {
 	/**
 	 * @return the majorTags
 	 */
-	public Map<String, Object> getMajorTags() {
+	public Map<String, Object> getMajorTags() 
+	{
+		if(this.majorTags == null) 
+		{
+			this.majorTags = new HashMap<String, Object>();
+		}
 		return majorTags;
 	}
 
@@ -190,7 +195,13 @@ public class Alert implements Serializable {
 	/**
 	 * @return the minorTags
 	 */
-	public Map<String, Object> getMinorTags() {
+	public Map<String, Object> getMinorTags() 
+	{
+		if(this.minorTags == null) 
+		{
+			this.minorTags = new HashMap<String, Object>();
+		}
+		
 		return minorTags;
 	}
 

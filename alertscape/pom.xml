@@ -7,6 +7,9 @@
   <version>0.1-SNAPSHOT</version>
   <name>alertscape</name>
   <url>http://alertscape.com</url>
+  <scm>
+    <connection>scm:git:ssh://hogrewe.com/storage/as-dev/as.git</connection>
+  </scm>
   <modules>
     <module>alert-browser</module>
     <module>as-common</module>

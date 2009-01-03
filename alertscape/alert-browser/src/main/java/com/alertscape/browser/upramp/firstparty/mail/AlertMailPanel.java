@@ -1,16 +1,25 @@
-package com.alertscape.browser.ui.swing.panel;
+package com.alertscape.browser.upramp.firstparty.mail;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
 import javax.swing.JPanel;
 
 import com.alertscape.browser.model.BrowserContext;
+import com.alertscape.browser.ui.swing.panel.MailPanel;
+import com.alertscape.browser.upramp.firstparty.mail.AlertMailConstants.BodyMode;
+import com.alertscape.browser.upramp.firstparty.mail.AlertMailConstants.SubjectMode;
+import com.alertscape.browser.upramp.model.AbstractUpRampPanel;
+import com.alertscape.browser.upramp.model.UpRamp;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.util.AlertUtility;
 
-public class AlertMailPanel extends JPanel {
+public class AlertMailPanel extends AbstractUpRampPanel {
 	
 	// static variables
 	private static final long serialVersionUID = 1L;
@@ -18,21 +27,15 @@ public class AlertMailPanel extends JPanel {
 	private static String defaultCCEmailAddresses = "";		// the email addresses that should be defaulted into the cc: field, semicolon delimited
 	private static int MAX_SUBJECT_LENGTH = 260;			// max number of chars in the subject line	
 	
-		
-	// public member variables
-	public enum SubjectMode 
-	{
-		SHORT_DESC, LONG_DESC
-	};
-	public enum BodyMode 
-	{
-		KEY_VALS, TEMPLATE
-	};
-	
 	// member variables
 	private MailPanel mailpanel = new MailPanel();
 	private SubjectMode subjectModeVal = SubjectMode.SHORT_DESC;
 	private BodyMode bodyModeVal = BodyMode.KEY_VALS;
+	
+	public Dimension getBaseSize()
+	{
+		return new Dimension(425, 350);
+	}
 	
 	public BodyMode getBodyMode() {
 		return bodyModeVal;
@@ -42,25 +45,32 @@ public class AlertMailPanel extends JPanel {
 		this.bodyModeVal = bodyModeVal;
 	}
 
-	public AlertMailPanel(BrowserContext context)
+	public AlertMailPanel(BrowserContext bcontext, UpRamp ramp)
+	{
+		// setup the member variables
+		setContext(bcontext);
+		setUpramp(ramp);
+	}
+	
+	protected boolean initialize(Map values)
 	{
 		// initialize the basics of the panels
 		initComponentBasics();
 		
 		// build the from address
-		String fromAddress = context.getCurrentUser().getEmail();
+		String fromAddress = getContext().getCurrentUser().getEmail();
 		
 		// build the to address(es)
-		String toAddress = defaultToEmailAddresses;
+		String toAddress = (String)values.get(AlertMailConstants.DEFAULT_TO_EMAILS);
 		
 		// build the CC addresses
-		String ccAddress = defaultCCEmailAddresses;
+		String ccAddress = (String)values.get(AlertMailConstants.DEFAULT_CC_EMAILS);
 		
 		// build the subject line
-		String subject = buildSubject(context);
+		String subject = buildSubject(values);
 		
 		// build the message body
-		String body = buildMessageBody(context);
+		String body = buildMessageBody(values);
 		
 		// set all of the values into the mailpanel
 		mailpanel.setFromFieldText(fromAddress);
@@ -68,19 +78,43 @@ public class AlertMailPanel extends JPanel {
 		mailpanel.setCCFieldText(ccAddress);
 		mailpanel.setSubjectFieldText(subject);
 		mailpanel.setMessageFieldText(body);
+		
+		return true; // TODO: need to do something better than just return true
 	}
+	
+	public void associateHideListener(ActionListener listener)
+	{
+		mailpanel.associateHideListener(listener);
+	}
+	
+	public boolean needsSubmit()
+	{
+		return mailpanel.isSendPressed();
+	}
+	
+	protected Map buildSubmitMap()
+	{
+		HashMap map = new HashMap();
+		map.put(AlertMailConstants.SUBMIT_FROM_ADDRESSES, mailpanel.getFromFieldText());
+		map.put(AlertMailConstants.SUBMIT_TO_ADDRESSES, mailpanel.getToFieldText());
+		map.put(AlertMailConstants.SUBMIT_CC_ADDRESSES, mailpanel.getCCFieldText());
+		map.put(AlertMailConstants.SUBMIT_BODY, mailpanel.getFromFieldText());
+		
+		return map;
+	} 
 	
 	private void initComponentBasics()
 	{
-		setMinimumSize(new Dimension(400, 300));	    
-	    setLayout(new BorderLayout());
-	    add(mailpanel, BorderLayout.CENTER);
+	  setLayout(new BorderLayout());
+	  add(mailpanel, BorderLayout.CENTER);
 	}
 
-	private String buildSubject(BrowserContext context)
+	private String buildSubject(Map values)
 	{
-		List<Alert> alerts = context.getSelectedAlerts();		
+		List<Alert> alerts = getContext().getSelectedAlerts();		
 		StringBuffer value = new StringBuffer();
+		
+		subjectModeVal = (SubjectMode)values.get(AlertMailConstants.SUBJECT_MODE);
 		
 		if (subjectModeVal == SubjectMode.SHORT_DESC)
 		{
@@ -100,11 +134,13 @@ public class AlertMailPanel extends JPanel {
 		return value.toString();
 	}
 	
-	private String buildMessageBody(BrowserContext context)
+	private String buildMessageBody(Map values)
 	{
-		List<Alert> alerts = context.getSelectedAlerts();
+		List<Alert> alerts = getContext().getSelectedAlerts();
 		String value = "No Alerts Selected";
-			
+		
+		bodyModeVal = (BodyMode)values.get(AlertMailConstants.BODY_MODE);
+		
 		// check what mode the panel is operating in, to decide how to build the message body
 		if (bodyModeVal == BodyMode.KEY_VALS)
 		{
