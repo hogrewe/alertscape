@@ -1,0 +1,35 @@
+Sun Dec 07 14:38:56 MST 2008  [debug] AvalonLogChute initialized using file 'velocity.log'
+Sun Dec 07 14:38:56 MST 2008  [trace] *******************************************************************
+Sun Dec 07 14:38:56 MST 2008  [debug] Starting Apache Velocity v1.5 (compiled: 2007-02-22 08:52:29)
+Sun Dec 07 14:38:56 MST 2008  [trace] RuntimeInstance initializing.
+Sun Dec 07 14:38:56 MST 2008  [debug] Default Properties File: org/apache/velocity/runtime/defaults/velocity.properties
+Sun Dec 07 14:38:56 MST 2008  [debug] Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+Sun Dec 07 14:38:56 MST 2008  [debug] Using logger class org.apache.velocity.runtime.log.AvalonLogChute
+Sun Dec 07 14:38:56 MST 2008  [debug] Default ResourceManager initializing. (class org.apache.velocity.runtime.resource.ResourceManagerImpl)
+Sun Dec 07 14:38:56 MST 2008  [debug] ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.JarResourceLoader
+Sun Dec 07 14:38:56 MST 2008  [trace] JarResourceLoader : initialization starting.
+Sun Dec 07 14:38:56 MST 2008  [debug] JarResourceLoader # of paths : 1
+Sun Dec 07 14:38:56 MST 2008  [debug] JarResourceLoader : trying to load "jar:file:/Users/josh/.m2/repository/org/codehaus/mojo/webstart/webstart-maven-plugin/1.0-alpha-2/webstart-maven-plugin-1.0-alpha-2.jar!/"
+Sun Dec 07 14:38:56 MST 2008  [debug] JarHolder: attempting to connect to jar:file:/Users/josh/.m2/repository/org/codehaus/mojo/webstart/webstart-maven-plugin/1.0-alpha-2/webstart-maven-plugin-1.0-alpha-2.jar!/
+Sun Dec 07 14:38:56 MST 2008  [debug] JarHolder: initialized JAR: jar:file:/Users/josh/.m2/repository/org/codehaus/mojo/webstart/webstart-maven-plugin/1.0-alpha-2/webstart-maven-plugin-1.0-alpha-2.jar!/
+Sun Dec 07 14:38:56 MST 2008  [trace] JarResourceLoader : initialization complete.
+Sun Dec 07 14:38:56 MST 2008  [debug] ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl)
+Sun Dec 07 14:38:56 MST 2008  [trace] Default ResourceManager initialization complete.
+Sun Dec 07 14:38:56 MST 2008  [debug] Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+Sun Dec 07 14:38:56 MST 2008  [debug] Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+Sun Dec 07 14:38:56 MST 2008  [debug] Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+Sun Dec 07 14:38:56 MST 2008  [debug] Loaded System Directive: org.apache.velocity.runtime.directive.Include
+Sun Dec 07 14:38:56 MST 2008  [debug] Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+Sun Dec 07 14:38:56 MST 2008  [debug] Created '20' parsers.
+Sun Dec 07 14:38:56 MST 2008  [trace] Velocimacro : initialization starting.
+Sun Dec 07 14:38:56 MST 2008  [debug] Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+Sun Dec 07 14:38:56 MST 2008  [debug] Velocimacro : Default library not found.
+Sun Dec 07 14:38:56 MST 2008  [debug] Velocimacro : allowInline = true : VMs can be defined inline in templates
+Sun Dec 07 14:38:56 MST 2008  [debug] Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+Sun Dec 07 14:38:56 MST 2008  [debug] Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+Sun Dec 07 14:38:56 MST 2008  [debug] Velocimacro : autoload off : VM system will not automatically reload global library macros
+Sun Dec 07 14:38:56 MST 2008  [trace] Velocimacro : Velocimacro : initialization complete.
+Sun Dec 07 14:38:56 MST 2008  [trace] RuntimeInstance successfully initialized.
+Sun Dec 07 14:38:56 MST 2008  [debug] ResourceManager : found default-jnlp-template.vm with loader org.apache.velocity.runtime.resource.loader.JarResourceLoader
+Sun Dec 07 14:38:56 MST 2008   [info] Null reference [template 'default-jnlp-template.vm', line 8, column 13] : $project.Organization.Name cannot be resolved.
+Sun Dec 07 14:38:56 MST 2008   [info] Null reference [template 'default-jnlp-template.vm', line 10, column 18] : $project.Description cannot be resolved.

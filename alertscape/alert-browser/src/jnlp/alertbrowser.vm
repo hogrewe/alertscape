@@ -1,0 +1,20 @@
+<jnlp spec="$jnlpspec" codebase="$project.Url" href="$outputFile">
+  <information>
+    <title>Alertscape Management Portal</title>
+    <vendor>Alertscape Technologies</vendor>
+    <homepage href="alertscape.com"/>
+    <description>Alertscape Browser</description>
+  </information>
+
+  <security>
+    <all-permissions/>
+  </security>
+
+  <resources>
+    <j2se version="$j2seVersion"/>
+
+     $dependencies
+  
+  </resources>
+  <application-desc main-class="$mainClass"/>
+</jnlp>
