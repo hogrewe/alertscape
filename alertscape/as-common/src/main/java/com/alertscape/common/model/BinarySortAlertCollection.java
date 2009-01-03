@@ -6,6 +6,8 @@ package com.alertscape.common.model;
 import java.util.Collections;
 import java.util.Comparator;
 
+import com.alertscape.common.logging.ASLogger;
+
 
 /**
  * @author josh
@@ -13,6 +15,7 @@ import java.util.Comparator;
  */
 public class BinarySortAlertCollection extends AbstractAlertCollection
 {
+  private static final ASLogger LOG = ASLogger.getLogger(BinarySortAlertCollection.class);
   private static final Comparator<Alert> comparator = new AlertComparator( );
 
   @Override
@@ -24,12 +27,11 @@ public class BinarySortAlertCollection extends AbstractAlertCollection
       // It's a new event
       if (index < 0)
       {
-        System.out.print("N");
         alerts.add(-index - 1, alert);
       }
       else
       {
-        System.out.print("U");
+        LOG.debug("U");
         alerts.set(index, alert);
       }
     }
@@ -37,11 +39,11 @@ public class BinarySortAlertCollection extends AbstractAlertCollection
     {
       if (index < 0)
       {
-        System.out.println("Doh, index is " + index + " on a delete");
+        LOG.error("index is " + index + " on a delete");
       }
       else
       {
-        System.out.print("C");
+        LOG.debug("C");
         alerts.remove(index);
       }
     }
@@ -72,8 +74,8 @@ public class BinarySortAlertCollection extends AbstractAlertCollection
   {
     public int compare(Alert o1, Alert o2)
     {
-      long e1 = o1.getAlertId( );
-      long e2 = o2.getAlertId( );
+      long e1 = o1.getCompositeAlertId( );
+      long e2 = o2.getCompositeAlertId( );
       return (e1 == e2 ? 0 : (e1 < e2) ? -1 : 1);
     }
   }

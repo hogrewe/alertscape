@@ -16,20 +16,10 @@ import com.alertscape.pump.offramp.JmsOfframp;
  * 
  */
 public class ConfigurableAlertPump implements AlertPump {
-  private static final long SOURCE_MULTIPLIER = 1000000000000000L;
   private DatabaseOfframp dbOfframp;
   private JmsOfframp jmsOfframp;
 
   public void processAlert(Alert a) throws AlertscapeException {
-    AlertSource source = a.getSource();
-    long alertId = a.getAlertId();
-
-    // Calculate the prefix for the alert source, if necessary
-    if ((source.getSourceId() * SOURCE_MULTIPLIER) > alertId) {
-      alertId = (source.getSourceId() * SOURCE_MULTIPLIER) + alertId;
-      a.setAlertId(alertId);
-    }
-
     if (dbOfframp != null) {
       dbOfframp.processAlert(a);
     }

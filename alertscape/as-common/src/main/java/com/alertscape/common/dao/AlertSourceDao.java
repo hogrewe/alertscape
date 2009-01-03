@@ -12,6 +12,7 @@ import com.alertscape.common.model.AlertSource;
  *
  */
 public interface AlertSourceDao {
-  public AlertSource get(int sourceId) throws DaoException;
-  public List<AlertSource> getAllSources() throws DaoException;
+  AlertSource get(int sourceId) throws DaoException;
+  List<AlertSource> getAllSources() throws DaoException;
+  void save(AlertSource source) throws DaoException;
 }

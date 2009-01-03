@@ -9,9 +9,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.alertscape.AlertscapeException;
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 
 final class AttributeEquator extends AbstractAlertPropertyEquator {
+  private static final ASLogger LOG = ASLogger.getLogger(AttributeEquator.class);
   protected static final Object[] NO_ARGS = new Object[0];
 
   private String attributeName;
@@ -32,14 +34,11 @@ final class AttributeEquator extends AbstractAlertPropertyEquator {
     try {
       return method.invoke(a, NO_ARGS);
     } catch (IllegalArgumentException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error(e);
     } catch (IllegalAccessException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error(e);
     } catch (InvocationTargetException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error(e);
     }
     return null;
   }

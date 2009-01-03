@@ -17,30 +17,27 @@ import com.alertscape.common.model.severity.Severity;
  * @author josh
  * @version $Version: $
  */
-public class DefaultAlertCellRenderer extends DefaultTableCellRenderer
-{
-    private static final long serialVersionUID = 1L;
+public class DefaultAlertCellRenderer extends DefaultTableCellRenderer {
+  private static final long serialVersionUID = 1L;
 
-	@Override
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column)
-    {
-        Component c = super.getTableCellRendererComponent(table, value,
-                isSelected, hasFocus, row, column);
+  @Override
+  public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+      int row, int column) {
+    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-        @SuppressWarnings("unchecked")
-        EventTableModel<Alert> model = (EventTableModel<Alert>) table.getModel( );
-        Alert e = model.getElementAt(row);
-        Severity sev = e.getSeverity( );
-        if (isSelected)
-        {
-            // TODO: show the selected colors
-        } else
-        {
-            c.setForeground(sev.getForegroundColor( ));
-            c.setBackground(sev.getBackgroundColor( ));
-        }
-
-        return c;
+    @SuppressWarnings("unchecked")
+    EventTableModel<Alert> model = (EventTableModel<Alert>) table.getModel();
+    Alert e = model.getElementAt(row);
+    Severity sev = e.getSeverity();
+    if (isSelected) {
+      // TODO: show the selected colors
+      // c.setForeground(sev.getSelectionForegroundColor());
+      // c.setBackground(sev.getSelectionBackgroundColor());
+    } else {
+      c.setForeground(sev.getForegroundColor());
+      c.setBackground(sev.getBackgroundColor());
     }
+
+    return c;
+  }
 }

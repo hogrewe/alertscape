@@ -6,6 +6,8 @@ package com.alertscape.common.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alertscape.common.logging.ASLogger;
+
 
 import ca.odell.glazedlists.EventList;
 
@@ -15,6 +17,7 @@ import ca.odell.glazedlists.EventList;
  */
 public class IndexedAlertCollection extends AbstractAlertCollection
 {
+  private static final ASLogger LOG = ASLogger.getLogger(IndexedAlertCollection.class);
   private Map<Long, Integer> idToIndex = new HashMap<Long, Integer>( );
   
   public IndexedAlertCollection()
@@ -29,20 +32,20 @@ public class IndexedAlertCollection extends AbstractAlertCollection
   @Override
   protected void processSingleAlert(Alert alert)
   {
-    Integer index = idToIndex.get(alert.getAlertId( ));
+    Integer index = idToIndex.get(alert.getCompositeAlertId( ));
     if (alert.isStanding( ))
     {
       // Is it new?
       if (index == null)
       {
-        System.out.print("N");
+        LOG.debug("N");
         alerts.add(alert);
-        idToIndex.put(alert.getAlertId( ), alerts.size( )-1);
+        idToIndex.put(alert.getCompositeAlertId( ), alerts.size( )-1);
       }
       // It's already in the list, just update it
       else
       {
-        System.out.print("U");
+        LOG.debug("U");
         alerts.set(index, alert);
       }
     }
@@ -50,21 +53,21 @@ public class IndexedAlertCollection extends AbstractAlertCollection
     {
       if (index != null)
       {
-        System.out.print("C");
+        LOG.debug("C");
         alerts.remove(index);
         // Ok, we removed the item at index, so we have to update the map for
         // everything that comes after index
         for (int i = index; i < alerts.size( ); i++)
         {
           Alert e = alerts.get(i);
-          int nextIndex = idToIndex.get(e.getAlertId( ));
+          int nextIndex = idToIndex.get(e.getCompositeAlertId( ));
           nextIndex--;
-          idToIndex.put(e.getAlertId( ), nextIndex);
+          idToIndex.put(e.getCompositeAlertId( ), nextIndex);
         }
       }
       else
       {
-        System.out.println("Doh, index is null on a delete");
+        LOG.error("index is null on a delete");
       }
     }
   }

@@ -16,6 +16,10 @@ CREATE TABLE  `alertscape`.`alerts` (
   `source_id` int(11) NOT NULL,
   `first_occurence` datetime NOT NULL,
   `last_occurence` datetime NOT NULL,
+  `item` varchar(200) NULL,
+  `item_type` varchar(200) NULL,
+  `item_manager` varchar(200) NULL,
+  `item_manager_type` varchar(200) NULL,
   PRIMARY KEY  (`alertid`),
   KEY `alert_alert_source_fk` (`source_id`),
   CONSTRAINT `alert_alert_source_fk` FOREIGN KEY (`source_id`) REFERENCES `alert_sources` (`alert_source_id`)

@@ -56,6 +56,7 @@ import com.alertscape.util.ImageFinder;
  */
 public class AlertBrowser extends JFrame {
   private static final long serialVersionUID = 1L;
+  private static final ASLogger LOG = ASLogger.getLogger(AlertBrowser.class);
 
   private AlertCollection collection;
   private ConnectionFactory jmsFactory;
@@ -70,22 +71,18 @@ public class AlertBrowser extends JFrame {
     try {
       LookAndFeelInfo[] installedLookAndFeels = UIManager.getInstalledLookAndFeels();
       for (LookAndFeelInfo info : installedLookAndFeels) {
-        ASLogger.debug(info.getName() + ":" + info.getClassName());
+        LOG.debug(info.getName() + ":" + info.getClassName());
       }
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
       // UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
     } catch (ClassNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error(e);
     } catch (InstantiationException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error(e);
     } catch (IllegalAccessException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error(e);
     } catch (UnsupportedLookAndFeelException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error(e);
     }
     setSize(800, 600);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
