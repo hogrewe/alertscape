@@ -187,7 +187,7 @@ public class Alert implements Serializable {
   }
 
   public void addMajorTag(String name, Object value) {
-    majorTags.put(name, value);
+  	getMajorTags().put(name, value);
   }
 
   public Object getMajorTag(String name) {
@@ -217,7 +217,7 @@ public class Alert implements Serializable {
   }
 
   public void addMinorTag(String name, Object value) {
-    minorTags.put(name, value);
+  	getMinorTags().put(name, value);
   }
 
   public Object getMinorTag(String name) {
