@@ -4,7 +4,9 @@
 package com.alertscape.browser.ui.swing.panel.collection.table;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -179,6 +181,22 @@ public class AlertCollectionTablePanel extends JPanel implements
     return collection;
   }
 
+  public List<Alert> getSelectedAlerts()
+  {
+  	int[] myrows = collectionTable.getSelectedRows();  	
+  	ArrayList<Alert> retval = new ArrayList(myrows.length);
+  	
+  	for (int i = 0; i < myrows.length; i++)
+  	{
+  		int nextrow = myrows[i];
+  		Alert next = collection.getAlertAt(nextrow);
+  		retval.add(next);
+  	}
+  	
+  	return retval;
+  }
+  
+  
   /**
    * @param collection
    *          The collection to set.

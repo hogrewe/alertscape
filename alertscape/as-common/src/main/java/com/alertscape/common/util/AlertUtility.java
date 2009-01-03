@@ -106,19 +106,27 @@ public class AlertUtility {
 		buf.append(divider);
 		buf.append(newline);
 		
-		buf.append(tagsToMultiLineString(alert));
+		String tags = tagsToMultiLineString(alert);
+		if (tags.length() > 0)
+		{
+			buf.append(tags);
+			buf.append(newline);
+		}
 		
 		buf.append(divider);
+		buf.append(newline);
 		
 		return buf.toString();
 	}
 	
 	public static String tagsToMultiLineString(Alert alert)
-	{
-		Map<String, Object> majors = alert.getMajorTags();		
+	{	
 		StringBuffer buf = new StringBuffer();
 		buf.append(tagMapToMultiLineString(alert.getMajorTags()));
-		buf.append(newline);
+		if (buf.length() > 0)
+		{
+			buf.append(newline);
+		}
 		buf.append(tagMapToMultiLineString(alert.getMinorTags()));
 		
 		return buf.toString();
