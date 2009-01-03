@@ -4,7 +4,7 @@
   <groupId>com.alertscape</groupId>
   <artifactId>alertscape</artifactId>
   <packaging>pom</packaging>
-  <version>0.7</version>
+  <version>0.8-SNAPSHOT</version>
   <name>alertscape</name>
   <url>http://alertscape.com</url>
   <scm>
