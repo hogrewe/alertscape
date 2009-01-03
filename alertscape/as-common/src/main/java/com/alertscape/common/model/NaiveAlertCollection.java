@@ -53,7 +53,7 @@ public class NaiveAlertCollection extends AbstractAlertCollection
       for (int i = 0, size = alerts.size( ); i < size; i++)
       {
         Alert a = alerts.get(i);
-        if (a.getAlertId( ) == alert.getAlertId( ))
+        if (a.getCompositeAlertId( ) == alert.getCompositeAlertId( ))
         {
           return i;
         }

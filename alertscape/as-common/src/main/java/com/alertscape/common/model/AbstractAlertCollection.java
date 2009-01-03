@@ -52,7 +52,7 @@ public abstract class AbstractAlertCollection implements AlertCollection
       lock.lock( );
       for (Alert e : alerts)
       {
-        if (e.getAlertId( ) == id)
+        if (e.getCompositeAlertId( ) == id)
         {
           return e;
         }

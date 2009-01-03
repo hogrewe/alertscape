@@ -32,7 +32,7 @@ public class IndexedAlertCollection extends AbstractAlertCollection
   @Override
   protected void processSingleAlert(Alert alert)
   {
-    Integer index = idToIndex.get(alert.getAlertId( ));
+    Integer index = idToIndex.get(alert.getCompositeAlertId( ));
     if (alert.isStanding( ))
     {
       // Is it new?
@@ -40,7 +40,7 @@ public class IndexedAlertCollection extends AbstractAlertCollection
       {
         LOG.debug("N");
         alerts.add(alert);
-        idToIndex.put(alert.getAlertId( ), alerts.size( )-1);
+        idToIndex.put(alert.getCompositeAlertId( ), alerts.size( )-1);
       }
       // It's already in the list, just update it
       else
@@ -60,9 +60,9 @@ public class IndexedAlertCollection extends AbstractAlertCollection
         for (int i = index; i < alerts.size( ); i++)
         {
           Alert e = alerts.get(i);
-          int nextIndex = idToIndex.get(e.getAlertId( ));
+          int nextIndex = idToIndex.get(e.getCompositeAlertId( ));
           nextIndex--;
-          idToIndex.put(e.getAlertId( ), nextIndex);
+          idToIndex.put(e.getCompositeAlertId( ), nextIndex);
         }
       }
       else

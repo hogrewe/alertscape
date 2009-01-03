@@ -74,8 +74,8 @@ public class BinarySortAlertCollection extends AbstractAlertCollection
   {
     public int compare(Alert o1, Alert o2)
     {
-      long e1 = o1.getAlertId( );
-      long e2 = o2.getAlertId( );
+      long e1 = o1.getCompositeAlertId( );
+      long e2 = o2.getCompositeAlertId( );
       return (e1 == e2 ? 0 : (e1 < e2) ? -1 : 1);
     }
   }

@@ -15,223 +15,251 @@ import com.alertscape.common.model.severity.Severity;
  * @version $Version: $
  */
 public class Alert implements Serializable {
-  private static final long serialVersionUID = -1396527085374975231L;
+  private static final long serialVersionUID = -1396527085374975232L;
 
   public enum AlertStatus {
-		STANDING, CLEARED;
-	}
+    STANDING, CLEARED;
+  }
 
-	private long alertId;
-	private AlertStatus status = AlertStatus.STANDING;
-	private String shortDescription;
-	private String longDescription;
-	private String type;
-	private Severity severity;
-	private long count;
-	private AlertSource source;
-	private String item;
-	private String itemManager;
-	private String itemType;
-	private String itemManagerType;
-	private Date firstOccurence;
-	private Date lastOccurence;
+  private long alertId;
+  private AlertStatus status = AlertStatus.STANDING;
+  private String shortDescription;
+  private String longDescription;
+  private String type;
+  private Severity severity;
+  private long count;
+  private AlertSource source;
+  private String item;
+  private String itemManager;
+  private String itemType;
+  private String itemManagerType;
+  private Date firstOccurence;
+  private Date lastOccurence;
+  private long compositeAlertId = -1;
 
-	private Map<String, Object> majorTags;
-	private Map<String, Object> minorTags;
+  private Map<String, Object> majorTags;
+  private Map<String, Object> minorTags;
 
-	public long getCount() {
-		return count;
-	}
+  public long getCount() {
+    return count;
+  }
 
-	public void setCount(long count) {
-		this.count = count;
-	}
+  public void setCount(long count) {
+    this.count = count;
+  }
 
-	public Date getFirstOccurence() {
-		return firstOccurence;
-	}
+  public Date getFirstOccurence() {
+    return firstOccurence;
+  }
 
-	public void setFirstOccurence(Date firstOccurence) {
-		this.firstOccurence = firstOccurence;
-	}
+  public void setFirstOccurence(Date firstOccurence) {
+    this.firstOccurence = firstOccurence;
+  }
 
-	public String getItem() {
-		return item;
-	}
+  public String getItem() {
+    return item;
+  }
 
-	public void setItem(String item) {
-		this.item = item;
-	}
+  public void setItem(String item) {
+    this.item = item;
+  }
 
-	public String getItemManager() {
-		return itemManager;
-	}
+  public String getItemManager() {
+    return itemManager;
+  }
 
-	public void setItemManager(String itemManager) {
-		this.itemManager = itemManager;
-	}
+  public void setItemManager(String itemManager) {
+    this.itemManager = itemManager;
+  }
 
-	public String getItemManagerType() {
-		return itemManagerType;
-	}
+  public String getItemManagerType() {
+    return itemManagerType;
+  }
 
-	public void setItemManagerType(String itemManagerType) {
-		this.itemManagerType = itemManagerType;
-	}
+  public void setItemManagerType(String itemManagerType) {
+    this.itemManagerType = itemManagerType;
+  }
 
-	public String getItemType() {
-		return itemType;
-	}
+  public String getItemType() {
+    return itemType;
+  }
 
-	public void setItemType(String itemType) {
-		this.itemType = itemType;
-	}
+  public void setItemType(String itemType) {
+    this.itemType = itemType;
+  }
 
-	public Date getLastOccurence() {
-		return lastOccurence;
-	}
+  public Date getLastOccurence() {
+    return lastOccurence;
+  }
 
-	public void setLastOccurence(Date lastOccurence) {
-		this.lastOccurence = lastOccurence;
-	}
+  public void setLastOccurence(Date lastOccurence) {
+    this.lastOccurence = lastOccurence;
+  }
 
-	public Severity getSeverity() {
-		return severity;
-	}
+  public Severity getSeverity() {
+    return severity;
+  }
 
-	public void setSeverity(Severity severity) {
-		this.severity = severity;
-	}
+  public void setSeverity(Severity severity) {
+    this.severity = severity;
+  }
 
-	/**
-	 * @return the source
-	 */
-	public AlertSource getSource() {
-		return source;
-	}
+  /**
+   * @return the source
+   */
+  public AlertSource getSource() {
+    return source;
+  }
 
-	/**
-	 * @param source the source to set
-	 */
-	public void setSource(AlertSource source) {
-		this.source = source;
-	}
+  /**
+   * @param source
+   *          the source to set
+   */
+  public void setSource(AlertSource source) {
+    this.source = source;
+    this.compositeAlertId = -1;
+  }
 
-	public String getType() {
-		return type;
-	}
+  public String getType() {
+    return type;
+  }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+  public void setType(String type) {
+    this.type = type;
+  }
 
-	public boolean isStanding() {
-		return getStatus() == AlertStatus.STANDING;
-	}
+  public boolean isStanding() {
+    return getStatus() == AlertStatus.STANDING;
+  }
 
-	public long getAlertId() {
-		return alertId;
-	}
+  public long getAlertId() {
+    return alertId;
+  }
 
-	public void setAlertId(long alertId) {
-		this.alertId = alertId;
-	}
+  public void setAlertId(long alertId) {
+    this.alertId = alertId;
+    this.compositeAlertId = -1;
+  }
 
-	public String getLongDescription() {
-		return longDescription;
-	}
+  public String getLongDescription() {
+    return longDescription;
+  }
 
-	public void setLongDescription(String longDescription) {
-		this.longDescription = longDescription;
-	}
+  public void setLongDescription(String longDescription) {
+    this.longDescription = longDescription;
+  }
 
-	public String getShortDescription() {
-		return shortDescription;
-	}
+  public String getShortDescription() {
+    return shortDescription;
+  }
 
-	public void setShortDescription(String shortDescription) {
-		this.shortDescription = shortDescription;
-	}
+  public void setShortDescription(String shortDescription) {
+    this.shortDescription = shortDescription;
+  }
 
-	public AlertStatus getStatus() {
-		return status;
-	}
+  public AlertStatus getStatus() {
+    return status;
+  }
 
-	public void setStatus(AlertStatus status) {
-		this.status = status;
-	}
+  public void setStatus(AlertStatus status) {
+    this.status = status;
+  }
 
-	/**
-	 * @return the majorTags
-	 */
-	public Map<String, Object> getMajorTags() 
-	{
-		if(this.majorTags == null) 
-		{
-			this.majorTags = new HashMap<String, Object>();
-		}
-		return majorTags;
-	}
+  /**
+   * @return the majorTags
+   */
+  public Map<String, Object> getMajorTags() {
+    if (this.majorTags == null) {
+      this.majorTags = new HashMap<String, Object>();
+    }
+    return majorTags;
+  }
 
-	/**
-	 * @param majorTags
-	 *            the majorTags to set
-	 */
-	public void setMajorTags(Map<String, Object> majorTags) {
-		this.majorTags = majorTags;
-		if(this.majorTags == null) {
-			this.majorTags = new HashMap<String, Object>();
-		}
-	}
-	
-	public void addMajorTag(String name, Object value) {
-		majorTags.put(name, value);
-	}
-	
-	public Object getMajorTag(String name) {
-		return majorTags.get(name);
-	}
+  /**
+   * @param majorTags
+   *          the majorTags to set
+   */
+  public void setMajorTags(Map<String, Object> majorTags) {
+    this.majorTags = majorTags;
+    if (this.majorTags == null) {
+      this.majorTags = new HashMap<String, Object>();
+    }
+  }
 
-	/**
-	 * @return the minorTags
-	 */
-	public Map<String, Object> getMinorTags() 
-	{
-		if(this.minorTags == null) 
-		{
-			this.minorTags = new HashMap<String, Object>();
-		}
-		
-		return minorTags;
-	}
+  public void addMajorTag(String name, Object value) {
+    majorTags.put(name, value);
+  }
 
-	/**
-	 * @param minorTags
-	 *            the minorTags to set
-	 */
-	public void setMinorTags(Map<String, Object> minorTags) {
-		this.minorTags = minorTags;
-		if(this.minorTags == null) {
-			this.minorTags = new HashMap<String, Object>();
-		}
-	}
-	
-	public void addMinorTag(String name, Object value) {
-		minorTags.put(name, value);
-	}
-	
-	public Object getMinorTag(String name) {
-		return minorTags.get(name);
-	}
+  public Object getMajorTag(String name) {
+    return majorTags.get(name);
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		return getAlertId() == ((Alert) o).getAlertId();
-	}
+  /**
+   * @return the minorTags
+   */
+  public Map<String, Object> getMinorTags() {
+    if (this.minorTags == null) {
+      this.minorTags = new HashMap<String, Object>();
+    }
 
-	@Override
-	public int hashCode() {
-		return Long.valueOf(getAlertId()).hashCode();
-	}
+    return minorTags;
+  }
+
+  /**
+   * @param minorTags
+   *          the minorTags to set
+   */
+  public void setMinorTags(Map<String, Object> minorTags) {
+    this.minorTags = minorTags;
+    if (this.minorTags == null) {
+      this.minorTags = new HashMap<String, Object>();
+    }
+  }
+
+  public void addMinorTag(String name, Object value) {
+    minorTags.put(name, value);
+  }
+
+  public Object getMinorTag(String name) {
+    return minorTags.get(name);
+  }
+
+  /**
+   * @return the compositeAlertId
+   */
+  public long getCompositeAlertId() {
+    if (compositeAlertId <= 0) {
+      compositeAlertId = (source == null ? 0 : source.getSourceId() * (long) Math.pow(10, 10)) + alertId;
+    }
+    return compositeAlertId;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (int) (alertId ^ (alertId >>> 32));
+    result = prime * result + ((source == null) ? 0 : source.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Alert other = (Alert) obj;
+    if (alertId != other.alertId)
+      return false;
+    if (source == null) {
+      if (other.source != null)
+        return false;
+    } else if (!source.equals(other.source))
+      return false;
+    return true;
+  }
 
 }
