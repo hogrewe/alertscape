@@ -4,21 +4,21 @@
   <groupId>com.alertscape</groupId>
   <artifactId>alertscape</artifactId>
   <packaging>pom</packaging>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.7</version>
   <name>alertscape</name>
   <url>http://alertscape.com</url>
   <scm>
     <connection>scm:git:ssh://hogrewe.com/storage/as-dev/as.git</connection>
   </scm>
   <modules>
-    <module>alert-browser</module>
     <module>as-common</module>
-    <module>alert-pump</module>
     <module>alert-onramp</module>
     <module>alert-offramp</module>
-    <module>alertscape-app</module>
+    <module>alert-pump</module>
     <module>alert-tester</module>
     <module>alert-service-interfaces</module>
+    <module>alert-browser</module>
+    <module>alertscape-app</module>
   </modules>
   <build>
     <plugins>  
