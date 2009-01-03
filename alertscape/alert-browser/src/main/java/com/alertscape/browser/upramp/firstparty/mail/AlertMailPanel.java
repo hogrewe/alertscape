@@ -105,6 +105,8 @@ public class AlertMailPanel extends AbstractUpRampPanel {
 	
 	private void initComponentBasics()
 	{
+		mailpanel.initComponents();
+		
 	  setLayout(new BorderLayout());
 	  add(mailpanel, BorderLayout.CENTER);
 	}
