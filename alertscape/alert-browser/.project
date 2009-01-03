@@ -3,8 +3,8 @@
   <comment/>
   <projects>
     <project>alert-service-interfaces</project>
-    <project>as-common</project>
     <project>alert-tester</project>
+    <project>as-common</project>
   </projects>
   <buildSpec>
     <buildCommand>
