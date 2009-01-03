@@ -41,6 +41,7 @@ import com.alertscape.browser.ui.swing.panel.collection.filter.TextFilterPanel;
 import com.alertscape.browser.ui.swing.panel.collection.summary.AlertCollectionSummaryPanel;
 import com.alertscape.browser.ui.swing.panel.collection.table.AlertCollectionTablePanel;
 import com.alertscape.browser.ui.swing.panel.common.ASPanelBuilder;
+import com.alertscape.browser.upramp.firstparty.login.LoginAction;
 import com.alertscape.browser.upramp.firstparty.mail.AlertMailAction;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
@@ -118,12 +119,16 @@ public class AlertBrowser extends JFrame {
     JToolBar actionToolbar = new JToolBar();    
     actionToolbar.setOpaque(false);
     actionToolbar.setFloatable(false);
+    
+    LoginAction loginAction = new LoginAction();
+    loginAction.setParentFrame(this);
+    JButton loginButton = actionToolbar.add(loginAction);
+    loginButton.setOpaque(false);
+    
     AlertMailAction mailAction = new AlertMailAction();
     mailAction.setParentFrame(this);
-    
     JButton mailButton = actionToolbar.add(mailAction);
     mailButton.setOpaque(false);
-    //mailButton.setBorder(BorderFactory.createEtchedBorder());
     
     // Table
     JPanel outerTablePanel = new JPanel();
@@ -172,12 +177,14 @@ public class AlertBrowser extends JFrame {
     JMenu fileMenu = new JMenu("File");
     //fileMenu.setMnemonic(KeyEvent.VK_F);
     
-    JMenuItem loginItem = new JMenuItem("Switch User", new ImageIcon(getClass().getResource("/com/alertscape/images/mini/icon_user.gif"))); 
-    loginItem.setMnemonic(KeyEvent.VK_U);		
-    loginItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.ALT_MASK));
-    loginItem.getAccessibleContext().setAccessibleDescription("Log a new user into Alertscape");
-    loginItem.setToolTipText("Log a new user into Alertscape");
-    fileMenu.add(loginItem);
+    fileMenu.add(loginAction);
+    
+//    JMenuItem loginItem = new JMenuItem("Switch User", new ImageIcon(getClass().getResource("/com/alertscape/images/mini/icon_user.gif"))); 
+//    loginItem.setMnemonic(KeyEvent.VK_U);		
+//    loginItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.ALT_MASK));
+//    loginItem.getAccessibleContext().setAccessibleDescription("Log a new user into Alertscape");
+//    loginItem.setToolTipText("Log a new user into Alertscape");
+//    fileMenu.add(loginItem);
 
     JMenuItem exitItem = new JMenuItem("Exit", new ImageIcon(getClass().getResource("/com/alertscape/images/mini/action_stop.gif"))); 
     exitItem.setMnemonic(KeyEvent.VK_X);	    
