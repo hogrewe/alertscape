@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 
 /**
@@ -15,6 +16,7 @@ import com.alertscape.common.model.Alert;
  * 
  */
 public class LogFileAlertGenerator implements AlertGenerator {
+  private static final ASLogger LOG = ASLogger.getLogger(LogFileAlertGenerator.class);
   private BufferedReader fileReader;
 
   /**
@@ -25,8 +27,7 @@ public class LogFileAlertGenerator implements AlertGenerator {
     try {
       reader.readFile();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error(e);
     }
 
   }
@@ -55,21 +56,21 @@ public class LogFileAlertGenerator implements AlertGenerator {
     String[] alertSplit = split[0].split("[ ]+", 4);
 
     if (alertSplit.length < 4) {
-      System.out.println("Problem: " + line);
+      LOG.debug("Problem: " + line);
       return null;
     }
 
-    // System.out.println(alertSplit[3]);
+    // LOG.debug(alertSplit[3]);
 
     // Get rid of the logged alert id (g5XXXXXXX)
     String[] split2 = alertSplit[3].split("-", 2);
 
     if (split2.length < 2) {
-      System.out.println("Problem: " + line);
+      LOG.debug("Problem: " + line);
       return null;
     }
 
-    // System.out.println(split2[1]);
+    // LOG.debug(split2[1]);
 
     // We have the alert fields now, just split them up
     String[] split3 = split2[1].split(":+");

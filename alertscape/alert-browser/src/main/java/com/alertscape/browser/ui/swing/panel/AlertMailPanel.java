@@ -8,13 +8,14 @@ import javax.swing.JPanel;
 
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.common.model.Alert;
+import com.alertscape.common.util.AlertUtility;
 
 public class AlertMailPanel extends JPanel {
 	
 	// static variables
 	private static final long serialVersionUID = 1L;
 	private static String defaultToEmailAddresses = "";		// the email addresses that should be defaulted into the to: field, semicolon delimited
-	private static String defaultCCEmailAddresses = "";			// the email addresses that should be defaulted into the cc: field, semicolon delimited
+	private static String defaultCCEmailAddresses = "";		// the email addresses that should be defaulted into the cc: field, semicolon delimited
 	private static int MAX_SUBJECT_LENGTH = 260;			// max number of chars in the subject line	
 	
 		
@@ -33,8 +34,14 @@ public class AlertMailPanel extends JPanel {
 	private SubjectMode subjectModeVal = SubjectMode.SHORT_DESC;
 	private BodyMode bodyModeVal = BodyMode.KEY_VALS;
 	
-	// TODO: create a constructor that takes a list of Alert objects and initializes the composite panel with it based on how this panel is configured
-	
+	public BodyMode getBodyMode() {
+		return bodyModeVal;
+	}
+
+	public void setBodyMode(BodyMode bodyModeVal) {
+		this.bodyModeVal = bodyModeVal;
+	}
+
 	public AlertMailPanel(BrowserContext context)
 	{
 		// initialize the basics of the panels
@@ -72,18 +79,16 @@ public class AlertMailPanel extends JPanel {
 
 	private String buildSubject(BrowserContext context)
 	{
-		List<Alert> alerts = context.getSelectedAlerts();
-		StringBuffer value = new StringBuffer();		
-		Iterator<Alert> it = alerts.iterator();
+		List<Alert> alerts = context.getSelectedAlerts();		
+		StringBuffer value = new StringBuffer();
 		
-		int count = 0;
-		while (it.hasNext())
+		if (subjectModeVal == SubjectMode.SHORT_DESC)
 		{
-			Alert a = it.next(); 
-			count++;
-
-			// TODO: this is not done, need to look at the modes and act accordingly
-
+			value.append(AlertUtility.alertListToSingleLineFieldString(AlertUtility.labelShortDescription, alerts));
+		}
+		else if (subjectModeVal == SubjectMode.LONG_DESC)
+		{
+			value.append(AlertUtility.alertListToSingleLineFieldString(AlertUtility.labelLongDescription, alerts));
 		}
 		
 		// truncate the subject line if it is too long
@@ -98,31 +103,15 @@ public class AlertMailPanel extends JPanel {
 	private String buildMessageBody(BrowserContext context)
 	{
 		List<Alert> alerts = context.getSelectedAlerts();
-		StringBuffer value = new StringBuffer();		
-		Iterator<Alert> it = alerts.iterator();
-		
-		int count = 0;
-		while (it.hasNext())
-		{
-			Alert a = it.next();
-			count++;
+		String value = "No Alerts Selected";
 			
-			if (bodyModeVal == BodyMode.KEY_VALS)
-			{
-				String nextLine = buildKeyValString(a);
-				value.append(nextLine);
-			}
-		}		
-		
-		//TODO: this is not done - needs key val suport, and templating support
-		
+		// check what mode the panel is operating in, to decide how to build the message body
+		if (bodyModeVal == BodyMode.KEY_VALS)
+		{
+			value = AlertUtility.alertListToMultiLineString(alerts);
+		}
+		//TODO: this is not done - needs templating mode support
 		return value.toString();
-	}
-	
-	private String buildKeyValString(Alert alert)
-	{
-		//TODO: fill in this method
-		return "";
 	}
 	
 	public static void setDefaultCCEmailAddresses(
@@ -141,5 +130,13 @@ public class AlertMailPanel extends JPanel {
 
 	public static String getDefaultToEmailAddresses() {
 		return defaultToEmailAddresses;
+	}
+
+	public void setSubjectMode(SubjectMode subjectModeVal) {
+		this.subjectModeVal = subjectModeVal;
+	}
+
+	public SubjectMode getSubjectMode() {
+		return subjectModeVal;
 	}
 }

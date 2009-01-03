@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.pump.onramp.equator.AlertEquator;
@@ -19,6 +20,7 @@ import com.alertscape.pump.onramp.sender.AlertTransportException;
  * 
  */
 public abstract class AlertOnramp {
+  private static ASLogger LOG = ASLogger.getLogger(AlertOnramp.class);
   private AlertTransport transport;
   private long nextAlertId;
   private byte[] nextAlertIdLock = new byte[0];
@@ -53,8 +55,7 @@ public abstract class AlertOnramp {
     try {
       transport.sendAlert(alert);
     } catch (AlertTransportException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error("Couldn't send alert to transport", e);
     }
   }
 
@@ -62,45 +63,17 @@ public abstract class AlertOnramp {
     try {
       List<Alert> alerts = transport.getAlerts(source);
       for (Alert alert : alerts) {
-        // TODO: store this somewhere else
-        long trueId = alert.getAlertId() % 100000000000l;
-        if(trueId > nextAlertId) {
-          nextAlertId = trueId + 1;
+        if(alert.getAlertId() > nextAlertId) {
+          nextAlertId = alert.getAlertId() + 1;
         }
         AlertDedupWrapper alertWrapper = new AlertDedupWrapper(equator, alert);
         alertMap.put(alertWrapper, alert);
       }
     } catch (AlertTransportException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error("Couldn't get alerts from transport", e);
     }
 
     init();
-
-    // TODO: take this out please
-    // Thread t = new Thread() {
-    //
-    // @Override
-    // public void run() {
-    // Severity sev = SeverityFactory.getInstance().getSeverity(2);
-    // while (true) {
-    // Alert alert = new Alert();
-    // alert.setSeverity(sev);
-    // alert.setSource(source);
-    // sendAlert(alert);
-    // try {
-    // sleep(100);
-    // } catch (InterruptedException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // }
-    // }
-    // };
-    //
-    // t.setName("AlertSendingTester");
-    // t.setDaemon(true);
-    // t.start();
   }
 
   protected abstract void init();

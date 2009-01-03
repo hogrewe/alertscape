@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.AlertSourceRepository;
@@ -63,6 +64,7 @@ public class BasicFileOnramp {
   // severity as enum
   // status as enum
   // Major and Minor Tags as full fledged objects
+  private static final ASLogger LOG = ASLogger.getLogger(BasicFileOnramp.class);
 
   // instance variables
   private String filePath; // the path to the file that will be continuously parsed
@@ -115,8 +117,7 @@ public class BasicFileOnramp {
           newAlerts.add(alert);
         } catch (Throwable e) {
 
-          System.out.println("Unable to parse alert: " + line);
-          e.printStackTrace();
+          LOG.error("Unable to parse alert: " + line, e);
         }
 
       }
@@ -124,12 +125,13 @@ public class BasicFileOnramp {
       // clean up the list of strings
     } catch (Throwable e) {
 
-      System.out.println("Unable to read file: " + filePath);
-      e.printStackTrace();
+      LOG.error("Unable to read file: " + filePath, e);
     }
 
     // debug statement
-    System.out.println("DEBUG: " + newAlerts.toString());
+    if(LOG.isDebugEnabled()) {
+      LOG.debug(newAlerts.toString());
+    }
     return newAlerts;
   }
 
@@ -430,7 +432,7 @@ public class BasicFileOnramp {
     ramp.setFilePath("C:/dev/eclipse/testfiles/rampinfile.txt");
     ramp.setSourceName("TEST");
     List<Alert> list = ramp.processOnRamp();
-    System.out.println(list);
+    LOG.debug(list);
     System.exit(0);
   }
 

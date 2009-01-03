@@ -15,6 +15,7 @@ import com.alertscape.common.model.Alert;
  * 
  */
 public class AlertEquator {
+  private static final ASLogger LOG = ASLogger.getLogger(AlertEquator.class);
 
   private List<AlertPropertyEquator> equators = new ArrayList<AlertPropertyEquator>();
 
@@ -42,7 +43,7 @@ public class AlertEquator {
     for (String attr : attributes) {
       AttributeEquator eq = new AttributeEquator(attr);
       equators.add(eq);
-      ASLogger.info("Setting new attribute equator: " + eq);
+      LOG.info("Setting new attribute equator: " + eq);
     }
   }
 

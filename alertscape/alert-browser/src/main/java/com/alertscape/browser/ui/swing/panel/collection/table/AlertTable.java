@@ -18,6 +18,7 @@ import com.alertscape.common.logging.ASLogger;
  */
 public class AlertTable extends JTable {
 	private static final long serialVersionUID = 1L;
+	private static final ASLogger LOG = ASLogger.getLogger(AlertTable.class);
 
 	/**
    * 
@@ -83,18 +84,18 @@ public class AlertTable extends JTable {
 		}
 
 		public void addSelectionInterval(int index0, int index1) {
-			ASLogger.debug("addSelectionInterval(" + index0 + "," + index1
+			LOG.debug("addSelectionInterval(" + index0 + "," + index1
 					+ ")");
 			delegate.addSelectionInterval(index0, index1);
 		}
 
 		public void clearSelection() {
-			ASLogger.debug("clearSelection()");
+		  LOG.debug("clearSelection()");
 			delegate.clearSelection();
 		}
 
 		public int getAnchorSelectionIndex() {
-			ASLogger.debug("getAnchorSelectionIndex()");
+		  LOG.debug("getAnchorSelectionIndex()");
 			return delegate.getAnchorSelectionIndex();
 		}
 
@@ -104,17 +105,17 @@ public class AlertTable extends JTable {
 		}
 
 		public int getMaxSelectionIndex() {
-			ASLogger.debug("getMaxSelectionIndex()");
+		  LOG.debug("getMaxSelectionIndex()");
 			return delegate.getMaxSelectionIndex();
 		}
 
 		public int getMinSelectionIndex() {
-			ASLogger.debug("getMinSelectionIndex()");
+		  LOG.debug("getMinSelectionIndex()");
 			return delegate.getMinSelectionIndex();
 		}
 
 		public int getSelectionMode() {
-			ASLogger.debug("getSelectionMode()");
+		  LOG.debug("getSelectionMode()");
 			return delegate.getSelectionMode();
 		}
 
@@ -123,7 +124,7 @@ public class AlertTable extends JTable {
 		}
 
 		public void insertIndexInterval(int index, int length, boolean before) {
-			ASLogger.debug("insertIndexInterval(" + index + "," + length + ","
+		  LOG.debug("insertIndexInterval(" + index + "," + length + ","
 					+ before + ")");
 			delegate.insertIndexInterval(index, length, before);
 		}
@@ -134,12 +135,12 @@ public class AlertTable extends JTable {
 		}
 
 		public boolean isSelectionEmpty() {
-			ASLogger.debug("isSelectionEmpty()");
+		  LOG.debug("isSelectionEmpty()");
 			return delegate.isSelectionEmpty();
 		}
 
 		public void removeIndexInterval(int index0, int index1) {
-			ASLogger
+		  LOG
 					.debug("removeIndexInterval(" + index0 + "," + index1 + ")");
 			delegate.removeIndexInterval(index0, index1);
 		}
@@ -149,34 +150,34 @@ public class AlertTable extends JTable {
 		}
 
 		public void removeSelectionInterval(int index0, int index1) {
-			ASLogger.debug("removeSelectionInterval(" + index0 + "," + index1
+		  LOG.debug("removeSelectionInterval(" + index0 + "," + index1
 					+ ")");
 			delegate.removeSelectionInterval(index0, index1);
 		}
 
 		public void setAnchorSelectionIndex(int index) {
-			ASLogger.debug("setAnchorSelectionIndex(" + index + ")");
+		  LOG.debug("setAnchorSelectionIndex(" + index + ")");
 			delegate.setAnchorSelectionIndex(index);
 		}
 
 		public void setLeadSelectionIndex(int index) {
-			ASLogger.debug("setLeadSelectionIndex(" + index + ")");
+		  LOG.debug("setLeadSelectionIndex(" + index + ")");
 			delegate.setLeadSelectionIndex(index);
 		}
 
 		public void setSelectionInterval(int index0, int index1) {
-			ASLogger.debug("setSelectionInterval(" + index0 + "," + index1
+		  LOG.debug("setSelectionInterval(" + index0 + "," + index1
 					+ ")");
 			delegate.setSelectionInterval(index0, index1);
 		}
 
 		public void setSelectionMode(int selectionMode) {
-			ASLogger.debug("setSelectionMode(" + selectionMode + ")");
+		  LOG.debug("setSelectionMode(" + selectionMode + ")");
 			delegate.setSelectionMode(selectionMode);
 		}
 
 		public void setValueIsAdjusting(boolean valueIsAdjusting) {
-			ASLogger.debug("setValueIsAdjusting(" + valueIsAdjusting + ")");
+		  LOG.debug("setValueIsAdjusting(" + valueIsAdjusting + ")");
 			delegate.setValueIsAdjusting(valueIsAdjusting);
 		}
 	}

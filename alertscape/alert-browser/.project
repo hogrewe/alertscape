@@ -2,8 +2,8 @@
   <name>alert-browser</name>
   <comment/>
   <projects>
-    <project>as-common</project>
     <project>alert-service-interfaces</project>
+    <project>as-common</project>
     <project>alert-tester</project>
   </projects>
   <buildSpec>

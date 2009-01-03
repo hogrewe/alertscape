@@ -27,6 +27,7 @@ import com.alertscape.common.model.AlertCollection;
  * 
  */
 public class JmsAlertListener implements AlertListener {
+  private static final ASLogger LOG = ASLogger.getLogger(JmsAlertListener.class);
 
   private AlertCollection collection;
   private ConnectionFactory factory;
@@ -113,7 +114,7 @@ public class JmsAlertListener implements AlertListener {
             }
           }
         } catch (JMSException e) {
-          ASLogger.error("Couldn't get object from JMS message", e);
+          LOG.error("Couldn't get object from JMS message", e);
         }
       }
     }
@@ -137,8 +138,6 @@ public class JmsAlertListener implements AlertListener {
           try {
             wait(3000);
           } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
           }
         }
       }

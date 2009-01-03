@@ -6,12 +6,15 @@ package com.alertscape.common.model;
 
 import ca.odell.glazedlists.util.concurrent.Lock;
 
+import com.alertscape.common.logging.ASLogger;
+
 /**
  * @author josh
  * @version $Version: $
  */
 public class NaiveAlertCollection extends AbstractAlertCollection
 {
+  private static final ASLogger LOG = ASLogger.getLogger(NaiveAlertCollection.class);
   @Override
   protected void processSingleAlert(Alert alert)
   {
@@ -21,20 +24,20 @@ public class NaiveAlertCollection extends AbstractAlertCollection
       // A new event, never seen
       if (existingAlertIndex < 0)
       {
-        System.out.print("N");
+        LOG.debug("N");
         alerts.add(alert);
       }
       // We already have it, update it
       else
       {
-        System.out.print("U");
+        LOG.debug("U");
         alerts.set(existingAlertIndex, alert);
       }
     }
     else
     {
       assert (existingAlertIndex >= 0);
-      System.out.print("C");
+      LOG.debug("C");
 
       alerts.remove(alert);
       alerts.remove(existingAlertIndex);

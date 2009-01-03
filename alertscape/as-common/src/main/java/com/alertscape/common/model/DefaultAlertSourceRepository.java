@@ -8,12 +8,14 @@ import java.util.Map;
 
 import com.alertscape.common.dao.AlertSourceDao;
 import com.alertscape.common.dao.DaoException;
+import com.alertscape.common.logging.ASLogger;
 
 /**
  * @author josh
  * 
  */
 public class DefaultAlertSourceRepository implements AlertSourceRepository {
+  private static final ASLogger LOG = ASLogger.getLogger(DefaultAlertSourceRepository.class);
   private static final AlertSource DEFAULT_SOURCE = new AlertSource(1, "UNKNOWN");
   private AlertSourceDao sourceDao;
   private Map<String, AlertSource> alertSources;
@@ -35,8 +37,7 @@ public class DefaultAlertSourceRepository implements AlertSourceRepository {
         alertSources.put(alertSource.getSourceName(), alertSource);
       }
     } catch (DaoException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error("Couldn't get sources from the DB", e);
     }
   }
 

@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import com.alertscape.common.dao.AlertDao;
+import com.alertscape.common.dao.AlertSourceDao;
 import com.alertscape.common.dao.DaoException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
@@ -38,6 +39,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       + "severity=?, count=?, last_occurence=? where alertid=?";
 
   private RowMapper alertMapper = new AlertMapper();
+  private AlertSourceDao sourceDao;
 
   public void delete(final long alertId) throws DaoException {
     PreparedStatementSetter pss = new PreparedStatementSetter() {
@@ -139,11 +141,41 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       alert.setShortDescription(rs.getString("short_description"));
       alert.setLongDescription(rs.getString("long_description"));
       alert.setSeverity(severityFactory.getSeverity(rs.getInt("severity")));
-      // XXX: Need to get the source somehow
-      alert.setSource(null);
+      
+      // TODO: look at taking these out
+      alert.setItem(rs.getString("item"));
+      alert.setItemType(rs.getString("item_type"));
+      alert.setItemManager(rs.getString("item_manager"));
+      alert.setItemManagerType(rs.getString("item_manager_type"));
+      
+      
+      if(getSourceDao() != null) {
+        AlertSource source;
+        try {
+          source = getSourceDao().get(rs.getInt("source_id"));
+        } catch (DaoException e) {
+          throw new SQLException("Couldn't get source object: " + e.getMessage());
+        }
+        alert.setSource(source);
+      }
+      
       alert.setStatus(AlertStatus.STANDING);
       return alert;
     }
+  }
+
+  /**
+   * @return the sourceDao
+   */
+  public AlertSourceDao getSourceDao() {
+    return sourceDao;
+  }
+
+  /**
+   * @param sourceDao the sourceDao to set
+   */
+  public void setSourceDao(AlertSourceDao sourceDao) {
+    this.sourceDao = sourceDao;
   }
 
 }
