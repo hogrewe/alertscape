@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.severity.SeverityFactory;
 import com.alertscape.pump.onramp.AlertOnramp;
@@ -21,6 +22,7 @@ import com.alertscape.pump.onramp.AlertOnramp;
  * 
  */
 public class FileOnramp extends AlertOnramp{
+  private static ASLogger LOG = ASLogger.getLogger(FileOnramp.class);
   private long sleepTimeBetweenReads = 10;
   private String filename;
   private long currentLinePointer;
@@ -101,8 +103,7 @@ public class FileOnramp extends AlertOnramp{
       try {
         m = MessageDigest.getInstance("MD5");
       } catch (NoSuchAlgorithmException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOG.error("Couldn't find MD5 digester", e);
       }
     }
 
@@ -127,20 +128,17 @@ public class FileOnramp extends AlertOnramp{
     public void run() {
       try {
         file = openFile();
-      } catch (FileNotFoundException e1) {
-        // TODO Auto-generated catch block
-        e1.printStackTrace();
+      } catch (FileNotFoundException e) {
+        LOG.error("Couldn't find the file to read in", e);
       }
 
       while (!stopped) {
         try {
           processLinesUntilEnd();
-        } catch (FileNotFoundException e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
-        } catch (IOException e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
+        } catch (FileNotFoundException e) {
+          LOG.error("Couldn't find the file to read", e);
+        } catch (IOException e) {
+          LOG.error(e);
         }
         try {
           synchronized (this) {
@@ -157,7 +155,7 @@ public class FileOnramp extends AlertOnramp{
       
       while (true) {
         if (!isFileLocationValid()) {
-          System.out.println("Truncated, starting over");
+          LOG.debug("Truncated, starting over");
           file = openFile();
           currentLinePointer = -1;
         }
@@ -171,14 +169,14 @@ public class FileOnramp extends AlertOnramp{
               elapsed = 1;
             }
             long perSecond = (linesProcessed*1000/elapsed);
-            System.out.println("Nothing left to process, done with " + linesProcessed + " lines in " + (endTime - startTime) + "ms at " + perSecond + "/s");
+            LOG.debug("Nothing left to process, done with " + linesProcessed + " lines in " + (endTime - startTime) + "ms at " + perSecond + "/s");
           }
           return;
         }
         String nextLineHash = hashLine(line);
         Alert a = createAlertFromLine(line);
         if(a != null) {
-//          System.out.println(a.getShortDescription());
+//          LOG.debug(a.getShortDescription());
           sendAlert(a);
         }
         currentLinePointer = nextLinePointer;
@@ -194,18 +192,8 @@ public class FileOnramp extends AlertOnramp{
     private Alert createAlertFromLine(String line) {
       Matcher matcher = pattern.matcher(line);
       if(!matcher.matches()) {
-//        System.out.println("No matches for " + line);
         return null;
       }
-//      System.out.print("IP Address: " + matcher.group(1));
-//      System.out.print(" Date&Time: " + matcher.group(4));
-//      System.out.print(" Request: " + matcher.group(5));
-//      System.out.print(" Response: " + matcher.group(6));
-//      System.out.print(" Bytes Sent: " + matcher.group(7));
-//      if (!matcher.group(8).equals("-"))
-//        System.out.print(" Referer: " + matcher.group(8));
-//      System.out.print(" Browser: " + matcher.group(9)); 
-//      System.out.println();
       Alert a = new Alert();
       // Request
       a.setItem(matcher.group(5));
@@ -215,7 +203,7 @@ public class FileOnramp extends AlertOnramp{
       a.setItemManagerType("Website");
       a.setSeverity(SeverityFactory.getInstance().getSeverity(0));
       a.setLongDescription("Request from " + matcher.group(1) + " for " + matcher.group(5));
-      // TODO Auto-generated method stub
+
       return a;
     }
 

@@ -37,7 +37,7 @@ public class AlertUtility {
 		
 		buf.append(labelAlertId);
 		buf.append(keyvalDelimiter);
-		buf.append(alert.getAlertId());
+		buf.append(alert.getCompositeAlertId());
 		buf.append(newline);
 		
 		buf.append(divider);

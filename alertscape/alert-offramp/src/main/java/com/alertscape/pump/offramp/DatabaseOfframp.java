@@ -22,7 +22,7 @@ public class DatabaseOfframp implements AlertOfframp {
       getAlertDao().save(alert);
     } else {
       // Might we want to just update with a cleared status then have an alert reaper?
-      getAlertDao().delete(alert.getAlertId());
+      getAlertDao().delete(alert.getSource(), alert.getAlertId());
     }
   }
 

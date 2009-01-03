@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.AlertSource;
@@ -19,6 +20,7 @@ import com.alertscape.common.model.Alert.AlertStatus;
 import com.alertscape.common.model.severity.SeverityFactory;
 
 public class GenerateEvents implements Runnable {
+  private static final ASLogger LOG = ASLogger.getLogger(GenerateEvents.class);
   private static final int NUM_EVENTS_TO_CACHE = 30000;
   private long id = 1000000;
   private SeverityFactory sevFactory = SeverityFactory.getInstance();
@@ -52,9 +54,8 @@ public class GenerateEvents implements Runnable {
     AlertGenerator gen = generators[rand.nextInt(generators.length)];
     try {
       a = gen.readAlert();
-    } catch (Exception e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
+    } catch (Exception e) {
+      LOG.error(e);
     }
 
     if (a == null) {
@@ -114,15 +115,15 @@ public class GenerateEvents implements Runnable {
       e.setSource(old.getSource());
       if (rand.nextBoolean()) {
         e.setStatus(AlertStatus.STANDING);
-        System.out.print("U");
+        LOG.debug("U");
       } else {
         e.setStatus(AlertStatus.CLEARED);
-        System.out.print("C");
+        LOG.debug("C");
       }
       e.setType(old.getType());
     } else {
       e = buildNewEvent();
-      System.out.print("N");
+      LOG.debug("N");
     }
     return e;
   }
@@ -138,7 +139,7 @@ public class GenerateEvents implements Runnable {
 
       if (val) {
         e = buildNewEvent();
-        System.out.print("N");
+        LOG.debug("N");
       } else {
         e = buildUpdateToExistingEvent(allEvents);
       }
@@ -160,18 +161,17 @@ public class GenerateEvents implements Runnable {
       }
       newEventPointer += groupSize;
       c.processAlerts(events);
-      System.out.println("Processed: " + events.size() + " events");
+      LOG.debug("Processed: " + events.size() + " events");
 
       try {
         Thread.sleep(2000);
-      } catch (InterruptedException e1) {
-        e1.printStackTrace();
+      } catch (InterruptedException e) {
       }
       Runtime runtime = Runtime.getRuntime();
       long totalMemory = runtime.totalMemory() / (1024 * 1024);
       long freeMemory = runtime.freeMemory() / (1024 * 1024);
 
-      System.out.println("Memory: " + totalMemory + "MB, Free: " + freeMemory + "MB");
+      LOG.debug("Memory: " + totalMemory + "MB, Free: " + freeMemory + "MB");
     }
   }
 
@@ -225,8 +225,7 @@ public class GenerateEvents implements Runnable {
         words.add(word);
       }
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error(e);
     }
 
     wordCount = words.size() - 1;

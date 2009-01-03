@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import com.alertscape.common.dao.AlertDao;
+import com.alertscape.common.dao.AlertSourceDao;
 import com.alertscape.common.dao.DaoException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
@@ -26,23 +27,26 @@ import com.alertscape.common.model.severity.SeverityFactory;
  */
 public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
 
-  private static final String DELETE_ALERT_SQL = "delete from alerts where alertid=?";
-  private static final String GET_ALERT_SQL = "select * from alerts where alertid=?";
+  private static final String DELETE_ALERT_SQL = "delete from alerts where source_id=? and alertid=?";
+  private static final String GET_ALERT_SQL = "select * from alerts where source_id=? and alertid=?";
   private static final String GET_ALL_ALERTS_SQL = "select * from alerts";
   private static final String GET_ALERTS_FOR_SOURCE_SQL = "select * from alerts where source_id="
       + "(select alert_source_id from alert_sources where alert_source_name=?)";
   private static final String INSERT_ALERT_SQL = "insert into alerts "
-      + "(alertid, short_description, long_description, severity, count, source_id, first_occurence, last_occurence) "
-      + "values (?,?,?,?,?,(select alert_source_id from alert_sources where alert_source_name=?),?,?)";
+      + "(alertid, short_description, long_description, severity, count, source_id, first_occurence, last_occurence,"
+      + "item, item_type, item_manager, item_manager_type, type) "
+      + "values (?,?,?,?,?,(select alert_source_id from alert_sources where alert_source_name=?),?,?,?,?,?,?,?)";
   private static final String UPDATE_ALERT_SQL = "update alerts set short_description=?, long_description=?, "
-      + "severity=?, count=?, last_occurence=? where alertid=?";
+      + "severity=?, count=?, last_occurence=? where source_id=? and alertid=?";
 
   private RowMapper alertMapper = new AlertMapper();
+  private AlertSourceDao sourceDao;
 
-  public void delete(final long alertId) throws DaoException {
+  public void delete(final AlertSource source, final long alertId) throws DaoException {
     PreparedStatementSetter pss = new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         int i = 1;
+        ps.setLong(i++, source.getSourceId());
         ps.setLong(i++, alertId);
       }
     };
@@ -50,11 +54,12 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   }
 
   @SuppressWarnings("unchecked")
-  public Alert get(final long alertId) throws DaoException {
+  public Alert get(final AlertSource source, final long alertId) throws DaoException {
     PreparedStatementSetter pss = new PreparedStatementSetter() {
 
       public void setValues(PreparedStatement ps) throws SQLException {
         int i = 1;
+        ps.setLong(i++, source.getSourceId());
         ps.setLong(i++, alertId);
       }
     };
@@ -73,11 +78,17 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
 
   @SuppressWarnings("unchecked")
   public List<Alert> getAlertsForSource(AlertSource source) throws DaoException {
-    return getJdbcTemplate().query(GET_ALERTS_FOR_SOURCE_SQL, new Object[] { source.getSourceName() }, alertMapper);
+    List<Alert> alerts = getJdbcTemplate().query(GET_ALERTS_FOR_SOURCE_SQL, new Object[] { source.getSourceName() }, alertMapper);
+    
+    for (Alert alert : alerts) {
+      alert.setSource(source);
+    }
+    
+    return alerts;
   }
 
   public void save(Alert alert) throws DaoException {
-    Alert existing = get(alert.getAlertId());
+    Alert existing = get(alert.getSource(), alert.getAlertId());
     if (existing != null) {
       update(alert);
     } else {
@@ -102,6 +113,11 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
         ps.setTimestamp(i++, firstOccur);
         Timestamp lastOccur = new Timestamp(alert.getLastOccurence().getTime());
         ps.setTimestamp(i++, lastOccur);
+        ps.setString(i++, alert.getItem());
+        ps.setString(i++, alert.getItemType());
+        ps.setString(i++, alert.getItemManager());
+        ps.setString(i++, alert.getItemManagerType());
+        ps.setString(i++, alert.getType());
       }
     };
     getJdbcTemplate().update(INSERT_ALERT_SQL, pss);
@@ -121,6 +137,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
         ps.setLong(i++, alert.getCount());
         Timestamp lastOccur = new Timestamp(alert.getLastOccurence().getTime());
         ps.setTimestamp(i++, lastOccur);
+        ps.setLong(i++, alert.getSource().getSourceId());
         ps.setLong(i++, alert.getAlertId());
       }
     };
@@ -139,11 +156,42 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       alert.setShortDescription(rs.getString("short_description"));
       alert.setLongDescription(rs.getString("long_description"));
       alert.setSeverity(severityFactory.getSeverity(rs.getInt("severity")));
-      // XXX: Need to get the source somehow
-      alert.setSource(null);
+
+      // TODO: look at taking these out
+      alert.setItem(rs.getString("item"));
+      alert.setItemType(rs.getString("item_type"));
+      alert.setItemManager(rs.getString("item_manager"));
+      alert.setItemManagerType(rs.getString("item_manager_type"));
+      alert.setType(rs.getString("type"));
+
+      if (getSourceDao() != null) {
+        AlertSource source;
+        try {
+          source = getSourceDao().get(rs.getInt("source_id"));
+        } catch (DaoException e) {
+          throw new SQLException("Couldn't get source object: " + e.getMessage());
+        }
+        alert.setSource(source);
+      }
+
       alert.setStatus(AlertStatus.STANDING);
       return alert;
     }
+  }
+
+  /**
+   * @return the sourceDao
+   */
+  public AlertSourceDao getSourceDao() {
+    return sourceDao;
+  }
+
+  /**
+   * @param sourceDao
+   *          the sourceDao to set
+   */
+  public void setSourceDao(AlertSourceDao sourceDao) {
+    this.sourceDao = sourceDao;
   }
 
 }

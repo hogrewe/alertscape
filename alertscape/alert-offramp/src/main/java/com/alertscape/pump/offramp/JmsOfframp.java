@@ -20,6 +20,7 @@ import com.alertscape.common.model.Alert;
  * 
  */
 public class JmsOfframp implements AlertOfframp {
+  private static final ASLogger LOG = ASLogger.getLogger(JmsOfframp.class);
   private ConnectionFactory factory;
   private Topic topic;
   private Connection connection;
@@ -42,7 +43,7 @@ public class JmsOfframp implements AlertOfframp {
     try {
       connection.close();
     } catch (JMSException e) {
-      ASLogger.error("Couldn't close JMS connection", e);
+      LOG.error("Couldn't close JMS connection", e);
     }
   }
 

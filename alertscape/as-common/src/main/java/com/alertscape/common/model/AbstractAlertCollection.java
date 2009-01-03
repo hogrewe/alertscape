@@ -52,7 +52,7 @@ public abstract class AbstractAlertCollection implements AlertCollection
       lock.lock( );
       for (Alert e : alerts)
       {
-        if (e.getAlertId( ) == id)
+        if (e.getCompositeAlertId( ) == id)
         {
           return e;
         }
@@ -110,7 +110,6 @@ public abstract class AbstractAlertCollection implements AlertCollection
 
   public void processAlerts(List<Alert> newAlerts)
   {
-    System.out.println( );
     Lock lock = alerts.getReadWriteLock( ).writeLock( );
     lock.lock( );
     // freezableEvents.freeze( );
@@ -120,7 +119,6 @@ public abstract class AbstractAlertCollection implements AlertCollection
     }
     // freezableEvents.thaw( );
     lock.unlock( );
-    System.out.println( );
   }
 
   protected abstract void processSingleAlert(Alert alert);

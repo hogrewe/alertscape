@@ -72,7 +72,7 @@ public class AlertCollectionTablePanel extends JPanel implements
     		"itemManager",
     		"itemType",
     		"itemManagerType",    		    		
-    		"alertId", 
+    		"compositeAlertId", 
     		"source"};
     String[] columnLabels = new String[] { 
     		"Last Event", 
