@@ -26,8 +26,8 @@ public class LoginPanel extends AbstractUpRampPanel
 	private JLabel userLabel;
 	private JPasswordField passwordField;
 	private JLabel passwordLabel;
-	private JButton sendButton;
-	private JButton cancelButton;	
+	private JButton sendButton = new JButton();
+	private JButton cancelButton = new JButton();	
 	
 	private boolean sendPressed = false;
 	
@@ -113,11 +113,11 @@ public class LoginPanel extends AbstractUpRampPanel
 		BoxLayout buttonbox = new BoxLayout(buttonPanel, BoxLayout.X_AXIS);
 		buttonPanel.setLayout(buttonbox);
 		buttonPanel.add(Box.createRigidArea(new Dimension(5,0)));		
-		cancelButton = new JButton("Cancel");
+		cancelButton.setText("Cancel");
 		cancelButton.setToolTipText("Cancel logging in");
 		buttonPanel.add(cancelButton);
 		buttonPanel.add(Box.createHorizontalGlue());
-		sendButton = new JButton("Login");
+		sendButton.setText("Login");
 		sendButton.setToolTipText("Login with this username/password"); 
 		buttonPanel.add(sendButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(5,0)));

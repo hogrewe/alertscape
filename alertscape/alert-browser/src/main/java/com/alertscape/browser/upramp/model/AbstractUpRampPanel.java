@@ -34,6 +34,7 @@ public abstract class AbstractUpRampPanel extends JPanel
 	public abstract boolean needsSubmit();
 	
 	// this method will be called during setup, and a listener will be passed in, which will hide the window when appropriate.  This listener should be added to any buttons, menues, etc, that should trigger the window to be hidden (send, submit, cancel, etc)
+	// note that this method will be called before the initialize method, in order to make sure that the listeners fire in the correct order
 	public abstract void associateHideListener(ActionListener listener);
 	
 	// this method tells us whether this panel has valid member vars setup

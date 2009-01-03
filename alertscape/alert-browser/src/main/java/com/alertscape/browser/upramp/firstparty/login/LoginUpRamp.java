@@ -3,7 +3,10 @@ package com.alertscape.browser.upramp.firstparty.login;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alertscape.browser.common.auth.Authentication;
+import com.alertscape.browser.common.auth.User;
 import com.alertscape.browser.model.BrowserContext;
+import com.alertscape.browser.ui.swing.AlertBrowser;
 import com.alertscape.browser.upramp.model.UpRamp;
 
 public class LoginUpRamp implements UpRamp
@@ -25,8 +28,12 @@ public class LoginUpRamp implements UpRamp
 
 	public boolean submit(BrowserContext context, Map keyvals)
 	{
-		// TODO Auto-generated method stub - make this work
-		return false;
+		// TODO Auto-generated method stub - make this work for real, this is just a demo hack below
+		String username = (String)keyvals.get(LoginConstants.USER_ID);		
+		User user = Authentication.login("CEV", username, null);    
+    AlertBrowser.getCurrentContext().setCurrentUser(user);
+		
+		return true;
 	}
 
 }

@@ -70,38 +70,38 @@ public abstract class AbstractUpRampAction extends AbstractAction
 			// center within the parent
 			dlg.setLocationRelativeTo(parentFrame);
 			
+			// add a hide listener to the panel
+			ActionListener hider = new ActionListener() {
+				public void actionPerformed(ActionEvent arg0)
+				{
+					// Hide the dialog
+					dlg.setVisible(false);
+					
+					// check if the panel needs to be submit
+					if (panel.needsSubmit())
+					{
+						// submit the data in the panel using the upramp already provided
+						boolean submitted = panel.submit();
+						
+						if (submitted)
+						{
+							// TODO: log a message
+						}
+						else
+						{
+							// TODO: pop a window, log a message
+						}
+					}
+				}
+			};
+			panel.associateHideListener(hider);
+			
 			// initialize the panel using the upramp
 			boolean initialized = panel.initialize();
 			
 			// make sure initialization worked
 			if (initialized)
-			{
-				// add a hide listener to the panel
-				ActionListener hider = new ActionListener() {
-					public void actionPerformed(ActionEvent arg0)
-					{
-						// Hide the dialog
-						dlg.setVisible(false);
-						
-						// check if the panel needs to be submit
-						if (panel.needsSubmit())
-						{
-							// submit the data in the panel using the upramp already provided
-							boolean submitted = panel.submit();
-							
-							if (submitted)
-							{
-								// TODO: log a message
-							}
-							else
-							{
-								// TODO: pop a window, log a message
-							}
-						}
-					}
-				};
-				panel.associateHideListener(hider);
-				
+			{		
 				// add the panel to the dialog
 				dlg.add(panel, BorderLayout.CENTER);
 				

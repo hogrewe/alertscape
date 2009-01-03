@@ -178,13 +178,6 @@ public class AlertBrowser extends JFrame {
     //fileMenu.setMnemonic(KeyEvent.VK_F);
     
     fileMenu.add(loginAction);
-    
-//    JMenuItem loginItem = new JMenuItem("Switch User", new ImageIcon(getClass().getResource("/com/alertscape/images/mini/icon_user.gif"))); 
-//    loginItem.setMnemonic(KeyEvent.VK_U);		
-//    loginItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.ALT_MASK));
-//    loginItem.getAccessibleContext().setAccessibleDescription("Log a new user into Alertscape");
-//    loginItem.setToolTipText("Log a new user into Alertscape");
-//    fileMenu.add(loginItem);
 
     JMenuItem exitItem = new JMenuItem("Exit", new ImageIcon(getClass().getResource("/com/alertscape/images/mini/action_stop.gif"))); 
     exitItem.setMnemonic(KeyEvent.VK_X);	    
@@ -197,7 +190,6 @@ public class AlertBrowser extends JFrame {
     // - Logoff
     // - Export (to CSV, Excel)
     // - Print (selected alerts or all alerts in view) 
-    
     
     JMenu editMenu = new JMenu("Edit");
     //editMenu.setMnemonic(KeyEvent.VK_E);
@@ -242,9 +234,7 @@ public class AlertBrowser extends JFrame {
     
     this.setJMenuBar(menubar);
     
-    
-    
-    
+    // jframe housekeeping
     setTitle("AMP - Alertscape Management Portal");
     URL cevImageUrl = getClass().getResource("/com/alertscape/images/common/as_logo2_32.png");
     ImageIcon cevImage = new ImageIcon(cevImageUrl);
