@@ -5,6 +5,8 @@ package com.alertscape.common.model.severity;
 
 import java.awt.Color;
 
+import com.alertscape.common.logging.ASLogger;
+
 /**
  * @author josh
  * @version $Version: $
@@ -12,6 +14,7 @@ import java.awt.Color;
 public class SeverityFactory
 {
   private static SeverityFactory inst = new SeverityFactory( );
+  private static final ASLogger LOG = ASLogger.getLogger(SeverityFactory.class);
 
   private Severity[] severities;
 
@@ -65,12 +68,12 @@ public class SeverityFactory
 
   public Severity getSeverity(int level)
   {
-    Severity sev = null;
-    if (level < severities.length)
+    if (level >= severities.length)
     {
-      sev = severities[level];
+      LOG.error("Tried to get severity higher than the configured max severity, defaulting to max severity");
+      level = severities.length - 1;
     }
-    return sev;
+    return severities[level];
   }
 
   public int getNumSeverities( )

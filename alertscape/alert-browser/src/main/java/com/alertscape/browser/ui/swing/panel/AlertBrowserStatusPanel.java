@@ -19,6 +19,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 import com.alertscape.browser.ui.swing.AlertBrowserStatus;
+import com.alertscape.util.FormatHelper;
 
 /**
  * @author josh
@@ -66,6 +67,6 @@ public class AlertBrowserStatusPanel extends JPanel {
   }
 
   protected void updateTime() {
-    timeLabel.setText(sdf.format(new Date()));
+    timeLabel.setText(FormatHelper.formatDate(new Date()));
   }
 }

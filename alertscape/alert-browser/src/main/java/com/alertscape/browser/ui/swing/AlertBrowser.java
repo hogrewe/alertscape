@@ -7,7 +7,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.List;
@@ -25,7 +24,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -281,7 +279,9 @@ public class AlertBrowser extends JFrame {
       listener.startListening();
       // GET ALL ALERTS
       List<Alert> alerts = alertService.getAllAlerts();
+      LOG.debug("Retrieved " + alerts.size() + " open alerts, processing");
       collection.processAlerts(alerts);
+      LOG.info("Processed " + alerts.size() + " open alerts");
       listener.startProcessing();
     } catch (AlertscapeException e) {
       JOptionPane.showMessageDialog(this, "Couldn't initalize alert listener", "Alert Listener Error",
