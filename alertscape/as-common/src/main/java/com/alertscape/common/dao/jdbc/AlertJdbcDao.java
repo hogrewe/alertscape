@@ -14,11 +14,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import com.alertscape.common.dao.AlertDao;
-import com.alertscape.common.dao.AlertSourceDao;
 import com.alertscape.common.dao.DaoException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
+import com.alertscape.common.model.AlertSourceRepository;
 import com.alertscape.common.model.Alert.AlertStatus;
+import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
@@ -40,7 +41,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       + "severity=?, count=?, last_occurence=? where source_id=? and alertid=?";
 
   private RowMapper alertMapper = new AlertMapper();
-  private AlertSourceDao sourceDao;
+  private AlertSourceRepository alertSourceRepository;
 
   public void delete(final AlertSource source, final long alertId) throws DaoException {
     PreparedStatementSetter pss = new PreparedStatementSetter() {
@@ -78,12 +79,9 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
 
   @SuppressWarnings("unchecked")
   public List<Alert> getAlertsForSource(AlertSource source) throws DaoException {
-    List<Alert> alerts = getJdbcTemplate().query(GET_ALERTS_FOR_SOURCE_SQL, new Object[] { source.getSourceName() }, alertMapper);
-    
-    for (Alert alert : alerts) {
-      alert.setSource(source);
-    }
-    
+    List<Alert> alerts = getJdbcTemplate().query(GET_ALERTS_FOR_SOURCE_SQL, new Object[] { source.getSourceName() },
+        alertMapper);
+
     return alerts;
   }
 
@@ -106,7 +104,8 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
         ps.setLong(i++, alert.getAlertId());
         ps.setString(i++, alert.getShortDescription());
         ps.setString(i++, alert.getLongDescription());
-        ps.setInt(i++, alert.getSeverity().getLevel());
+        Severity severity = alert.getSeverity();
+        ps.setInt(i++, severity == null ? 0 : severity.getLevel());
         ps.setLong(i++, alert.getCount());
         ps.setString(i++, alert.getSource().getSourceName());
         Timestamp firstOccur = new Timestamp(alert.getFirstOccurence().getTime());
@@ -164,34 +163,25 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       alert.setItemManagerType(rs.getString("item_manager_type"));
       alert.setType(rs.getString("type"));
 
-      if (getSourceDao() != null) {
-        AlertSource source;
-        try {
-          source = getSourceDao().get(rs.getInt("source_id"));
-        } catch (DaoException e) {
-          throw new SQLException("Couldn't get source object: " + e.getMessage());
-        }
-        alert.setSource(source);
-      }
-
+      alert.setSource(alertSourceRepository.getAlertSource(rs.getInt("source_id")));
+      
       alert.setStatus(AlertStatus.STANDING);
       return alert;
     }
   }
 
   /**
-   * @return the sourceDao
+   * @return the alertSourceRepository
    */
-  public AlertSourceDao getSourceDao() {
-    return sourceDao;
+  public AlertSourceRepository getAlertSourceRepository() {
+    return alertSourceRepository;
   }
 
   /**
-   * @param sourceDao
-   *          the sourceDao to set
+   * @param alertSourceRepository the alertSourceRepository to set
    */
-  public void setSourceDao(AlertSourceDao sourceDao) {
-    this.sourceDao = sourceDao;
+  public void setAlertSourceRepository(AlertSourceRepository alertSourceRepository) {
+    this.alertSourceRepository = alertSourceRepository;
   }
 
 }
