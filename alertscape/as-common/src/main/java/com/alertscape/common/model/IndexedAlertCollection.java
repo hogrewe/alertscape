@@ -38,14 +38,14 @@ public class IndexedAlertCollection extends AbstractAlertCollection
       // Is it new?
       if (index == null)
       {
-        LOG.debug("N");
+//        LOG.debug("N");
         alerts.add(alert);
         idToIndex.put(alert.getCompositeAlertId( ), alerts.size( )-1);
       }
       // It's already in the list, just update it
       else
       {
-        LOG.debug("U");
+//        LOG.debug("U");
         alerts.set(index, alert);
       }
     }
@@ -53,7 +53,7 @@ public class IndexedAlertCollection extends AbstractAlertCollection
     {
       if (index != null)
       {
-        LOG.debug("C");
+//        LOG.debug("C");
         alerts.remove(index);
         // Ok, we removed the item at index, so we have to update the map for
         // everything that comes after index

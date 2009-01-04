@@ -9,4 +9,5 @@ package com.alertscape.common.model;
  */
 public interface AlertSourceRepository {
   AlertSource getAlertSource(String name);
+  AlertSource getAlertSource(int sourceId);
 }

@@ -13,21 +13,33 @@
   <url>http://as.hogrewe.com/as/webstart</url>
   <dependencies>
     <dependency>
-	  <groupId>com.alertscape</groupId>
-	  <artifactId>as-common</artifactId>
-	</dependency>
+      <groupId>com.alertscape</groupId>
+      <artifactId>as-common</artifactId>
+    </dependency>
     <dependency>
-	  <groupId>com.alertscape.service</groupId>
-	  <artifactId>alert-service-interfaces</artifactId>
-	</dependency>
+      <groupId>com.alertscape.service</groupId>
+      <artifactId>alert-service-interfaces</artifactId>
+    </dependency>
     <dependency>
-	  <groupId>com.alertscape</groupId>
-	  <artifactId>alert-tester</artifactId>
-	</dependency>
+      <groupId>com.alertscape</groupId>
+      <artifactId>alert-tester</artifactId>
+    </dependency>
     <dependency>
-	  <groupId>com.odell</groupId>
-	  <artifactId>glazedlists</artifactId>
-	</dependency>
+      <groupId>com.odell</groupId>
+      <artifactId>glazedlists</artifactId>
+    </dependency>
+      <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>forms</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>validation</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>com.jgoodies</groupId>
+        <artifactId>binding</artifactId>
+      </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -36,10 +48,10 @@
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-core</artifactId>
     </dependency>
-	  <dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring</artifactId>
-	  </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring</artifactId>
+      </dependency>
       <dependency>
         <groupId>org.apache.xbean</groupId>
         <artifactId>xbean-spring</artifactId>
@@ -51,7 +63,7 @@
   </dependencies>
     <build>
         <plugins>
-	<!--
+    <!--
             <plugin>
                 <groupId>com.pyx4me</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
@@ -71,25 +83,25 @@
                     </libs>
                 </configuration>
             </plugin>
-	  -->
+      -->
       <plugin>
         <groupId>org.codehaus.mojo.webstart</groupId>
         <artifactId>webstart-maven-plugin</artifactId>
         <executions>
            <execution>
-		   	  <phase>package</phase>
+                 <phase>package</phase>
               <goals>
                  <goal>jnlp-inline</goal> 
               </goals>
            </execution>
         </executions>
         <configuration>
-		   <libPath>lib</libPath>
+           <libPath>lib</libPath>
 
            
            <jnlp>
-		     <inputTemplateResourcePath>${project.basedir}/src/jnlp</inputTemplateResourcePath>
-			 <inputTemplate>alertbrowser.vm</inputTemplate>
+             <inputTemplateResourcePath>${project.basedir}/src/jnlp</inputTemplateResourcePath>
+             <inputTemplate>alertbrowser.vm</inputTemplate>
              <outputFile>alertbrowser.jnlp</outputFile> 
 
              <mainClass>com.alertscape.browser.ui.swing.AlertBrowserMain</mainClass>
@@ -119,7 +131,7 @@
 
 <!--
            <pack200>true</pack200>
-		   -->
+           -->
            <!-- <gzip>true</gzip> --><!-- default force when pack200 false, true when pack200 selected ?? -->
 
         </configuration>

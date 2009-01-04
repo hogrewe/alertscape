@@ -8,6 +8,7 @@ import java.util.List;
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
+import com.alertscape.common.model.AlertSourceRepository;
 import com.alertscape.pump.offramp.DatabaseOfframp;
 import com.alertscape.pump.offramp.JmsOfframp;
 
@@ -18,6 +19,7 @@ import com.alertscape.pump.offramp.JmsOfframp;
 public class ConfigurableAlertPump implements AlertPump {
   private DatabaseOfframp dbOfframp;
   private JmsOfframp jmsOfframp;
+  private AlertSourceRepository alertSourceRepository;
 
   public void processAlert(Alert a) throws AlertscapeException {
     if (dbOfframp != null) {
@@ -34,6 +36,10 @@ public class ConfigurableAlertPump implements AlertPump {
 
   public List<Alert> getAllAlerts() throws AlertscapeException {
     return getDbOfframp().getAllAlerts();
+  }
+  
+  public AlertSource getAlertSource(String name) throws AlertscapeException {
+    return getAlertSourceRepository().getAlertSource(name);
   }
 
   /**
@@ -64,6 +70,20 @@ public class ConfigurableAlertPump implements AlertPump {
    */
   public void setJmsOfframp(JmsOfframp jmsOfframp) {
     this.jmsOfframp = jmsOfframp;
+  }
+
+  /**
+   * @return the alertSourceRepository
+   */
+  public AlertSourceRepository getAlertSourceRepository() {
+    return alertSourceRepository;
+  }
+
+  /**
+   * @param alertSourceRepository the alertSourceRepository to set
+   */
+  public void setAlertSourceRepository(AlertSourceRepository alertSourceRepository) {
+    this.alertSourceRepository = alertSourceRepository;
   }
 
 }

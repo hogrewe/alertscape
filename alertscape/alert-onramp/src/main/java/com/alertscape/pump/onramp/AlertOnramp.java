@@ -27,6 +27,7 @@ public abstract class AlertOnramp {
   private AlertEquator equator;
   private Map<AlertDedupWrapper, Alert> alertMap = new HashMap<AlertDedupWrapper, Alert>();
   private AlertSource source = new AlertSource(1, "UNKNOWN");
+  private String sourceName;
 
   public void sendAlert(Alert alert) {
     alert.setSource(source);
@@ -69,6 +70,7 @@ public abstract class AlertOnramp {
         AlertDedupWrapper alertWrapper = new AlertDedupWrapper(equator, alert);
         alertMap.put(alertWrapper, alert);
       }
+      source = transport.getSource(sourceName);
     } catch (AlertTransportException e) {
       LOG.error("Couldn't get alerts from transport", e);
     }
@@ -108,5 +110,20 @@ public abstract class AlertOnramp {
   public void setSource(AlertSource source) {
     this.source = source;
   }
+
+  /**
+   * @return the sourceName
+   */
+  public String getSourceName() {
+    return sourceName;
+  }
+
+  /**
+   * @param sourceName the sourceName to set
+   */
+  public void setSourceName(String sourceName) {
+    this.sourceName = sourceName;
+  }
+  
 
 }

@@ -130,6 +130,7 @@ public class JmsAlertListener implements AlertListener {
         synchronized (alertQueue) {
           if (!alertQueue.isEmpty()) {
             collection.processAlerts(alertQueue);
+            LOG.info("Processed " + alertQueue.size() + " alerts");
             alertQueue.clear();
           }
         }

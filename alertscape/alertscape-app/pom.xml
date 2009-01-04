@@ -33,7 +33,7 @@
             <artifactItem>
               <groupId>com.alertscape.browser</groupId>
               <artifactId>alert-browser</artifactId>
-              <version>0.1-SNAPSHOT</version>
+              <version>${project.version}</version>
               <type>zip</type>                            
             </artifactItem>
           </artifactItems>

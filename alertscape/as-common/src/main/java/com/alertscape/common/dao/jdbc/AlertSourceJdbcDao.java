@@ -62,7 +62,7 @@ public class AlertSourceJdbcDao extends JdbcDaoSupport implements AlertSourceDao
   }
 
   public void reserveAlertIdSeq(final AlertSource source, final int numToReserve) throws DaoException {
-//    getJdbcTemplate().
+    // getJdbcTemplate().
     getJdbcTemplate().update(UPDATE_ID_SEQ, new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         int i = 1;
