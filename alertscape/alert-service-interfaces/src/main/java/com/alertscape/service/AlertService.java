@@ -17,5 +17,6 @@ public interface AlertService {
 
   public List<Alert> getAllAlerts() throws AlertscapeException;
   public void clear(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
+  public void unacknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
   public void acknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
 }

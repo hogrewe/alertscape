@@ -32,6 +32,14 @@ public class ConfigurableAlertService implements AlertService {
     }
   }
 
+  public void unacknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException {
+    for (Alert a : alert) {
+      a.setAcknowledgedBy(null);      
+      LOG.info("Unacknowledging alert: " + a.getCompositeAlertId());
+      pump.processAlert(a);      
+    }
+  }
+
   public void clear(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException {
     for (Alert a : alert) {
       a.setStatus(AlertStatus.CLEARED);
