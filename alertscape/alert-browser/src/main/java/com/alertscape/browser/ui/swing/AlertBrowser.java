@@ -46,6 +46,7 @@ import com.alertscape.browser.upramp.firstparty.customtag.CustomTagAction;
 import com.alertscape.browser.upramp.firstparty.login.LoginAction;
 import com.alertscape.browser.upramp.firstparty.mail.AlertMailAction;
 import com.alertscape.browser.upramp.firstparty.predefinedtag.PredefinedTagAction;
+import com.alertscape.browser.upramp.firstparty.unack.UnacknowledgeAlertAction;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
@@ -142,6 +143,11 @@ public class AlertBrowser extends JFrame {
     // JButton ackButton = actionToolbar.add(ackAction);
     // ackButton.setOpaque(false);
 
+    UnacknowledgeAlertAction unackAction = new UnacknowledgeAlertAction();
+    unackAction.setParentFrame(this);
+    // JButton ackButton = actionToolbar.add(ackAction);
+    // ackButton.setOpaque(false);
+
     PredefinedTagAction predefinedTagAction = new PredefinedTagAction();
     predefinedTagAction.setParentFrame(this);
     JButton predefinedTagButton = actionToolbar.add(predefinedTagAction);
@@ -222,6 +228,7 @@ public class AlertBrowser extends JFrame {
     JMenu actionsMenu = new JMenu("Actions");
     // actionsMenu.setMnemonic(KeyEvent.VK_A);
     actionsMenu.add(ackAction);
+    actionsMenu.add(unackAction);
     actionsMenu.add(clearAction);
     actionsMenu.addSeparator();
     actionsMenu.add(mailAction);
@@ -359,6 +366,14 @@ public class AlertBrowser extends JFrame {
   public static void acknowledge(List<Alert> alerts) {
     try {
       alertService.acknowledge(Authentication.getUser("CEV"), alerts);
+    } catch (AlertscapeException e) {
+      LOG.error("Couldn't acknowledge alerts", e);
+    }
+  }
+
+  public static void unacknowledge(List<Alert> alerts) {
+    try {
+      alertService.unacknowledge(Authentication.getUser("CEV"), alerts);
     } catch (AlertscapeException e) {
       LOG.error("Couldn't acknowledge alerts", e);
     }

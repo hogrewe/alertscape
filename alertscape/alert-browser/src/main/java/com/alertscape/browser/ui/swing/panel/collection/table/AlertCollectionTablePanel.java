@@ -41,6 +41,12 @@ public class AlertCollectionTablePanel extends JPanel implements
   private AlertCollection collection;
   private SortedList<Alert> sortedList;
 
+  private TableComparatorChooser<Alert> chooser;
+
+  private TableFormat<Alert> tf;
+
+  private EventTableModel<Alert> model;
+
   // private EventCollectionTableModel model;
   // private TableRowSorter<EventCollectionTableModel> sorter;
 
@@ -90,11 +96,12 @@ public class AlertCollectionTablePanel extends JPanel implements
     		"Alert ID", 
     		"Source" };        
         
-    TableFormat<Alert> tf = GlazedLists.tableFormat(Alert.class, propertyNames,
+    tf = GlazedLists.tableFormat(Alert.class, propertyNames,
         columnLabels);
-    collectionTable = new JTable(new EventTableModel<Alert>(sortedList, tf));
+    model = new EventTableModel<Alert>(sortedList, tf);
+    collectionTable = new JTable(model);
 
-    new TableComparatorChooser<Alert>(collectionTable, sortedList, true);
+    chooser = new TableComparatorChooser<Alert>(collectionTable, sortedList, true);
 
     TableCellRenderer defaultRenderer = new DefaultAlertCellRenderer( );
     TableCellRenderer sevRenderer = new SeverityAlertCellRenderer( );
@@ -191,7 +198,9 @@ public class AlertCollectionTablePanel extends JPanel implements
   	for (int i = 0; i < myrows.length; i++)
   	{
   		int nextrow = myrows[i];
-  		Alert next = collection.getAlertAt(nextrow);
+  	  
+//  		Alert next = collection.getAlertAt(converted);
+  		Alert next = sortedList.get(nextrow);
   		retval.add(next);
   	}
   	
