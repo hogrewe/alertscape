@@ -19,7 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
@@ -30,7 +29,7 @@ import ca.odell.glazedlists.util.concurrent.Lock;
 import com.alertscape.browser.model.AlertFilter;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
-import com.alertscape.common.model.IndexedAlertCollection;
+import com.alertscape.common.model.BinarySortAlertCollection;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
 
@@ -60,7 +59,7 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
     EventList<Alert> masterList = master.getEventList( );
     FilterList<Alert> filterList = new FilterList<Alert>(masterList,
         severityMatcher);
-    subCollection = new IndexedAlertCollection(filterList);
+    subCollection = new BinarySortAlertCollection(filterList);
     existingEvents.clear( );
     existingEvents.addAll(masterList);
 

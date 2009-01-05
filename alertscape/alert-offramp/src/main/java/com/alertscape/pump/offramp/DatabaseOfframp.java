@@ -6,9 +6,9 @@ package com.alertscape.pump.offramp;
 import java.util.List;
 
 import com.alertscape.AlertscapeException;
-import com.alertscape.common.dao.AlertDao;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
+import com.alertscape.dao.AlertDao;
 
 /**
  * @author josh

@@ -60,9 +60,9 @@ public class IndexedAlertCollection extends AbstractAlertCollection
         for (int i = index; i < alerts.size( ); i++)
         {
           Alert e = alerts.get(i);
-          int nextIndex = idToIndex.get(e.getCompositeAlertId( ));
-          nextIndex--;
-          idToIndex.put(e.getCompositeAlertId( ), nextIndex);
+//          int nextIndex = idToIndex.get(e.getCompositeAlertId( ));
+//          nextIndex--;
+          idToIndex.put(e.getCompositeAlertId( ), index);
         }
       }
       else

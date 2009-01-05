@@ -4,11 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JPanel;
 
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.ui.swing.panel.MailPanel;

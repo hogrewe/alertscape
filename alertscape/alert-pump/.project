@@ -2,8 +2,9 @@
   <name>alert-pump</name>
   <comment/>
   <projects>
-    <project>as-common</project>
+    <project>as-dao</project>
     <project>alert-offramp</project>
+    <project>as-common</project>
   </projects>
   <buildSpec>
     <buildCommand>

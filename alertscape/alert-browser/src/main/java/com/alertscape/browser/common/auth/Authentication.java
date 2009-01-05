@@ -8,65 +8,84 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alertscape.AlertscapeException;
+import com.alertscape.common.logging.ASLogger;
+import com.alertscape.common.model.AuthenticatedUser;
+import com.alertscape.service.AuthenticationService;
+
 /**
  * @author josh
  * @version $Version: $
  */
 public class Authentication {
-	private static Map<String, User> appUsers = new HashMap<String, User>();
+  private static final ASLogger LOG = ASLogger.getLogger(Authentication.class);
+  private static Map<String, AuthenticatedUser> appUsers = new HashMap<String, AuthenticatedUser>();
 
-	private static List<AuthenticationListener> authListeners = new ArrayList<AuthenticationListener>();
+  private static List<AuthenticationListener> authListeners = new ArrayList<AuthenticationListener>();
+  private static AuthenticationService authenticationService;
 
-	public static User getUser(String application) {
-		return appUsers.get(application);
-	}
+  public static AuthenticatedUser getUser(String application) {
+    return appUsers.get(application);
+  }
 
-	public static User login(String application, String user, char[] password) {
-		// TODO: actually login somehow
-		User u = new User();
-		u.setUsername(user);
-		u.setEmail(user + "@alertscape.com");
+  public static AuthenticatedUser login(String application, String user, char[] password) {
+    AuthenticatedUser u = null;
 
-		appUsers.put(application, u);
+    try {
+      u = authenticationService.authenticate(user, password);
+    } catch (AlertscapeException e) {
+      LOG.error("Problem logging in", e);
+    }
 
-		fireLoginEvent(u);
+    if (u == null) {
+      LOG.info("Failed login attempt");
+      fireFailedLoginEvent();
+    } else {
+      appUsers.put(application, u);
 
-		return u;
-	}
+      fireLoginEvent(u);
+    }
 
-	public static void addAuthenticationListener(AuthenticationListener l) {
-		if (!authListeners.contains(l)) {
-			authListeners.add(l);
-		}
-	}
+    return u;
+  }
 
-	public static void removeAuthenticationListener(AuthenticationListener l) {
-		authListeners.remove(l);
-	}
+  public static void addAuthenticationListener(AuthenticationListener l) {
+    if (!authListeners.contains(l)) {
+      authListeners.add(l);
+    }
+  }
 
-	private static void fireLoginEvent(User u) {
-		AuthenticationEvent e = new AuthenticationEvent(
-				AuthenticationEvent.LOGIN, u);
-		fireAuthenticationEvent(e);
-	}
+  public static void removeAuthenticationListener(AuthenticationListener l) {
+    authListeners.remove(l);
+  }
 
-	@SuppressWarnings("unused")
-	private static void fireLogoutEvent(User u) {
-		AuthenticationEvent e = new AuthenticationEvent(
-				AuthenticationEvent.LOGOUT, u);
-		fireAuthenticationEvent(e);
-	}
+  private static void fireLoginEvent(AuthenticatedUser u) {
+    AuthenticationEvent e = new AuthenticationEvent(AuthenticationEvent.LOGIN, u);
+    fireAuthenticationEvent(e);
+  }
 
-	@SuppressWarnings("unused")
-	private static void fireFailedLoginEvent() {
-		AuthenticationEvent e = new AuthenticationEvent(
-				AuthenticationEvent.FAILED_LOGIN, null);
-		fireAuthenticationEvent(e);
-	}
+  @SuppressWarnings("unused")
+  private static void fireLogoutEvent(AuthenticatedUser u) {
+    AuthenticationEvent e = new AuthenticationEvent(AuthenticationEvent.LOGOUT, u);
+    fireAuthenticationEvent(e);
+  }
 
-	private static void fireAuthenticationEvent(AuthenticationEvent e) {
-		for (int i = 0, size = authListeners.size(); i < size; i++) {
-			authListeners.get(i).handleAuthEvent(e);
-		}
-	}
+  private static void fireFailedLoginEvent() {
+    AuthenticationEvent e = new AuthenticationEvent(AuthenticationEvent.FAILED_LOGIN, null);
+    fireAuthenticationEvent(e);
+  }
+
+  private static void fireAuthenticationEvent(AuthenticationEvent e) {
+    for (int i = 0, size = authListeners.size(); i < size; i++) {
+      authListeners.get(i).handleAuthEvent(e);
+    }
+  }
+
+  /**
+   * @param authenticationService
+   *          the authenticationService to set
+   */
+  public static void setAuthenticationService(AuthenticationService authenticationService) {
+    Authentication.authenticationService = authenticationService;
+  }
 }

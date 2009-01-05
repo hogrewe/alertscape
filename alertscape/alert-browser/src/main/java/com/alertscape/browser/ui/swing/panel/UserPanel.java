@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import com.alertscape.browser.common.auth.Authentication;
 import com.alertscape.browser.common.auth.AuthenticationEvent;
 import com.alertscape.browser.common.auth.AuthenticationListener;
-import com.alertscape.browser.common.auth.User;
+import com.alertscape.common.model.AuthenticatedUser;
 
 /**
  * @author josh
@@ -60,7 +60,7 @@ public class UserPanel extends JPanel implements AuthenticationListener
 
   protected void configureLabel( )
   {
-    User u = Authentication.getUser("CEV");
+    AuthenticatedUser u = Authentication.getUser("CEV");
     if (u == null)
     {
       userLabel.setText(NO_USER);

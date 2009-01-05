@@ -3,10 +3,7 @@
  */
 package com.alertscape.browser.ui.swing.panel.collection.filter;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.JPanel;
@@ -21,7 +18,7 @@ import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.alertscape.browser.model.AlertFilter;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
-import com.alertscape.common.model.IndexedAlertCollection;
+import com.alertscape.common.model.BinarySortAlertCollection;
 
 /**
  * @author josh
@@ -61,7 +58,7 @@ public class TextFilterPanel extends JPanel implements AlertFilter {
   public AlertCollection setMasterCollection(AlertCollection master) {
     EventList<Alert> masterList = master.getEventList();
     FilterList<Alert> filterList = new FilterList<Alert>(masterList, matcherEditor);
-    subCollection = new IndexedAlertCollection(filterList);
+    subCollection = new BinarySortAlertCollection(filterList);
 
     return subCollection;
   }

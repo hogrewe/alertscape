@@ -19,12 +19,18 @@
 	<amq:topic id="uiAlertStream" physicalName="com.alertscape.pump.Alerts" />
 	<bean id="alertService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-		<property name="serviceUrl" value="${remote.service.url}" />
+		<property name="serviceUrl" value="${alert.remote.service.url}" />
 		<property name="serviceInterface" value="com.alertscape.service.AlertService" />
 	</bean>
+    <bean id="authenticationService"
+        class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+        <property name="serviceUrl" value="${auth.remote.service.url}" />
+        <property name="serviceInterface" value="com.alertscape.service.AuthenticationService" />
+    </bean>
 	<bean id="browser" class="com.alertscape.browser.ui.swing.AlertBrowser"
 		init-method="init">
 		<property name="alertService" ref="alertService" />
+        <property name="authenticationService" ref="authenticationService" />
 		<property name="jmsFactory" ref="jmsFactory" />
 	</bean>
 </beans>

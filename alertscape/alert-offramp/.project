@@ -3,6 +3,7 @@
   <comment/>
   <projects>
     <project>as-common</project>
+    <project>as-dao</project>
   </projects>
   <buildSpec>
     <buildCommand>
