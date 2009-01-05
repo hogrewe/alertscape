@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.alertscape.browser.upramp.firstparty.clear;
+package com.alertscape.browser.upramp.firstparty.unack;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -23,17 +23,19 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 
 /**
  * @author josh
- *
+ * 
  */
-public class ClearAlertPanel extends AbstractUpRampPanel {
+public class UnacknowledgeAlertPanel extends AbstractUpRampPanel {
+  private static final long serialVersionUID = 6339207188273249824L;
   private JButton okButton = new JButton("OK");
   private JButton cancelButton = new JButton("Cancel");
-  private boolean submit;
   
+  private boolean submit;
+
   /**
    * @param upramp
    */
-  public ClearAlertPanel(UpRamp upramp) {
+  public UnacknowledgeAlertPanel(UpRamp upramp) {
     setUpramp(upramp);
     setContext(AlertBrowser.getCurrentContext());
   }
@@ -69,7 +71,7 @@ public class ClearAlertPanel extends AbstractUpRampPanel {
     List<Alert> selectedAlerts = AlertBrowser.getCurrentContext().getSelectedAlerts();
     numAlerts = selectedAlerts.size();
     String alertString = numAlerts == 1 ? " alert?" : " alerts?";
-    messagePanel.add(new JLabel("Are you sure you want to clear " + numAlerts + alertString));
+    messagePanel.add(new JLabel("Are you sure you want to unacknowledge " + numAlerts + alertString));
     add(messagePanel, BorderLayout.CENTER);
     return true;
   }

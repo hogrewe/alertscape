@@ -77,6 +77,6 @@ public class AcknowledgeAlertPanel extends AbstractUpRampPanel {
 
   @Override
   public boolean needsSubmit() {
-    return true;
+    return submit;
   }
 }
