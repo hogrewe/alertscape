@@ -19,6 +19,7 @@
     <module>alert-service-interfaces</module>
     <module>alert-browser</module>
     <module>alertscape-app</module>
+    <module>as-dao</module>
   </modules>
   <build>
     <plugins>  
@@ -61,6 +62,11 @@
       <dependency>
         <groupId>com.alertscape.pump</groupId>
         <artifactId>alert-offramp</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.alertscape.dao</groupId>
+        <artifactId>as-dao</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

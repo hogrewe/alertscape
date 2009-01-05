@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.alertscape.browser.common.auth.Authentication;
-import com.alertscape.browser.common.auth.User;
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.ui.swing.AlertBrowser;
 import com.alertscape.browser.upramp.model.UpRamp;
+import com.alertscape.common.model.AuthenticatedUser;
 
 public class LoginUpRamp implements UpRamp
 {
@@ -32,8 +32,8 @@ public class LoginUpRamp implements UpRamp
 	{
 		// TODO Auto-generated method stub - make this work for real, this is just a demo hack below
 		String username = (String)keyvals.get(LoginConstants.USER_ID);
-		String password = (String)keyvals.get(LoginConstants.PASSWORD);
-		User user = Authentication.login("CEV", username, null);    
+		char[] password = (char[])keyvals.get(LoginConstants.PASSWORD);
+		AuthenticatedUser user = Authentication.login("CEV", username, password);    
     AlertBrowser.getCurrentContext().setCurrentUser(user);
 		
 		return true;

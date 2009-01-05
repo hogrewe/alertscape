@@ -6,6 +6,8 @@ package com.alertscape.common.model;
 import java.util.Collections;
 import java.util.Comparator;
 
+import ca.odell.glazedlists.EventList;
+
 import com.alertscape.common.logging.ASLogger;
 
 
@@ -17,6 +19,16 @@ public class BinarySortAlertCollection extends AbstractAlertCollection
 {
   private static final ASLogger LOG = ASLogger.getLogger(BinarySortAlertCollection.class);
   private static final Comparator<Alert> comparator = new AlertComparator( );
+
+  public BinarySortAlertCollection(EventList<Alert> alertList) {
+    super(alertList);
+  }
+  
+  /**
+   * 
+   */
+  public BinarySortAlertCollection() {
+  }
 
   @Override
   protected void processSingleAlert(Alert alert)

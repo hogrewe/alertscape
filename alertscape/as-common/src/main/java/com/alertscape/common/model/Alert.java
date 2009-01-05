@@ -36,6 +36,7 @@ public class Alert implements Serializable {
   private Date firstOccurence;
   private Date lastOccurence;
   private long compositeAlertId = -1;
+  private String acknowledgedBy;
 
   private Map<String, Object> majorTags;
   private Map<String, Object> minorTags;
@@ -232,6 +233,20 @@ public class Alert implements Serializable {
       compositeAlertId = (source == null ? 0 : source.getSourceId() * (long) Math.pow(10, 10)) + alertId;
     }
     return compositeAlertId;
+  }
+
+  /**
+   * @return the acknowledgedBy
+   */
+  public String getAcknowledgedBy() {
+    return acknowledgedBy;
+  }
+
+  /**
+   * @param acknowledgedBy the acknowledgedBy to set
+   */
+  public void setAcknowledgedBy(String acknowledgedBy) {
+    this.acknowledgedBy = acknowledgedBy;
   }
 
   @Override

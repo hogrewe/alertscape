@@ -68,6 +68,7 @@ public class AlertCollectionTablePanel extends JPanel implements
     		"item",
     		"severity",    		
     		"longDescription",
+        "acknowledgedBy",
     		"count",
     		"itemManager",
     		"itemType",
@@ -81,6 +82,7 @@ public class AlertCollectionTablePanel extends JPanel implements
     		"Item", 
     		"Severity", 
     		"Description", 
+        "Acknowledged By", 
     		"Count", 
     		"Manager", 
     		"Item Type",
@@ -184,7 +186,7 @@ public class AlertCollectionTablePanel extends JPanel implements
   public List<Alert> getSelectedAlerts()
   {
   	int[] myrows = collectionTable.getSelectedRows();  	
-  	ArrayList<Alert> retval = new ArrayList(myrows.length);
+  	ArrayList<Alert> retval = new ArrayList<Alert>(myrows.length);
   	
   	for (int i = 0; i < myrows.length; i++)
   	{

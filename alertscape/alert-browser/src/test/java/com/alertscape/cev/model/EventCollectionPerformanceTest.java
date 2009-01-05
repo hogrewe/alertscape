@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
-import com.alertscape.common.model.IndexedAlertCollection;
+import com.alertscape.common.model.BinarySortAlertCollection;
 import com.alertscape.common.performance.PerformanceRun;
 
 /**
@@ -45,8 +45,8 @@ public class EventCollectionPerformanceTest extends TestCase {
   // }
 
   public void testSteadyStateCollection() {
-    AlertCollection c = new IndexedAlertCollection();
-    // EventCollection c = new BinarySortEventCollection( );
+//    AlertCollection c = new IndexedAlertCollection();
+     AlertCollection c = new BinarySortAlertCollection( );
 
     // Send the inserts to get it built up
     List<Alert> events = buildEventList(NUM_EVENTS, false, null);

@@ -71,13 +71,16 @@
 	<bean id="dbOfframp" class="com.alertscape.pump.offramp.DatabaseOfframp">
 		<property name="alertDao" ref="alertDao" />
 	</bean>
-	<bean id="alertDao" class="com.alertscape.common.dao.jdbc.AlertJdbcDao">
+	<bean id="alertDao" class="com.alertscape.dao.jdbc.AlertJdbcDao">
 		<property name="dataSource" ref="asDataSource" />
 		<property name="alertSourceRepository" ref="alertSourceRepository"/>
 	</bean>
-	<bean id="sourceDao" class="com.alertscape.common.dao.jdbc.AlertSourceJdbcDao">
+	<bean id="sourceDao" class="com.alertscape.dao.jdbc.AlertSourceJdbcDao">
 		<property name="dataSource" ref="asDataSource" />
 	</bean>
+    <bean id="authenticatedUserDao" class="com.alertscape.dao.jdbc.AuthenticatedUserJdbcDao">
+        <property name="dataSource" ref="asDataSource" />
+    </bean>
 	<bean id="jmsOfframp" class="com.alertscape.pump.offramp.JmsOfframp"
 		init-method="init" destroy-method="shutdown">
 		<property name="factory" ref="jmsFactory" />
@@ -104,4 +107,12 @@
 		<property name="service" ref="alertService" />
 		<property name="serviceInterface" value="com.alertscape.service.AlertService" />
 	</bean>
+    <bean id="authenticationService" class="com.alertscape.service.DbAuthenticationService">
+        <property name="userDao" ref="authenticatedUserDao" />
+    </bean>
+    <bean name="authenticationExporter"
+        class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+        <property name="service" ref="authenticationService" />
+        <property name="serviceInterface" value="com.alertscape.service.AuthenticationService" />
+    </bean>
 </beans>

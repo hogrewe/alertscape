@@ -11,8 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
 import com.alertscape.browser.ui.swing.AlertBrowser;
-import com.alertscape.browser.upramp.firstparty.mail.AlertMailPanel;
-import com.alertscape.browser.upramp.firstparty.mail.AlertUpRamp;
 
 public abstract class AbstractUpRampAction extends AbstractAction
 {

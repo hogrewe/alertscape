@@ -3,6 +3,8 @@
  */
 package com.alertscape.browser.common.auth;
 
+import com.alertscape.common.model.AuthenticatedUser;
+
 /**
  * @author josh
  * @version $Version: $
@@ -14,12 +16,12 @@ public class AuthenticationEvent
   public static final AuthEventType FAILED_LOGIN = AuthEventType.FAILED_LOGIN;
 
   private AuthEventType type;
-  private User user;
+  private AuthenticatedUser user;
 
-  public AuthenticationEvent(AuthEventType type, User user)
+  public AuthenticationEvent(AuthEventType type, AuthenticatedUser u)
   {
     this.type = type;
-    this.user = user;
+    this.user = u;
   }
 
   public AuthEventType getType( )
@@ -27,12 +29,12 @@ public class AuthenticationEvent
     return type;
   }
 
-  public User getUser( )
+  public AuthenticatedUser getUser( )
   {
     return user;
   }
 
-  private enum AuthEventType
+  public enum AuthEventType
   {
     LOGIN("LOGIN"),
     LOGOUT("LOGOUT"),

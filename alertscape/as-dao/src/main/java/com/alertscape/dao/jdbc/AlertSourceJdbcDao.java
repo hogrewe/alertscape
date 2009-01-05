@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.alertscape.common.dao.jdbc;
+package com.alertscape.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,9 +14,9 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import com.alertscape.common.dao.AlertSourceDao;
-import com.alertscape.common.dao.DaoException;
 import com.alertscape.common.model.AlertSource;
+import com.alertscape.dao.AlertSourceDao;
+import com.alertscape.dao.DaoException;
 
 /**
  * @author josh

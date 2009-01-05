@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alertscape.common.dao.AlertSourceDao;
-import com.alertscape.common.dao.DaoException;
 import com.alertscape.common.logging.ASLogger;
+import com.alertscape.dao.AlertSourceDao;
+import com.alertscape.dao.DaoException;
 
 /**
  * @author josh
