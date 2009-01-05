@@ -1,0 +1,24 @@
+<?xml version="1.0"?><project>
+  <parent>
+    <artifactId>alertscape</artifactId>
+    <groupId>com.alertscape</groupId>
+    <version>0.8-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.alertscape.dao</groupId>
+  <artifactId>as-dao</artifactId>
+  <name>as-dao</name>
+  <version>0.8-SNAPSHOT</version>
+  <url>http://alertscape.com</url>
+  <dependencies>
+    <dependency>
+      <groupId>com.alertscape</groupId>
+      <artifactId>as-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

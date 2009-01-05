@@ -15,8 +15,18 @@
 			org.springframework.web.context.support.HttpRequestHandlerServlet
 		</servlet-class>
 	</servlet>
+    <servlet>
+        <servlet-name>authenticationExporter</servlet-name>
+        <servlet-class>
+            org.springframework.web.context.support.HttpRequestHandlerServlet
+        </servlet-class>
+    </servlet>
 	<servlet-mapping>
 		<servlet-name>alertExporter</servlet-name>
 		<url-pattern>/r/AlertService</url-pattern>
 	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>authenticationExporter</servlet-name>
+        <url-pattern>/r/AuthenticationService</url-pattern>
+    </servlet-mapping>
 </web-app>

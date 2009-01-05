@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.alertscape.common.dao.jdbc;
+package com.alertscape.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,14 +13,14 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import com.alertscape.common.dao.AlertDao;
-import com.alertscape.common.dao.DaoException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.AlertSourceRepository;
 import com.alertscape.common.model.Alert.AlertStatus;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
+import com.alertscape.dao.AlertDao;
+import com.alertscape.dao.DaoException;
 
 /**
  * @author josh
@@ -35,10 +35,10 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       + "(select alert_source_id from alert_sources where alert_source_name=?)";
   private static final String INSERT_ALERT_SQL = "insert into alerts "
       + "(alertid, short_description, long_description, severity, count, source_id, first_occurence, last_occurence,"
-      + "item, item_type, item_manager, item_manager_type, type) "
-      + "values (?,?,?,?,?,(select alert_source_id from alert_sources where alert_source_name=?),?,?,?,?,?,?,?)";
+      + "item, item_type, item_manager, item_manager_type, type, acknowledged_by) "
+      + "values (?,?,?,?,?,(select alert_source_id from alert_sources where alert_source_name=?),?,?,?,?,?,?,?,?)";
   private static final String UPDATE_ALERT_SQL = "update alerts set short_description=?, long_description=?, "
-      + "severity=?, count=?, last_occurence=? where source_id=? and alertid=?";
+      + "severity=?, count=?, last_occurence=?, acknowledged_by=? where source_id=? and alertid=?";
 
   private RowMapper alertMapper = new AlertMapper();
   private AlertSourceRepository alertSourceRepository;
@@ -117,6 +117,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
         ps.setString(i++, alert.getItemManager());
         ps.setString(i++, alert.getItemManagerType());
         ps.setString(i++, alert.getType());
+        ps.setString(i++, alert.getAcknowledgedBy());
       }
     };
     getJdbcTemplate().update(INSERT_ALERT_SQL, pss);
@@ -136,6 +137,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
         ps.setLong(i++, alert.getCount());
         Timestamp lastOccur = new Timestamp(alert.getLastOccurence().getTime());
         ps.setTimestamp(i++, lastOccur);
+        ps.setString(i++, alert.getAcknowledgedBy());
         ps.setLong(i++, alert.getSource().getSourceId());
         ps.setLong(i++, alert.getAlertId());
       }
@@ -162,6 +164,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       alert.setItemManager(rs.getString("item_manager"));
       alert.setItemManagerType(rs.getString("item_manager_type"));
       alert.setType(rs.getString("type"));
+      alert.setAcknowledgedBy(rs.getString("acknowledged_by"));
 
       alert.setSource(alertSourceRepository.getAlertSource(rs.getInt("source_id")));
       

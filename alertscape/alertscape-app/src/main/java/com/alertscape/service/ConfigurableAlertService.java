@@ -6,7 +6,10 @@ package com.alertscape.service;
 import java.util.List;
 
 import com.alertscape.AlertscapeException;
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AuthenticatedUser;
+import com.alertscape.common.model.Alert.AlertStatus;
 import com.alertscape.pump.AlertPump;
 
 /**
@@ -14,12 +17,28 @@ import com.alertscape.pump.AlertPump;
  *
  */
 public class ConfigurableAlertService implements AlertService {
+  private static final ASLogger LOG = ASLogger.getLogger(ConfigurableAlertService.class);
   public AlertPump pump;
 
   public List<Alert> getAllAlerts() throws AlertscapeException {
     return pump.getAllAlerts();
   }
 
+  public void acknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException {
+    for (Alert a : alert) {
+      a.setAcknowledgedBy(user.getUsername());      
+      LOG.info("Acknowledging alert: " + a.getCompositeAlertId());
+      pump.processAlert(a);      
+    }
+  }
+
+  public void clear(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException {
+    for (Alert a : alert) {
+      a.setStatus(AlertStatus.CLEARED);
+      LOG.info("Clearing alert: " + a.getCompositeAlertId());
+      pump.processAlert(a);      
+    }
+  }
   /**
    * @return the pump
    */

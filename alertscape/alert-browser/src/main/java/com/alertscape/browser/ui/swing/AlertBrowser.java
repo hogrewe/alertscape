@@ -31,7 +31,8 @@ import javax.swing.border.BevelBorder;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.browser.common.auth.Authentication;
-import com.alertscape.browser.common.auth.User;
+import com.alertscape.browser.common.auth.AuthenticationEvent;
+import com.alertscape.browser.common.auth.AuthenticationListener;
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.model.JmsAlertListener;
 import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
@@ -39,6 +40,8 @@ import com.alertscape.browser.ui.swing.panel.collection.filter.TextFilterPanel;
 import com.alertscape.browser.ui.swing.panel.collection.summary.AlertCollectionSummaryPanel;
 import com.alertscape.browser.ui.swing.panel.collection.table.AlertCollectionTablePanel;
 import com.alertscape.browser.ui.swing.panel.common.ASPanelBuilder;
+import com.alertscape.browser.upramp.firstparty.ack.AcknowledgeAlertAction;
+import com.alertscape.browser.upramp.firstparty.clear.ClearAlertAction;
 import com.alertscape.browser.upramp.firstparty.customtag.CustomTagAction;
 import com.alertscape.browser.upramp.firstparty.login.LoginAction;
 import com.alertscape.browser.upramp.firstparty.mail.AlertMailAction;
@@ -46,8 +49,9 @@ import com.alertscape.browser.upramp.firstparty.predefinedtag.PredefinedTagActio
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
-import com.alertscape.common.model.IndexedAlertCollection;
+import com.alertscape.common.model.BinarySortAlertCollection;
 import com.alertscape.service.AlertService;
+import com.alertscape.service.AuthenticationService;
 import com.alertscape.util.ImageFinder;
 
 /**
@@ -60,7 +64,8 @@ public class AlertBrowser extends JFrame {
 
   private AlertCollection collection;
   private ConnectionFactory jmsFactory;
-  private AlertService alertService;
+  private static AlertService alertService;
+  private AuthenticationService authenticationService;
   private static BrowserContext currentContext = new BrowserContext();
   private static AlertCollectionTablePanel tablePanel;
 
@@ -86,8 +91,8 @@ public class AlertBrowser extends JFrame {
     }
     setSize(800, 600);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
-    collection = new IndexedAlertCollection();
-    
+    collection = new BinarySortAlertCollection();
+
     JPanel p = new JPanel();
     p.setLayout(new BorderLayout());
     TextFilterPanel filterPanel = new TextFilterPanel();
@@ -101,9 +106,9 @@ public class AlertBrowser extends JFrame {
     // Filter
     JPanel outerFilterPanel = new JPanel();
     outerFilterPanel.setBorder(BorderFactory.createTitledBorder("Quick Filter"));
-    //outerFilterPanel.setLayout(new GridLayout(1, 1));
-    //outerFilterPanel.add(filterPanel);
-    outerFilterPanel.setLayout(new GridLayout(1,1));
+    // outerFilterPanel.setLayout(new GridLayout(1, 1));
+    // outerFilterPanel.add(filterPanel);
+    outerFilterPanel.setLayout(new GridLayout(1, 1));
     outerFilterPanel.add(filterPanel);
 
     // Summary
@@ -113,30 +118,40 @@ public class AlertBrowser extends JFrame {
     outerSummaryPanel.add(summaryPanel);
 
     // toolbar
-    JToolBar actionToolbar = new JToolBar();    
+    JToolBar actionToolbar = new JToolBar();
     actionToolbar.setOpaque(false);
     actionToolbar.setFloatable(false);
-    
+
     LoginAction loginAction = new LoginAction();
     loginAction.setParentFrame(this);
     JButton loginButton = actionToolbar.add(loginAction);
     loginButton.setOpaque(false);
-    
+
     AlertMailAction mailAction = new AlertMailAction();
     mailAction.setParentFrame(this);
     JButton mailButton = actionToolbar.add(mailAction);
     mailButton.setOpaque(false);
- 
+
+    ClearAlertAction clearAction = new ClearAlertAction();
+    clearAction.setParentFrame(this);
+    // JButton clearButton = actionToolbar.add(clearAction);
+    // clearButton.setOpaque(false);
+
+    AcknowledgeAlertAction ackAction = new AcknowledgeAlertAction();
+    ackAction.setParentFrame(this);
+    // JButton ackButton = actionToolbar.add(ackAction);
+    // ackButton.setOpaque(false);
+
     PredefinedTagAction predefinedTagAction = new PredefinedTagAction();
     predefinedTagAction.setParentFrame(this);
     JButton predefinedTagButton = actionToolbar.add(predefinedTagAction);
     predefinedTagButton.setOpaque(false);
-    
+
     CustomTagAction customTagAction = new CustomTagAction();
     customTagAction.setParentFrame(this);
     JButton customTagButton = actionToolbar.add(customTagAction);
     customTagButton.setOpaque(false);
-      
+
     // Table
     JPanel outerTablePanel = new JPanel();
     outerTablePanel.setLayout(new BorderLayout());
@@ -164,7 +179,7 @@ public class AlertBrowser extends JFrame {
 
     // North
     JPanel northPanel = new JPanel();
-    northPanel.setLayout(new GridLayout(1, 2));    
+    northPanel.setLayout(new GridLayout(1, 2));
     northPanel.add(outerSummaryPanel);
     northPanel.add(outerFilterPanel);
 
@@ -173,33 +188,29 @@ public class AlertBrowser extends JFrame {
     p.add(new AlertBrowserStatusPanel(), BorderLayout.SOUTH);
     setContentPane(p);
 
-    User jd = Authentication.login("CEV", "john.doe", null);
-    
-    // TODO: remove this demo hack
-    currentContext.setCurrentUser(jd);
-    
     // create the menubar
     JMenuBar menubar = new JMenuBar();
-    
+
     JMenu fileMenu = new JMenu("File");
-    //fileMenu.setMnemonic(KeyEvent.VK_F);
-    
+    // fileMenu.setMnemonic(KeyEvent.VK_F);
+
     fileMenu.add(loginAction);
 
-    JMenuItem exitItem = new JMenuItem("Exit", new ImageIcon(getClass().getResource("/com/alertscape/images/mini/action_stop.gif"))); 
-    exitItem.setMnemonic(KeyEvent.VK_X);	    
+    JMenuItem exitItem = new JMenuItem("Exit", new ImageIcon(getClass().getResource(
+        "/com/alertscape/images/mini/action_stop.gif")));
+    exitItem.setMnemonic(KeyEvent.VK_X);
     exitItem.getAccessibleContext().setAccessibleDescription("Close AMP");
     exitItem.setToolTipText("Close AMP");
-    fileMenu.add(exitItem);  
-    
+    fileMenu.add(exitItem);
+
     // other ideas for the file menu
     // - Switch user
     // - Logoff
     // - Export (to CSV, Excel)
-    // - Print (selected alerts or all alerts in view) 
-    
+    // - Print (selected alerts or all alerts in view)
+
     JMenu editMenu = new JMenu("Edit");
-    //editMenu.setMnemonic(KeyEvent.VK_E);
+    // editMenu.setMnemonic(KeyEvent.VK_E);
     // ideas for the edit menu
     // - Copy
     // - Paste
@@ -207,42 +218,45 @@ public class AlertBrowser extends JFrame {
     // - Select All
     // - Find (search for alert: in the tree, in the table, in the history)
     // - window configurations (dock type stuff)
-    
+
     JMenu actionsMenu = new JMenu("Actions");
-    //actionsMenu.setMnemonic(KeyEvent.VK_A);
+    // actionsMenu.setMnemonic(KeyEvent.VK_A);
+    actionsMenu.add(ackAction);
+    actionsMenu.add(clearAction);
+    actionsMenu.addSeparator();
     actionsMenu.add(mailAction);
     actionsMenu.add(predefinedTagAction);
     actionsMenu.add(customTagAction);
-    
+
     // - email alerts
     // - quick tags:
-    //   - acknowledge alerts (acknowledged by field is just a tag)
-    //   - unacknowledge alerts (acknowledged by field is just a tag)
-    //   - assign alerts (name is just a tag)
-    //   - move alerts (folder is just a tag)
+    // - acknowledge alerts (acknowledged by field is just a tag)
+    // - unacknowledge alerts (acknowledged by field is just a tag)
+    // - assign alerts (name is just a tag)
+    // - move alerts (folder is just a tag)
     // - view comments
     // - add comment
     // - view history
     // - view ticket
     // - clear/delete alerts
     // - tag alerts (major/minor?)
-    
+
     JMenu helpMenu = new JMenu("Help");
-    //helpMenu.setMnemonic(KeyEvent.VK_H);
+    // helpMenu.setMnemonic(KeyEvent.VK_H);
     // - About AMP
     // - Software Updates
     // - Report a bug or enhancement
     // - Release Notes
     // - Forums (Link to website Forums)
     // - User Guide (Link to versioned user guide doc online)
-    
+
     menubar.add(fileMenu);
     menubar.add(editMenu);
     menubar.add(actionsMenu);
-    menubar.add(helpMenu);    
-    
+    menubar.add(helpMenu);
+
     this.setJMenuBar(menubar);
-    
+
     // jframe housekeeping
     setTitle("AMP - Alertscape Management Portal");
     URL cevImageUrl = getClass().getResource("/com/alertscape/images/common/as_logo2_32.png");
@@ -250,7 +264,11 @@ public class AlertBrowser extends JFrame {
     setIconImage(cevImage.getImage());
     setVisible(true);
 
-    initJms();
+    Authentication.addAuthenticationListener(new AuthenticationListener() {
+      public void handleAuthEvent(AuthenticationEvent e) {
+        initJms();
+      }
+    });
 
     // GenerateEvents gen = new GenerateEvents(collection);
     // int groupSize = 1000;
@@ -272,9 +290,9 @@ public class AlertBrowser extends JFrame {
   private void initJms() {
     JmsAlertListener listener = new JmsAlertListener();
     listener.setCollection(collection);
-    
+
     listener.setFactory(jmsFactory);
-    
+
     try {
       listener.startListening();
       // GET ALL ALERTS
@@ -297,7 +315,8 @@ public class AlertBrowser extends JFrame {
   }
 
   /**
-   * @param jmsFactory the jmsFactory to set
+   * @param jmsFactory
+   *          the jmsFactory to set
    */
   public void setJmsFactory(ConnectionFactory jmsFactory) {
     this.jmsFactory = jmsFactory;
@@ -311,21 +330,54 @@ public class AlertBrowser extends JFrame {
   }
 
   /**
-   * @param alertService the alertService to set
+   * @param alertService
+   *          the alertService to set
    */
   public void setAlertService(AlertService alertService) {
-    this.alertService = alertService;
+    AlertBrowser.alertService = alertService;
   }
 
-public static void setCurrentContext(BrowserContext currentContext)
-{
-	AlertBrowser.currentContext = currentContext;
-}
+  public static void setCurrentContext(BrowserContext currentContext) {
+    AlertBrowser.currentContext = currentContext;
+  }
 
-public static BrowserContext getCurrentContext()
-{
-	List<Alert> curAlerts = tablePanel.getSelectedAlerts();
-	currentContext.setSelectedAlerts(curAlerts);
-	return currentContext;
-}
+  public static BrowserContext getCurrentContext() {
+    List<Alert> curAlerts = tablePanel.getSelectedAlerts();
+    currentContext.setSelectedAlerts(curAlerts);
+    return currentContext;
+  }
+
+  // TODO: We have to get rid of these static methods
+  public static void clear(List<Alert> alerts) {
+    try {
+      alertService.clear(Authentication.getUser("CEV"), alerts);
+    } catch (AlertscapeException e) {
+      LOG.error("Couldn't clear alerts", e);
+    }
+  }
+
+  public static void acknowledge(List<Alert> alerts) {
+    try {
+      alertService.acknowledge(Authentication.getUser("CEV"), alerts);
+    } catch (AlertscapeException e) {
+      LOG.error("Couldn't acknowledge alerts", e);
+    }
+  }
+
+  /**
+   * @return the authenticationService
+   */
+  public AuthenticationService getAuthenticationService() {
+    return authenticationService;
+  }
+
+  /**
+   * @param authenticationService
+   *          the authenticationService to set
+   */
+  public void setAuthenticationService(AuthenticationService authenticationService) {
+    this.authenticationService = authenticationService;
+    // TODO: This whole static Authentication thing is a hack and should be taken out
+    Authentication.setAuthenticationService(authenticationService);
+  }
 }

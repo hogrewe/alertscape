@@ -48,6 +48,10 @@
 	    <artifactId>as-common</artifactId>
 	  </dependency>
       <dependency>
+        <groupId>com.alertscape.dao</groupId>
+        <artifactId>as-dao</artifactId>
+      </dependency>
+      <dependency>
 	    <groupId>com.alertscape.service</groupId>
 	    <artifactId>alert-service-interfaces</artifactId>
 	  </dependency>

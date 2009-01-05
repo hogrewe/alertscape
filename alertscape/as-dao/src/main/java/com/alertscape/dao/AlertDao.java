@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.alertscape.common.dao;
+package com.alertscape.dao;
 
 import java.util.List;
 
