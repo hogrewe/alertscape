@@ -115,7 +115,8 @@ public class AlertCollectionTablePanel extends JPanel implements
   public void setPopup(JPopupMenu popper)
   {
     //Add listener to components that can bring up popup menus.
-    MouseListener popupListener = new PopupListener();
+  	popup = popper;
+  	MouseListener popupListener = new PopupListener();
     collectionTable.addMouseListener(popupListener);	
   }
   

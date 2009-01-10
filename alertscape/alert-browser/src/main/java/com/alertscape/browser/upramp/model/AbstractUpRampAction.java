@@ -50,6 +50,10 @@ public abstract class AbstractUpRampAction extends AbstractAction
 
 	public void actionPerformed(ActionEvent arg0)
 	{
+		Thread t = new Thread()
+		{
+			public void run() 
+			{		
 		// check if the browser is authorized to do this
 		if (upramp.isAuthorized(AlertBrowser.getCurrentContext()))
 		{
@@ -115,5 +119,11 @@ public abstract class AbstractUpRampAction extends AbstractAction
 		{
 			// TODO: pop an error message
 		}
+			}
+		};
+		
+		t.start();
 	}
+			
+
 }

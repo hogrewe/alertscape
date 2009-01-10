@@ -286,7 +286,17 @@ public class AlertBrowser extends JFrame {
 
     Authentication.addAuthenticationListener(new AuthenticationListener() {
       public void handleAuthEvent(AuthenticationEvent e) {
-        initJms();
+      	// TODO: there is probably a better way to do this than throwing it into a thread, but this is at least an improvement over locking the ui for 2 minutes while it DLs alerts...
+      	Thread t = new Thread()
+      	{
+      		public void run()
+      		{
+      			initJms();
+      		}
+      	};
+      	
+      	t.start();
+        
       }
     });
 
