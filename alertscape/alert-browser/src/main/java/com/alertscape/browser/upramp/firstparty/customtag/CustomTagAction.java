@@ -21,13 +21,13 @@ public class CustomTagAction extends AbstractUpRampAction
 	@Override
 	protected KeyStroke getActionAccelerator()
 	{
-		return KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK);
+		return KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.ALT_MASK);
 	}
 
 	@Override
 	protected String getActionDescription()
 	{
-		return "Create a custom tag for selected alerts";
+		return "Label selected alerts";
 	}
 
 	@Override
@@ -46,19 +46,19 @@ public class CustomTagAction extends AbstractUpRampAction
 	@Override
 	protected int getActionMnemonic()
 	{
-		return KeyEvent.VK_C;
+		return KeyEvent.VK_L;
 	}
 
 	@Override
 	protected String getActionTitle()
 	{
-		return "Custom Tag Alerts";
+		return "Label Alerts";
 	}
 
 	@Override
 	protected String getActionWindowTitle()
 	{
-		return "Custom Tag Alerts";
+		return "Label Alerts";
 	}
 
 	@Override
