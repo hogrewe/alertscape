@@ -321,7 +321,6 @@ public class AlertBrowser extends JFrame {
   private void initJms() {
     JmsAlertListener listener = new JmsAlertListener();
     listener.setCollection(collection);
-
     listener.setFactory(jmsFactory);
 
     try {
