@@ -17,6 +17,7 @@ import com.alertscape.dao.AlertDao;
 public class DatabaseOfframp implements AlertOfframp {
   private AlertDao alertDao;
 
+  // public void processQueuedAlert(Alert alert) throws AlertscapeException {
   public void processAlert(Alert alert) throws AlertscapeException {
     if (alert.isStanding()) {
       getAlertDao().save(alert);
@@ -29,9 +30,13 @@ public class DatabaseOfframp implements AlertOfframp {
   public List<Alert> getAlertsForSource(AlertSource source) throws AlertscapeException {
     return getAlertDao().getAlertsForSource(source);
   }
-  
+
   public List<Alert> getAllAlerts() throws AlertscapeException {
     return getAlertDao().getAllAlerts();
+  }
+
+  public String getOfframpName() {
+    return "DBOfframp";
   }
 
   /**
@@ -48,4 +53,5 @@ public class DatabaseOfframp implements AlertOfframp {
   public void setAlertDao(AlertDao alertDao) {
     this.alertDao = alertDao;
   }
+
 }

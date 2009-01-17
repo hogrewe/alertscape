@@ -28,15 +28,23 @@ import com.alertscape.dao.DaoException;
  */
 public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
 
+  private static final String DELETE_EXT_ALERT_SQL = "delete from ext_alert_attributes where alert_source_id=? and alert_id=?";
   private static final String DELETE_ALERT_SQL = "delete from alerts where source_id=? and alertid=?";
-  private static final String GET_ALERT_SQL = "select * from alerts where source_id=? and alertid=?";
-  private static final String GET_ALL_ALERTS_SQL = "select * from alerts";
-  private static final String GET_ALERTS_FOR_SOURCE_SQL = "select * from alerts where source_id="
-      + "(select alert_source_id from alert_sources where alert_source_name=?)";
+  private static final String GET_ALERT_SQL = "select * from alerts a "
+      + " left outer join ext_alert_attributes attr on attr.alert_source_id=a.source_id and attr.alert_id=a.alertid "
+      + " where a.source_id=? and a.alertid=?";
+  private static final String GET_ALL_ALERTS_SQL = "select * from alerts a "
+      + " left outer join ext_alert_attributes attr on attr.alert_source_id=a.source_id and attr.alert_id=a.alertid ";
+  private static final String GET_ALERTS_FOR_SOURCE_SQL = "select * from alerts a "
+      + " join alert_sources src on src.alert_source_id=a.source_id "
+      + " left outer join ext_alert_attributes attr on attr.alert_source_id=a.source_id and attr.alert_id=a.alertid "
+      + " where src.alert_source_name=?";
   private static final String INSERT_ALERT_SQL = "insert into alerts "
       + "(alertid, short_description, long_description, severity, count, source_id, first_occurence, last_occurence,"
       + "item, item_type, item_manager, item_manager_type, type, acknowledged_by) "
       + "values (?,?,?,?,?,(select alert_source_id from alert_sources where alert_source_name=?),?,?,?,?,?,?,?,?)";
+  private static final String INSERT_EXT_SQL_PRE = "insert into ext_alert_attributes "
+    + "(";
   private static final String UPDATE_ALERT_SQL = "update alerts set short_description=?, long_description=?, "
       + "severity=?, count=?, last_occurence=?, acknowledged_by=? where source_id=? and alertid=?";
 
@@ -167,7 +175,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       alert.setAcknowledgedBy(rs.getString("acknowledged_by"));
 
       alert.setSource(alertSourceRepository.getAlertSource(rs.getInt("source_id")));
-      
+
       alert.setStatus(AlertStatus.STANDING);
       return alert;
     }
@@ -181,7 +189,8 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   }
 
   /**
-   * @param alertSourceRepository the alertSourceRepository to set
+   * @param alertSourceRepository
+   *          the alertSourceRepository to set
    */
   public void setAlertSourceRepository(AlertSourceRepository alertSourceRepository) {
     this.alertSourceRepository = alertSourceRepository;
