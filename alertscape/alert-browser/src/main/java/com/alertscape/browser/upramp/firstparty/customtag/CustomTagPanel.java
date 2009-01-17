@@ -130,7 +130,7 @@ public class CustomTagPanel extends AbstractUpRampPanel
 		cancelButton.setToolTipText("Cancel custom tagging alerts");
 		buttonPanel.add(cancelButton);
 		buttonPanel.add(Box.createHorizontalGlue());
-		sendButton.setText("Tag");
+		sendButton.setText("Label");
 		sendButton.setToolTipText("Tag selected alerts with name/value"); 
 		buttonPanel.add(sendButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(5,0)));
