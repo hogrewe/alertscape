@@ -1,7 +1,7 @@
 /*
  * Created on Jul 7, 2006
  */
-package com.alertscape.cev.model.criterion;
+package com.alertscape.browser.model.criterion;
 
 import static com.alertscape.browser.model.criterion.ComparisonCriterion.ComparisonType.EQUAL;
 import static com.alertscape.browser.model.criterion.ComparisonCriterion.ComparisonType.GREATER_THAN;

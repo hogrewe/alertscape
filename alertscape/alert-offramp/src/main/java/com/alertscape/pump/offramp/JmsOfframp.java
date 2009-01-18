@@ -94,4 +94,8 @@ public class JmsOfframp implements AlertOfframp {
   public void setTopic(Topic topic) {
     this.topic = topic;
   }
+
+  public String getOfframpName() {
+    return "JMSOfframp";
+  }
 }

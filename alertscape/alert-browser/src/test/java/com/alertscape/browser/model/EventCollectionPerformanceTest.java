@@ -1,7 +1,7 @@
 /*
  * Created on Sep 30, 2006
  */
-package com.alertscape.cev.model;
+package com.alertscape.browser.model;
 
 import java.util.ArrayList;
 import java.util.List;

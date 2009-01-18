@@ -1,7 +1,7 @@
 /*
  * Created on Oct 22, 2006
  */
-package com.alertscape.cev.ui.swing.tree;
+package com.alertscape.browser.ui.swing.tree;
 
 import junit.framework.TestCase;
 
@@ -9,9 +9,9 @@ import junit.framework.TestCase;
  * @author josh
  * @version $Version: $
  */
-public class CevTreeTest extends TestCase
+public class AlertTreeTest extends TestCase
 {
-  public CevTreeTest()
+  public AlertTreeTest()
   {
     super("CevTreeTest");
   }

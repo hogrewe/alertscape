@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertAttributeDefinition;
 import com.alertscape.common.model.AlertSource;
 
 /**
@@ -21,4 +22,6 @@ public interface AlertPump {
   List<Alert> getAllAlerts() throws AlertscapeException;
 
   AlertSource getAlertSource(String sourceName) throws AlertscapeException;
+
+  List<AlertAttributeDefinition> getAttributeDefinitions();
 }
