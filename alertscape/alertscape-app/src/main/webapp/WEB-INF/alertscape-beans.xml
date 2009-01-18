@@ -79,7 +79,7 @@
 		</property>
 	</bean>
 	<bean id="alertpump" class="com.alertscape.pump.ConfigurableAlertPump">
-		<property name="dbOfframp" ref="queuedDbOfframp" />
+		<property name="dbOfframp" ref="dbOfframp" />
 		<property name="jmsOfframp" ref="jmsOfframp" />
 		<property name="definitionDao" ref="definitionDao" />
 		<property name="alertSourceRepository" ref="alertSourceRepository" />
@@ -89,12 +89,8 @@
 		init-method="init">
 		<property name="sourceDao" ref="sourceDao" />
 	</bean>
-	<bean id="queuedDbOfframp" class="com.alertscape.pump.offramp.QueuingOfframp"
+	<bean id="dbOfframp" class="com.alertscape.pump.offramp.DatabaseOfframp"
 		init-method="init">
-		<property name="queuedOfframp" ref="dbOfframp" />
-		<property name="maxQueueSize" value="5000" />
-	</bean>
-	<bean id="dbOfframp" class="com.alertscape.pump.offramp.DatabaseOfframp">
 		<property name="alertDao" ref="alertDao" />
 	</bean>
 	<bean id="alertDao" class="com.alertscape.dao.jdbc.AlertJdbcDao">
@@ -119,7 +115,25 @@
 		the DataSource (parameterized for configuration via a
 		PropertyPlaceHolderConfigurer)
 	-->
-	<bean id="asDataSource" destroy-method="close"
+	<bean id="asDataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="dbPoolFactory">
+		<property name="pool" ref="connectionPool" />
+	</bean>
+	<bean id="connectionPool" class="org.apache.commons.pool.impl.GenericObjectPool">
+	</bean>
+	<bean id="dbPoolFactory" class="org.apache.commons.dbcp.PoolableConnectionFactory">
+		<constructor-arg ref="dbDsFactory" />
+		<constructor-arg ref="connectionPool" />
+		<constructor-arg index="2">
+			<null />
+		</constructor-arg>
+		<constructor-arg value="select 1 from dual" />
+		<constructor-arg index="4" value="false" />
+		<constructor-arg index="5" value="false" />
+	</bean>
+	<bean id="dbDsFactory" class="org.apache.commons.dbcp.DataSourceConnectionFactory">
+		<constructor-arg ref="basicAsDataSource" />
+	</bean>
+	<bean id="basicAsDataSource" destroy-method="close"
 		class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
