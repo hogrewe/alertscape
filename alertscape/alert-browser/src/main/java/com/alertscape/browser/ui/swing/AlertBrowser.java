@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jms.ConnectionFactory;
@@ -36,6 +37,9 @@ import com.alertscape.AlertscapeException;
 import com.alertscape.browser.common.auth.Authentication;
 import com.alertscape.browser.common.auth.AuthenticationEvent;
 import com.alertscape.browser.common.auth.AuthenticationListener;
+import com.alertscape.browser.localramp.firstparty.preferences.LoadPreferencesAction;
+import com.alertscape.browser.localramp.firstparty.preferences.SavePreferencesAction;
+import com.alertscape.browser.localramp.firstparty.preferences.UserPreferencesPanel;
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.model.JmsAlertListener;
 import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
@@ -249,6 +253,25 @@ public class AlertBrowser extends JFrame {
     // - clear/delete alerts
     // - tag alerts (major/minor?)
 
+    
+    JMenu preferencesMenu = new JMenu("Preferences");
+    //preferencesMenu.add(ackAction);
+    
+    // build a list of all of the userpreferencepanels
+    List <UserPreferencesPanel>panels = new ArrayList();
+    panels.add(filterPanel);
+    panels.add(tablePanel);
+    panels.add(summaryPanel);
+    
+    SavePreferencesAction savePrefsAction = new SavePreferencesAction(panels);
+    savePrefsAction.setParentFrame(this);
+    preferencesMenu.add(savePrefsAction);
+    LoadPreferencesAction loadPrefsAction = new LoadPreferencesAction(panels);
+    loadPrefsAction.setParentFrame(this);
+    preferencesMenu.add(loadPrefsAction);
+    
+
+    
     JMenu helpMenu = new JMenu("Help");
     // helpMenu.setMnemonic(KeyEvent.VK_H);
     // - About AMP
@@ -261,6 +284,7 @@ public class AlertBrowser extends JFrame {
     menubar.add(fileMenu);
     menubar.add(editMenu);
     menubar.add(actionsMenu);
+    menubar.add(preferencesMenu);
     menubar.add(helpMenu);
 
     this.setJMenuBar(menubar);
