@@ -5,6 +5,8 @@ package com.alertscape.browser.ui.swing.panel.collection.filter;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -15,6 +17,7 @@ import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.TextFilterator;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 
+import com.alertscape.browser.localramp.firstparty.preferences.UserPreferencesPanel;
 import com.alertscape.browser.model.AlertFilter;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
@@ -24,7 +27,8 @@ import com.alertscape.common.model.BinarySortAlertCollection;
  * @author josh
  * 
  */
-public class TextFilterPanel extends JPanel implements AlertFilter {
+public class TextFilterPanel extends JPanel implements AlertFilter, UserPreferencesPanel
+{
   private static final long serialVersionUID = -235853694487718263L;
 
   private AlertCollection subCollection;
@@ -62,5 +66,18 @@ public class TextFilterPanel extends JPanel implements AlertFilter {
 
     return subCollection;
   }
+  
+	public Map getUserPreferences()
+	{
+		Map map = new HashMap();
+		map.put("QuickFilter", searchText.getText());
+		return map;
+	}
+
+	public void setUserPreferences(Map preferences)
+	{
+		String filter = (String)preferences.get("QuickFilter");
+		searchText.setText(filter);		
+	}
 
 }

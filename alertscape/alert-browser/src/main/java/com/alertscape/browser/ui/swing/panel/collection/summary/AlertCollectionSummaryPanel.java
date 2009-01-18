@@ -26,6 +26,7 @@ import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.util.concurrent.Lock;
 
+import com.alertscape.browser.localramp.firstparty.preferences.UserPreferencesPanel;
 import com.alertscape.browser.model.AlertFilter;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
@@ -37,15 +38,17 @@ import com.alertscape.common.model.severity.SeverityFactory;
  * @author josh
  * @version $Version: $
  */
-public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
+public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, UserPreferencesPanel
 {
   private static final long serialVersionUID = 1L;
   private AlertCollection subCollection;
-  private JLabel[] sevButtons;
+  private JLabel[] sevLabels;
+  private JToggleButton[] sevButtons;
   private JLabel totalLabel;
   private SeverityMatcherEditor severityMatcher = new SeverityMatcherEditor( );
   private Map<Severity, Integer> severityCounts;
   private List<Alert> existingEvents = new ArrayList<Alert>(70000);
+  
 
   public AlertCollectionSummaryPanel( )
   {
@@ -119,8 +122,8 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
         for (Severity sev : severityCounts.keySet( ))
         {
           //sevButtons[sev.getLevel( )].setText(sev.getName( ) + ": " + severityCounts.get(sev));
-          sevButtons[sev.getLevel( )].setText("" + severityCounts.get(sev));
-          sevButtons[sev.getLevel( )].setToolTipText(severityCounts.get(sev) + " " + sev.getName( ) + " alerts");
+          sevLabels[sev.getLevel( )].setText("" + severityCounts.get(sev));
+          sevLabels[sev.getLevel( )].setToolTipText(severityCounts.get(sev) + " " + sev.getName( ) + " alerts");
         }
         totalLabel.setText(list.size( ) + "");
         totalLabel.setToolTipText(list.size( ) + " total alerts");
@@ -141,8 +144,8 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
     for (Severity sev : severityCounts.keySet( ))
     {
       //sevButtons[sev.getLevel( )].setText(sev.getName( ) + ":" + severityCounts.get(sev));
-      sevButtons[sev.getLevel( )].setText(severityCounts.get(sev) + "");
-      sevButtons[sev.getLevel( )].setToolTipText(severityCounts.get(sev) + " " + sev.getName( ) + " alerts");
+      sevLabels[sev.getLevel( )].setText(severityCounts.get(sev) + "");
+      sevLabels[sev.getLevel( )].setToolTipText(severityCounts.get(sev) + " " + sev.getName( ) + " alerts");
     }
 
     return subCollection;
@@ -160,7 +163,8 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
     summaryPanel.setLayout(new GridLayout( ));
     SeverityFactory fact = SeverityFactory.getInstance( );
     int max = fact.getNumSeverities( );
-    sevButtons = new JLabel[max];
+    sevLabels = new JLabel[max];
+    sevButtons = new JToggleButton[max];
     for (int i = 0; i < max; i++)
     {
       Severity s = fact.getSeverity(i);
@@ -168,6 +172,7 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
       
       JPanel wrapperPanel = new JPanel(new BorderLayout());      
       JToggleButton sevButton = new JToggleButton( );
+      
 //      sevButton.setForeground(s.getForegroundColor( ));
 //      sevButton.setBackground(s.getBackgroundColor( ));
       sevButton.setText(s.getName( ));
@@ -181,7 +186,8 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
       wrapperPanel.add(sevTotal, BorderLayout.SOUTH);
       
       summaryPanel.add(wrapperPanel);
-      sevButtons[i] = sevTotal;  
+      sevLabels[i] = sevTotal;
+      sevButtons[i] = sevButton;
     }
     JPanel totalPanel = new JPanel(new BorderLayout());    
     JLabel totalHeader = new JLabel();
@@ -226,4 +232,34 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter
       }
     }
   }
+
+	public Map getUserPreferences()
+	{
+		Map vals = new HashMap();
+		
+    for (int i = 0; i < sevLabels.length; i++)
+    {
+    	JToggleButton button = sevButtons[i];
+    	JLabel label = sevLabels[i];
+    	
+    	vals.put(label.getText(), new Boolean(button.isSelected()));
+    }
+		
+		return vals;
+	}
+
+	public void setUserPreferences(Map preferences)
+	{
+		for (int i = 0; i < sevLabels.length; i++)
+    {
+    	JToggleButton button = sevButtons[i];
+    	JLabel label = sevLabels[i];
+    	
+    	Boolean istoggled = (Boolean)preferences.get(label.getText());
+    	if (istoggled != null)
+    	{    	
+    		button.setSelected(istoggled.booleanValue());
+    	}
+    }		
+	}
 }
