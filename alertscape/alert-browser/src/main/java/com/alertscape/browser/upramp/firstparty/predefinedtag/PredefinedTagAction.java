@@ -21,13 +21,13 @@ public class PredefinedTagAction extends AbstractUpRampAction
 	@Override
 	protected KeyStroke getActionAccelerator()
 	{
-		return KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK);
+		return KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.ALT_MASK);
 	}
 
 	@Override
 	protected String getActionDescription()
 	{
-		return "Set a tag for selected alerts";
+		return "Categorize selected alerts";
 	}
 
 	@Override
@@ -46,19 +46,19 @@ public class PredefinedTagAction extends AbstractUpRampAction
 	@Override
 	protected int getActionMnemonic()
 	{
-		return KeyEvent.VK_T;
+		return KeyEvent.VK_G;
 	}
 
 	@Override
 	protected String getActionTitle()
 	{
-		return "Tag Alerts";
+		return "Categorize Alerts";
 	}
 
 	@Override
 	protected String getActionWindowTitle()
 	{
-		return "Tag Alerts";
+		return "Categorize Alerts";
 	}
 
 	@Override

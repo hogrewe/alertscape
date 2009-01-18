@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.jms.ConnectionFactory;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -130,8 +133,6 @@ public class AlertBrowser extends JFrame {
     // Filter
     JPanel outerFilterPanel = new JPanel();
     outerFilterPanel.setBorder(BorderFactory.createTitledBorder("Quick Filter"));
-    // outerFilterPanel.setLayout(new GridLayout(1, 1));
-    // outerFilterPanel.add(filterPanel);
     outerFilterPanel.setLayout(new GridLayout(1, 1));
     outerFilterPanel.add(filterPanel);
 
@@ -146,30 +147,25 @@ public class AlertBrowser extends JFrame {
     actionToolbar.setOpaque(false);
     actionToolbar.setFloatable(false);
 
-    LoginAction loginAction = new LoginAction();
-    loginAction.setParentFrame(this);
-    JButton loginButton = actionToolbar.add(loginAction);
-    loginButton.setOpaque(false);
+    AcknowledgeAlertAction ackAction = new AcknowledgeAlertAction();
+    ackAction.setParentFrame(this);
+    JButton ackButton = actionToolbar.add(ackAction);
+    ackButton.setOpaque(false);
 
+    UnacknowledgeAlertAction unackAction = new UnacknowledgeAlertAction();
+    unackAction.setParentFrame(this);
+    JButton unackButton = actionToolbar.add(unackAction);
+    unackButton.setOpaque(false);
+    
+    ClearAlertAction clearAction = new ClearAlertAction();
+    clearAction.setParentFrame(this);
+    JButton clearButton = actionToolbar.add(clearAction);
+    clearButton.setOpaque(false);    
+    
     AlertMailAction mailAction = new AlertMailAction();
     mailAction.setParentFrame(this);
     JButton mailButton = actionToolbar.add(mailAction);
     mailButton.setOpaque(false);
-
-    ClearAlertAction clearAction = new ClearAlertAction();
-    clearAction.setParentFrame(this);
-    // JButton clearButton = actionToolbar.add(clearAction);
-    // clearButton.setOpaque(false);
-
-    AcknowledgeAlertAction ackAction = new AcknowledgeAlertAction();
-    ackAction.setParentFrame(this);
-    // JButton ackButton = actionToolbar.add(ackAction);
-    // ackButton.setOpaque(false);
-
-    UnacknowledgeAlertAction unackAction = new UnacknowledgeAlertAction();
-    unackAction.setParentFrame(this);
-    // JButton ackButton = actionToolbar.add(ackAction);
-    // ackButton.setOpaque(false);
 
     PredefinedTagAction predefinedTagAction = new PredefinedTagAction();
     predefinedTagAction.setParentFrame(this);
@@ -180,6 +176,11 @@ public class AlertBrowser extends JFrame {
     customTagAction.setParentFrame(this);
     JButton customTagButton = actionToolbar.add(customTagAction);
     customTagButton.setOpaque(false);
+    
+    LoginAction loginAction = new LoginAction();
+    loginAction.setParentFrame(this);
+    JButton loginButton = actionToolbar.add(loginAction);
+    loginButton.setOpaque(false);
 
     // Table
     JPanel outerTablePanel = new JPanel();
@@ -193,8 +194,10 @@ public class AlertBrowser extends JFrame {
     JPanel headerPanel = new JPanel();
     headerPanel.setBorder(BorderFactory.createEmptyBorder(7, 15, 1, 3));
     headerPanel.setOpaque(false);
-    headerPanel.setLayout(new GridLayout(1, 2));
+    BoxLayout hdrBox = new BoxLayout(headerPanel, BoxLayout.X_AXIS);
+    headerPanel.setLayout(hdrBox);
     headerPanel.add(hdrLabel);
+    headerPanel.add(Box.createHorizontalGlue());
     headerPanel.add(actionToolbar);
 
     JPanel imagePanel = ASPanelBuilder.wrapInBackgroundImage(headerPanel, bgImage);
@@ -227,8 +230,6 @@ public class AlertBrowser extends JFrame {
     JMenuBar menubar = new JMenuBar();
 
     JMenu fileMenu = new JMenu("File");
-    // fileMenu.setMnemonic(KeyEvent.VK_F);
-
     fileMenu.add(loginAction);
 
     JMenuItem exitItem = new JMenuItem("Exit", new ImageIcon(getClass().getResource(
@@ -263,7 +264,7 @@ public class AlertBrowser extends JFrame {
     actionsMenu.add(mailAction);
     actionsMenu.add(predefinedTagAction);
     actionsMenu.add(customTagAction);
-
+ 
     // - email alerts
     // - quick tags:
     // - acknowledge alerts (acknowledged by field is just a tag)
@@ -293,6 +294,18 @@ public class AlertBrowser extends JFrame {
 
     this.setJMenuBar(menubar);
 
+    
+    // create the popupmenu for the table
+    JPopupMenu popup = new JPopupMenu();
+    popup.add(ackAction);
+    popup.add(unackAction);
+    popup.add(clearAction);
+    popup.addSeparator();
+    popup.add(mailAction);
+    popup.add(predefinedTagAction);
+    popup.add(customTagAction);
+    tablePanel.setPopup(popup); 
+    
     // jframe housekeeping
     setTitle("AMP - Alertscape Management Portal");
     URL cevImageUrl = getClass().getResource("/com/alertscape/images/common/as_logo2_32.png");
@@ -302,10 +315,21 @@ public class AlertBrowser extends JFrame {
 
     Authentication.addAuthenticationListener(new AuthenticationListener() {
       public void handleAuthEvent(AuthenticationEvent e) {
-        initJms();
+      	// TODO: there is probably a better way to do this than throwing it into a thread, but this is at least an improvement over locking the ui for 2 minutes while it DLs alerts...
+      	Thread t = new Thread()
+      	{
+      		public void run()
+      		{
+      			initJms();
+      		}
+      	};
+      	
+      	t.start();
+        
       }
     });
 
+    
     // GenerateEvents gen = new GenerateEvents(collection);
     // int groupSize = 1000;
     // List<Alert> events = new ArrayList<Alert>(groupSize);
@@ -326,7 +350,6 @@ public class AlertBrowser extends JFrame {
   private void initJms() {
     JmsAlertListener listener = new JmsAlertListener();
     listener.setCollection(collection);
-
     listener.setFactory(jmsFactory);
 
     try {

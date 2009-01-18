@@ -5,11 +5,15 @@
 package com.alertscape.browser.ui.swing.panel.collection.table;
 
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -41,14 +45,10 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
   private SortedList<Alert> sortedList;
   private List<AlertAttributeDefinition> extendedAttributes;
 
+  private JPopupMenu popup;
   private TableComparatorChooser<Alert> chooser;
-
   private TableFormat<Alert> tf;
-
   private EventTableModel<Alert> model;
-
-  // private EventCollectionTableModel model;
-  // private TableRowSorter<EventCollectionTableModel> sorter;
 
   public AlertCollectionTablePanel(AlertCollection collection) {
     setCollection(collection);
@@ -121,6 +121,14 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
     add(tableScroller, BorderLayout.CENTER);
   }
 
+  public void setPopup(JPopupMenu popper)
+  {
+    //Add listener to components that can bring up popup menus.
+  	popup = popper;
+  	MouseListener popupListener = new PopupListener();
+    collectionTable.addMouseListener(popupListener);	
+  }
+  
   //
   // public void oldInit( )
   // {
@@ -237,4 +245,24 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
   // {
   // return model.getCollection( );
   // }
+
+  class PopupListener extends MouseAdapter {
+    public void mousePressed(MouseEvent e) {
+        maybeShowPopup(e);
+    }
+
+    public void mouseReleased(MouseEvent e) {
+        maybeShowPopup(e);
+    }
+
+    private void maybeShowPopup(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            popup.show(e.getComponent(),
+                       e.getX(), e.getY());
+        }
+    }
+
+}
+
+
 }

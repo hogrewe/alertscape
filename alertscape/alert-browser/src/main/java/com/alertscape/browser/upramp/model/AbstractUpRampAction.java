@@ -50,70 +50,86 @@ public abstract class AbstractUpRampAction extends AbstractAction
 
 	public void actionPerformed(ActionEvent arg0)
 	{
-		// check if the browser is authorized to do this
-		if (upramp.isAuthorized(AlertBrowser.getCurrentContext()))
-		{
-			final JDialog dlg = new JDialog(parentFrame);
-			dlg.setTitle(getActionWindowTitle());
-			dlg.setModal(true);
-			dlg.toFront();
-			dlg.setLayout(new BorderLayout());			
-			
-			// create the panel with the latest browsercontext
-			final AbstractUpRampPanel panel = getPanel();
-			
-			dlg.setSize(panel.getBaseSize());
-			dlg.setPreferredSize(panel.getBaseSize());
-			
-			// center within the parent
-			dlg.setLocationRelativeTo(parentFrame);
-			
-			// add a hide listener to the panel
-			ActionListener hider = new ActionListener() {
-				public void actionPerformed(ActionEvent arg0)
-				{
-					// Hide the dialog
-					dlg.setVisible(false);
-					
-					// check if the panel needs to be submit
-					if (panel.needsSubmit())
-					{
-						// submit the data in the panel using the upramp already provided
-						boolean submitted = panel.submit();
-						
-						if (submitted)
-						{
-							// TODO: log a message
-						}
-						else
-						{
-							// TODO: pop a window, log a message
-						}
-					}
-				}
-			};
-			panel.associateHideListener(hider);
-			
-			// initialize the panel using the upramp
-			boolean initialized = panel.initialize();
-			
-			// make sure initialization worked
-			if (initialized)
-			{		
-				// add the panel to the dialog
-				dlg.add(panel, BorderLayout.CENTER);
-				
-				// set the dialog as visible: // TODO: not sure if will be blocking method until hide...
-				dlg.setVisible(true);	
-			}
-			else
+		Thread t = new Thread() {
+			public void run()
 			{
-				// TODO: Pop an error message
-			}						
-		}
-		else
-		{
-			// TODO: pop an error message
-		}
+				// check if the browser is authorized to do this
+				if (upramp.isAuthorized(AlertBrowser.getCurrentContext()))
+				{
+					final JDialog dlg = new JDialog(parentFrame);
+					dlg.setTitle(getActionWindowTitle());
+					dlg.setModal(true);
+					dlg.toFront();
+					dlg.setLayout(new BorderLayout());
+
+					// create the panel with the latest browsercontext
+					final AbstractUpRampPanel panel = getPanel();
+
+					dlg.setSize(panel.getBaseSize());
+					dlg.setPreferredSize(panel.getBaseSize());
+
+					// center within the parent
+					dlg.setLocationRelativeTo(parentFrame);
+
+					// add a hide listener to the panel
+					ActionListener hider = new ActionListener() {
+						public void actionPerformed(ActionEvent arg0)
+						{
+							Thread innerT = new Thread() 
+							{
+								public void run()
+								{
+									// Hide the dialog
+									dlg.setVisible(false);
+
+									// check if the panel needs to be submit
+									if (panel.needsSubmit())
+									{
+										// submit the data in the panel using the upramp already
+										// provided
+										boolean submitted = panel.submit();
+
+										if (submitted)
+										{
+											// TODO: log a message
+										} else
+										{
+											// TODO: pop a window, log a message
+										}
+									}
+								}
+							};
+							innerT.start();
+						}
+					};
+
+					panel.associateHideListener(hider);
+
+					// initialize the panel using the upramp
+					boolean initialized = panel.initialize();
+
+					// make sure initialization worked
+					if (initialized)
+					{
+						// add the panel to the dialog
+						dlg.add(panel, BorderLayout.CENTER);
+
+						// set the dialog as visible: // TODO: not sure if will be blocking
+						// method until hide...
+						dlg.setVisible(true);
+					} else
+					{
+						// TODO: Pop an error message
+					}
+				} else
+				{
+					// TODO: pop an error message
+				}
+			}
+		};
+
+		t.start();
 	}
+			
+
 }

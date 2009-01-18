@@ -89,8 +89,7 @@
 		init-method="init">
 		<property name="sourceDao" ref="sourceDao" />
 	</bean>
-	<bean id="dbOfframp" class="com.alertscape.pump.offramp.DatabaseOfframp"
-		init-method="init">
+	<bean id="dbOfframp" class="com.alertscape.pump.offramp.DatabaseOfframp">
 		<property name="alertDao" ref="alertDao" />
 	</bean>
 	<bean id="alertDao" class="com.alertscape.dao.jdbc.AlertJdbcDao">

@@ -3,7 +3,12 @@
  */
 package com.alertscape.browser.upramp.firstparty.unack;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.net.URL;
+
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 
 import com.alertscape.browser.upramp.model.AbstractUpRampAction;
@@ -17,10 +22,11 @@ import com.alertscape.browser.upramp.model.UpRamp;
 public class UnacknowledgeAlertAction extends AbstractUpRampAction {
 
   private static final long serialVersionUID = 5978677927003721995L;
+	private ImageIcon myIcon = null;	
 
   @Override
   protected KeyStroke getActionAccelerator() {
-    return null;
+  	return KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.ALT_MASK);
   }
 
   @Override
@@ -30,7 +36,14 @@ public class UnacknowledgeAlertAction extends AbstractUpRampAction {
 
   @Override
   protected Icon getActionIcon() {
-    return null;
+		if (myIcon == null)
+		{
+			URL imageUrl = getClass().getResource("/com/alertscape/images/mini/page_deny.gif");
+		    ImageIcon icon = new ImageIcon(imageUrl);
+		    myIcon = icon;	
+		}
+		
+		return myIcon;
   }
 
   @Override
