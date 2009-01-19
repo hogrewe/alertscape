@@ -1,142 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <artifactId>alertscape</artifactId>
-    <groupId>com.alertscape</groupId>
-    <version>0.8-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.alertscape.browser</groupId>
-  <artifactId>alert-browser</artifactId>
-  <name>alert-browser</name>
-  <version>0.8-SNAPSHOT</version>
-  <url>http://as.hogrewe.com/as/webstart</url>
-  <dependencies>
-    <dependency>
-      <groupId>com.alertscape</groupId>
-      <artifactId>as-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.alertscape.service</groupId>
-      <artifactId>alert-service-interfaces</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.alertscape</groupId>
-      <artifactId>alert-tester</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.odell</groupId>
-      <artifactId>glazedlists</artifactId>
-    </dependency>
-      <dependency>
-        <groupId>com.jgoodies</groupId>
-        <artifactId>forms</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>com.jgoodies</groupId>
-        <artifactId>validation</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>com.jgoodies</groupId>
-        <artifactId>binding</artifactId>
-      </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-core</artifactId>
-    </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.xbean</groupId>
-        <artifactId>xbean-spring</artifactId>
-      </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-  </dependencies>
-    <build>
-        <plugins>
-    <!--
-            <plugin>
-                <groupId>com.pyx4me</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <executions>
-                   <execution>
-                       <phase>package</phase>
-                       <goals><goal>proguard</goal></goals>
-                   </execution>
-                </executions>
-                <configuration>
-                    <options>
-                        <option>-allowaccessmodification</option>
-                        <option>-keep public class com.alertscape.browser.ui.swing.AlertBrowser { *; }</option>
-                    </options>
-                    <libs>
-                        <lib>${java.home}/../Classes/classes.jar</lib>
-                    </libs>
-                </configuration>
-            </plugin>
-      -->
-      <plugin>
-        <groupId>org.codehaus.mojo.webstart</groupId>
-        <artifactId>webstart-maven-plugin</artifactId>
-        <executions>
-           <execution>
-                 <phase>package</phase>
-              <goals>
-                 <goal>jnlp-inline</goal> 
-              </goals>
-           </execution>
-        </executions>
-        <configuration>
-           <libPath>lib</libPath>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>alertscape</artifactId>
+		<groupId>com.alertscape</groupId>
+		<version>0.8-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.alertscape.browser</groupId>
+	<artifactId>alert-browser</artifactId>
+	<name>alert-browser</name>
+	<version>0.8-SNAPSHOT</version>
+	<url>http://as.hogrewe.com:8080/as/webstart</url>
+	<dependencies>
+		<dependency>
+			<groupId>com.alertscape</groupId>
+			<artifactId>as-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alertscape.service</groupId>
+			<artifactId>alert-service-interfaces</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alertscape</groupId>
+			<artifactId>alert-tester</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.odell</groupId>
+			<artifactId>glazedlists</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>forms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>binding</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xbean</groupId>
+			<artifactId>xbean-spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<!--
+				<plugin> <groupId>com.pyx4me</groupId>
+				<artifactId>proguard-maven-plugin</artifactId> <executions>
+				<execution> <phase>package</phase>
+				<goals><goal>proguard</goal></goals> </execution> </executions>
+				<configuration> <options> <option>-allowaccessmodification</option>
+				<option>-keep public class
+				com.alertscape.browser.ui.swing.AlertBrowser { *; }</option>
+				</options> <libs> <lib>${java.home}/../Classes/classes.jar</lib>
+				</libs> </configuration> </plugin>
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo.webstart</groupId>
+				<artifactId>webstart-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jnlp-inline</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<libPath>lib</libPath>
+					<jnlp>
+						<inputTemplateResourcePath>${project.basedir}/src/jnlp</inputTemplateResourcePath>
+						<inputTemplate>alertbrowser.vm</inputTemplate>
+						<outputFile>alertbrowser.jnlp</outputFile>
 
-           
-           <jnlp>
-             <inputTemplateResourcePath>${project.basedir}/src/jnlp</inputTemplateResourcePath>
-             <inputTemplate>alertbrowser.vm</inputTemplate>
-             <outputFile>alertbrowser.jnlp</outputFile> 
-
-             <mainClass>com.alertscape.browser.ui.swing.AlertBrowserMain</mainClass>
-           </jnlp>
-
-           <sign>
-             <keystore>${project.basedir}/as_keystore.ks</keystore>
-             <keypass>alertscape</keypass>  <!-- we need to override passwords easily from the command line. ${keypass} -->
-             <storepass>alertscape</storepass> <!-- ${storepass} -->
-             <!--storetype>fillme</storetype-->
-             <alias>alertscape</alias>
-
-             <!--validity>fillme</validity-->
-
-             <!-- only required for generating the keystore -->
-             <!--dnameCn>fillme</dnameCn>
-             <dnameOu>fillme</dnameOu>
-             <dnameO>fillme</dnameO>
-             <dnameL>fillme</dnameL>
-             <dnameSt>fillme</dnameSt>
-             <dnameC>fillme</dnameC-->
-
-             <verify>true</verify> <!-- verify that the signing operation succeeded -->
-
-           </sign>
-
-
-<!--
-           <pack200>true</pack200>
-           -->
-           <!-- <gzip>true</gzip> --><!-- default force when pack200 false, true when pack200 selected ?? -->
-
-        </configuration>
-      </plugin>
-
-        </plugins>
-    </build>
+						<mainClass>com.alertscape.browser.ui.swing.AlertBrowserMain</mainClass>
+					</jnlp>
+					<sign>
+						<keystore>${project.basedir}/as_keystore.ks</keystore>
+						<keypass>alertscape</keypass>
+						<storepass>alertscape</storepass>
+						<alias>alertscape</alias>
+						<verify>true</verify>
+					</sign>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

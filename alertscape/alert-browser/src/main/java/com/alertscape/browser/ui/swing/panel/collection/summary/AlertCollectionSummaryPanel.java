@@ -131,9 +131,9 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
     });
 
     // Initialize the counts to the current counts in the collection
-    Lock lock = getCollection( ).getEventList( ).getReadWriteLock( ).readLock( );
+    Lock lock = masterList.getReadWriteLock( ).readLock( );
     lock.lock( );
-    for (Alert event : getCollection( ).getEventList( ))
+    for (Alert event : masterList)
     {
       int count = severityCounts.get(event.getSeverity( ));
       count++;

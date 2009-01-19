@@ -8,6 +8,6 @@ package com.alertscape.browser.model.tree;
  * @author josh
  * @version $Version: $
  */
-public interface CevTreeNodeChangeListener
+public interface AlertTreeNodeChangeListener
 {
 }
