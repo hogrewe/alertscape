@@ -56,6 +56,21 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
     kyriaki.setIcon("/com/alertscape/images/tree/kyriaki.png");
     kyriaki.setMatcher(Matchers.beanPropertyMatcher(Alert.class, "source", new AlertSource(2, "KYRIAKI_NET")));
     sources.addChild(kyriaki);
+    
+    DefaultAlertTreeNode types = new DefaultAlertTreeNode("Types");
+    root.addChild(types);
+    
+    DefaultAlertTreeNode utilGt50 = new DefaultAlertTreeNode("util >= 50");
+    utilGt50.setMatcher(Matchers.beanPropertyMatcher(Alert.class, "type", "util >= 50"));
+    types.addChild(utilGt50);
+
+    DefaultAlertTreeNode utilGt90 = new DefaultAlertTreeNode("util >= 90");
+    utilGt90.setMatcher(Matchers.beanPropertyMatcher(Alert.class, "type", "util >= 90"));
+    types.addChild(utilGt90);
+
+    DefaultAlertTreeNode linkDown = new DefaultAlertTreeNode("LINK DOWN");
+    linkDown.setMatcher(Matchers.beanPropertyMatcher(Alert.class, "type", "LINK DOWN"));
+    types.addChild(linkDown);
 
     alertTree = new AlertTree(new AlertTreeModel(root));
 
@@ -95,6 +110,8 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
       }
     });
     subCollection = new BinarySortAlertCollection(uniqueList);
+    
+    alertTree.setSelectionRow(0);
 
     return subCollection;
   }
