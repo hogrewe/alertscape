@@ -41,8 +41,7 @@ import com.alertscape.common.model.severity.Severity;
  * @author josh
  * @version $Version: $
  */
-public class AlertCollectionTablePanel extends JPanel implements AlertCollectionPanel, UserPreferencesPanel
-{
+public class AlertCollectionTablePanel extends JPanel implements AlertCollectionPanel, UserPreferencesPanel {
   private static final long serialVersionUID = 1L;
   private static final String PREFERENCES_COL_WIDTHS = "ColumnWidths";
 
@@ -106,21 +105,7 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
     columnLabels.add("Alert ID");
     columnLabels.add("Source");
 
-    Integer[] columnWidths = new Integer[] {
-    		130, 
-    		130, 
-    		100,
-    		100, 
-    		50, 
-    		300, 
-        100, 
-    		50, 
-    		100, 
-    		100,
-    		100, 
-    		100, 
-    		100 };	
-                                        
+    Integer[] columnWidths = new Integer[] { 130, 130, 100, 100, 50, 300, 100, 50, 100, 100, 100, 100, 100 };
 
     tf = new AlertTableFormat(propertyNames, columnLabels, extendedAttributes);
     model = new EventTableModel<Alert>(sortedList, tf);
@@ -138,27 +123,25 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
     collectionTable.setDefaultRenderer(Date.class, dateRenderer);
     collectionTable.setDefaultRenderer(Severity.class, sevRenderer);
     collectionTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    setLayout(new BorderLayout( ));
+    setLayout(new BorderLayout());
     JScrollPane tableScroller = new JScrollPane(collectionTable);
     add(tableScroller, BorderLayout.CENTER);
-    
+
     // set up the table column widths to their default sizes
-		TableColumn column = null;
-		for (int i = 0; i < collectionTable.getColumnCount(); i++) 
-		{
-			column = collectionTable.getColumnModel().getColumn(i);
-			column.setPreferredWidth(columnWidths[i]); 
-		}
+    TableColumn column = null;
+    for (int i = 0; i < collectionTable.getColumnCount() && i < columnWidths.length; i++) {
+      column = collectionTable.getColumnModel().getColumn(i);
+      column.setPreferredWidth(columnWidths[i]);
+    }
   }
 
-  public void setPopup(JPopupMenu popper)
-  {
-    //Add listener to components that can bring up popup menus.
-  	popup = popper;
-  	MouseListener popupListener = new PopupListener();
-    collectionTable.addMouseListener(popupListener);	
+  public void setPopup(JPopupMenu popper) {
+    // Add listener to components that can bring up popup menus.
+    popup = popper;
+    MouseListener popupListener = new PopupListener();
+    collectionTable.addMouseListener(popupListener);
   }
-  
+
   //
   // public void oldInit( )
   // {
@@ -276,68 +259,63 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
   // return model.getCollection( );
   // }
 
-	public Map getUserPreferences()
-	{
-		// build a map on the fly, based on what the user current has selected in this panel
-		// columns shown
-		// column order
-		// column widths
-		// sorting choices
-		Map map = new HashMap();
-		
-		// get the column widths
-    TableColumn column = null;
-    int columncount = collectionTable.getColumnCount();
-    ArrayList<Integer> widths = new ArrayList<Integer> (columncount);
-		for (int i = 0; i < columncount; i++) 
-		{
-			// get the next column
-			column = collectionTable.getColumnModel().getColumn(i);
-						
-			// get and store the current width of the column
-			Integer width = new Integer(column.getWidth());
-			widths.add(width);
-		}
-		map.put(PREFERENCES_COL_WIDTHS, widths);
-		
-		return map;
-	}
+  public Map getUserPreferences() {
+    // build a map on the fly, based on what the user current has selected in this panel
+    // columns shown
+    // column order
+    // column widths
+    // sorting choices
+    Map map = new HashMap();
 
-	public void setUserPreferences(Map preferences)
-	{
-		// TODO Auto-generated method stub
-		
-		// set the column widths: this assumes that the columns have already been added, and are in the correct order!
+    // get the column widths
     TableColumn column = null;
     int columncount = collectionTable.getColumnCount();
-    ArrayList<Integer> widths = (ArrayList<Integer>)preferences.get(PREFERENCES_COL_WIDTHS);
-		for (int i = 0; i < columncount; i++) 
-		{
-			column = collectionTable.getColumnModel().getColumn(i);
-			Integer width = widths.get(i);
-		
-			// set the width of the column to the value from the preferences map
-			column.setPreferredWidth(width);
-			column.setWidth(width);
-		}
-	}
-  
+    ArrayList<Integer> widths = new ArrayList<Integer>(columncount);
+    for (int i = 0; i < columncount; i++) {
+      // get the next column
+      column = collectionTable.getColumnModel().getColumn(i);
+
+      // get and store the current width of the column
+      Integer width = new Integer(column.getWidth());
+      widths.add(width);
+    }
+    map.put(PREFERENCES_COL_WIDTHS, widths);
+
+    return map;
+  }
+
+  public void setUserPreferences(Map preferences) {
+    // TODO Auto-generated method stub
+
+    // set the column widths: this assumes that the columns have already been added, and are in the correct order!
+    TableColumn column = null;
+    int columncount = collectionTable.getColumnCount();
+    ArrayList<Integer> widths = (ArrayList<Integer>) preferences.get(PREFERENCES_COL_WIDTHS);
+    for (int i = 0; i < columncount; i++) {
+      column = collectionTable.getColumnModel().getColumn(i);
+      Integer width = widths.get(i);
+
+      // set the width of the column to the value from the preferences map
+      column.setPreferredWidth(width);
+      column.setWidth(width);
+    }
+  }
+
   class PopupListener extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
-        maybeShowPopup(e);
+      maybeShowPopup(e);
     }
 
     public void mouseReleased(MouseEvent e) {
-        maybeShowPopup(e);
+      maybeShowPopup(e);
     }
 
     private void maybeShowPopup(MouseEvent e) {
-        if (e.isPopupTrigger()) {
-            popup.show(e.getComponent(),
-                       e.getX(), e.getY());
-        }
+      if (e.isPopupTrigger()) {
+        popup.show(e.getComponent(), e.getX(), e.getY());
+      }
     }
 
-}
+  }
 
 }

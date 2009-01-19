@@ -5,14 +5,17 @@ package com.alertscape.browser.model.tree;
 
 import java.util.List;
 
-import com.alertscape.browser.model.criterion.AlertCriterion;
+import ca.odell.glazedlists.matchers.Matcher;
+
+import com.alertscape.browser.model.AlertFilter;
 import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertCollection;
 
 /**
  * @author josh
  * 
  */
-public interface AlertTreeNode {
+public interface AlertTreeNode extends AlertFilter {
 
   public static final String CHILD_ADDED_PROP = "ChildAdded";
   public static final String CHILD_REMOVED_PROP = "ChildRemoved";
@@ -76,17 +79,6 @@ public interface AlertTreeNode {
    *          The description to set.
    */
   void setDescription(String description);
-
-  /**
-   * @return Returns the eventCriterion.
-   */
-  AlertCriterion getAlertCriterion();
-
-  /**
-   * @param eventCriterion
-   *          The eventCriterion to set.
-   */
-  void setAlertCriterion(AlertCriterion eventCriterion);
 
   /**
    * @return Returns the icon.
@@ -153,5 +145,8 @@ public interface AlertTreeNode {
    *          the exclusive to set
    */
   void setExclusive(boolean exclusive);
+  
+  void setMatcher(Matcher<Alert> matcher);
 
+  AlertCollection getCollection();
 }
