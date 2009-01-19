@@ -3,6 +3,7 @@
  */
 package com.alertscape.util;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ import javax.swing.ImageIcon;
  */
 public class ImageFinder
 {
-    private static ImageFinder inst = new ImageFinder( );
+    private static ImageFinder inst = new ImageFinder( ); 
 
     private Map<String, Icon> images = new HashMap<String, Icon>( );
 
@@ -39,7 +40,11 @@ public class ImageFinder
         Icon icon = images.get(path);
 
         if (icon == null) {
-            icon = new ImageIcon(getClass( ).getResource(path));
+            URL iconResource = getClass( ).getResource(path);
+            if(iconResource == null) {
+              return null;
+            }
+            icon = new ImageIcon(iconResource);
             if (icon != null) {
                 images.put(path, icon);
             }

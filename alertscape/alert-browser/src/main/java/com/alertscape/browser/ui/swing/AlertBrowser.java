@@ -27,6 +27,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -46,6 +47,7 @@ import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
 import com.alertscape.browser.ui.swing.panel.collection.filter.TextFilterPanel;
 import com.alertscape.browser.ui.swing.panel.collection.summary.AlertCollectionSummaryPanel;
 import com.alertscape.browser.ui.swing.panel.collection.table.AlertCollectionTablePanel;
+import com.alertscape.browser.ui.swing.panel.collection.tree.AlertTreePanel;
 import com.alertscape.browser.ui.swing.panel.common.ASPanelBuilder;
 import com.alertscape.browser.upramp.firstparty.ack.AcknowledgeAlertAction;
 import com.alertscape.browser.upramp.firstparty.clear.ClearAlertAction;
@@ -56,6 +58,7 @@ import com.alertscape.browser.upramp.firstparty.predefinedtag.PredefinedTagActio
 import com.alertscape.browser.upramp.firstparty.unack.UnacknowledgeAlertAction;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertAttributeDefinition;
 import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.BinarySortAlertCollection;
 import com.alertscape.service.AlertService;
@@ -76,6 +79,7 @@ public class AlertBrowser extends JFrame {
   private AuthenticationService authenticationService;
   private static BrowserContext currentContext = new BrowserContext();
   private static AlertCollectionTablePanel tablePanel;
+  private AlertTreePanel treePanel;
 
   public AlertBrowser() {
   }
@@ -99,15 +103,27 @@ public class AlertBrowser extends JFrame {
     }
     setSize(800, 600);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
+    treePanel = new AlertTreePanel();
+    treePanel.init();
+    
     collection = new BinarySortAlertCollection();
+    
+    AlertCollection treeCollection = treePanel.setMasterCollection(collection);
 
     JPanel p = new JPanel();
     p.setLayout(new BorderLayout());
     TextFilterPanel filterPanel = new TextFilterPanel();
-    AlertCollection filterCollection = filterPanel.setMasterCollection(collection);
+    AlertCollection filterCollection = filterPanel.setMasterCollection(treeCollection);
     AlertCollectionSummaryPanel summaryPanel = new AlertCollectionSummaryPanel();
     AlertCollection summaryCollection = summaryPanel.setMasterCollection(filterCollection);
-    tablePanel = new AlertCollectionTablePanel(summaryCollection);
+    List<AlertAttributeDefinition> extendedAttributes = null;
+    try {
+      extendedAttributes = alertService.getAttributeDefinitions();
+    } catch (AlertscapeException e) {
+      LOG.error("Couldn't get attribute definitions", e);
+    }
+    tablePanel = new AlertCollectionTablePanel(summaryCollection, extendedAttributes);
+    tablePanel.init();
 
     Icon bgImage = ImageFinder.getInstance().findImage("/com/alertscape/images/common/hdr_background_small.png");
 
@@ -196,10 +212,16 @@ public class AlertBrowser extends JFrame {
     northPanel.add(outerSummaryPanel);
     northPanel.add(outerFilterPanel);
 
-    p.add(northPanel, BorderLayout.NORTH);
     p.add(outerTablePanel, BorderLayout.CENTER);
-    p.add(new AlertBrowserStatusPanel(), BorderLayout.SOUTH);
-    setContentPane(p);
+//    p.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    
+    JPanel overallPane = new JPanel();
+    overallPane.setLayout(new BorderLayout());
+    overallPane.add(northPanel, BorderLayout.NORTH);
+    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treePanel, p);
+    overallPane.add(splitPane, BorderLayout.CENTER);
+    overallPane.add(new AlertBrowserStatusPanel(), BorderLayout.SOUTH);
+    setContentPane(overallPane);
 
     // create the menubar
     JMenuBar menubar = new JMenuBar();

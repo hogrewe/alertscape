@@ -4,6 +4,7 @@
 package com.alertscape.common.model;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +41,7 @@ public class Alert implements Serializable {
 
   private Map<String, Object> majorTags;
   private Map<String, Object> minorTags;
+  private Map<String, Object> extendedAttributes = Collections.emptyMap();
 
   public long getCount() {
     return count;
@@ -275,6 +277,23 @@ public class Alert implements Serializable {
     } else if (!source.equals(other.source))
       return false;
     return true;
+  }
+
+  /**
+   * @return the extendedAttributes
+   */
+  public Object getExtendedAttribute(String name) {
+    return extendedAttributes.get(name);
+  }
+
+  /**
+   * @param extendedAttributes the extendedAttributes to set
+   */
+  public void setExtendedAttributes(Map<String, Object> extendedAttributes) {
+    this.extendedAttributes = extendedAttributes;
+    if(this.extendedAttributes == null) {
+      this.extendedAttributes = Collections.emptyMap();
+    }
   }
 
 }

@@ -8,9 +8,11 @@ import java.awt.Component;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import com.alertscape.browser.model.tree.CevTreeNode;
+import com.alertscape.browser.model.tree.AlertTreeNode;
+import com.alertscape.browser.model.tree.DefaultAlertTreeNode;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
 import com.alertscape.util.ImageFinder;
@@ -19,13 +21,13 @@ import com.alertscape.util.ImageFinder;
  * @author josh
  * @version $Version: $
  */
-public class CevTreeNodeRenderer extends DefaultTreeCellRenderer
+public class AlertTreeNodeRenderer extends DefaultTreeCellRenderer
 {
     private static final long serialVersionUID = 1L;
 
     protected Icon[] severityIcons;
 
-    public CevTreeNodeRenderer( )
+    public AlertTreeNodeRenderer( )
     {
         SeverityFactory factory = SeverityFactory.getInstance( );
         ImageFinder finder = ImageFinder.getInstance( );
@@ -44,7 +46,13 @@ public class CevTreeNodeRenderer extends DefaultTreeCellRenderer
         JLabel l = (JLabel) super.getTreeCellRendererComponent(tree, value,
                 selected, expanded, leaf, row, hasFocus);
 
-        CevTreeNode node = (CevTreeNode) value;
+        AlertTreeNode node;
+        if(value instanceof DefaultAlertTreeNode) {
+          node = (AlertTreeNode) value;
+        } else {
+          DefaultMutableTreeNode mtn = (DefaultMutableTreeNode) value;
+          node = (AlertTreeNode) mtn.getUserObject();
+        }
         l.setText(node.getText( ));
         Icon icon = determineIcon(node);
         if (icon != null) {
@@ -53,7 +61,7 @@ public class CevTreeNodeRenderer extends DefaultTreeCellRenderer
         return l;
     }
 
-    protected Icon determineIcon(CevTreeNode node)
+    protected Icon determineIcon(AlertTreeNode node)
     {
         Icon icon = null;
 

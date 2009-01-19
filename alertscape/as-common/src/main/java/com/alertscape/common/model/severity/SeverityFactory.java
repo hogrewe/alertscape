@@ -51,7 +51,7 @@ public class SeverityFactory
 
     severities[sevNum] = new Severity( );
     severities[sevNum].setLevel(sevNum);
-    severities[sevNum].setBackgroundColor(Color.orange);
+    severities[sevNum].setBackgroundColor(new Color(255, 130, 0));
     severities[sevNum].setForegroundColor(Color.BLACK);
     severities[sevNum].setName("Major");
     sevNum++;

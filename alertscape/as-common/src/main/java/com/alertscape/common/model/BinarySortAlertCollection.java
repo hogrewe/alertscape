@@ -43,7 +43,6 @@ public class BinarySortAlertCollection extends AbstractAlertCollection
       }
       else
       {
-        LOG.debug("U");
         alerts.set(index, alert);
       }
     }
@@ -55,7 +54,6 @@ public class BinarySortAlertCollection extends AbstractAlertCollection
       }
       else
       {
-        LOG.debug("C");
         alerts.remove(index);
       }
     }
