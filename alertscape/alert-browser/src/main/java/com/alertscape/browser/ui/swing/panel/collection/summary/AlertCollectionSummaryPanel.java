@@ -202,6 +202,7 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
 
     JPanel totalPanel = builder.getPanel();
     summaryPanel.add(totalPanel);
+    summaryPanel.setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 7));
 
     setLayout(new BorderLayout());
     // add(headerPanel, BorderLayout.NORTH);
