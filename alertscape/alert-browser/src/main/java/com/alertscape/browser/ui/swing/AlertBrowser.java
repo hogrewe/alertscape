@@ -113,6 +113,7 @@ public class AlertBrowser extends JFrame {
     JPanel p = new JPanel();
     p.setLayout(new BorderLayout());
     TextFilterPanel filterPanel = new TextFilterPanel();
+    filterPanel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
     AlertCollection filterCollection = filterPanel.setMasterCollection(treeCollection);
     AlertCollectionSummaryPanel summaryPanel = new AlertCollectionSummaryPanel();
     AlertCollection summaryCollection = summaryPanel.setMasterCollection(filterCollection);
@@ -127,15 +128,10 @@ public class AlertBrowser extends JFrame {
 
     Icon bgImage = ImageFinder.getInstance().findImage("/com/alertscape/images/common/hdr_background_small.png");
 
-    // Filter
-    JPanel outerFilterPanel = new JPanel();
-    outerFilterPanel.setBorder(BorderFactory.createTitledBorder("Quick Filter"));
-    outerFilterPanel.setLayout(new GridLayout(1, 1));
-    outerFilterPanel.add(filterPanel);
 
     // Summary
     JPanel outerSummaryPanel = new JPanel();
-    outerSummaryPanel.setBorder(BorderFactory.createTitledBorder("Summary"));
+//    outerSummaryPanel.setBorder(BorderFactory.createTitledBorder("Summary"));
     outerSummaryPanel.setLayout(new GridLayout(1, 1));
     outerSummaryPanel.add(summaryPanel);
 
@@ -208,9 +204,9 @@ public class AlertBrowser extends JFrame {
 
     // North
     JPanel northPanel = new JPanel();
-    northPanel.setLayout(new GridLayout(1, 2));
+    northPanel.setLayout(new GridLayout(2, 1));
+    northPanel.add(filterPanel);
     northPanel.add(outerSummaryPanel);
-    northPanel.add(outerFilterPanel);
 
     p.add(outerTablePanel, BorderLayout.CENTER);
 //    p.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));

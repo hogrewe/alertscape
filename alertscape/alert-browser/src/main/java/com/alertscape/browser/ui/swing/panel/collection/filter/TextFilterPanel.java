@@ -3,6 +3,7 @@
  */
 package com.alertscape.browser.ui.swing.panel.collection.filter;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.HashMap;
@@ -22,6 +23,10 @@ import com.alertscape.browser.model.AlertFilter;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.BinarySortAlertCollection;
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * @author josh
@@ -40,17 +45,15 @@ public class TextFilterPanel extends JPanel implements AlertFilter, UserPreferen
   }
 
   public void init() {
-    //setLayout(new GridBagLayout());
-  	//setLayout(new FlowLayout());
-  	//setLayout(new BorderLayout());
-  	setLayout(new GridLayout(1,1));
-    JPanel searchPanel = new JPanel();
+    setLayout(new BorderLayout());
     searchText = new JTextField();
     searchText.setMinimumSize(new Dimension(100,20));
-    searchText.setPreferredSize(new Dimension(300,20));    
-    searchPanel.add(searchText);
-    
-    add(searchPanel);
+    searchText.setPreferredSize(new Dimension(300,20));
+    FormLayout layout = new FormLayout("right:pref, 3dlu, default:grow", "");
+    DefaultFormBuilder builder = new DefaultFormBuilder(layout);
+    builder.append("Quick Filter: ", searchText);
+
+    add(builder.getPanel(), BorderLayout.CENTER);
 
     String[] propertyNames = { "shortDescription", "longDescription", "type", "item", "itemManager", "itemType",
         "itemManagerType",  "severity", "source"};
