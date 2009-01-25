@@ -40,6 +40,7 @@ public class SeverityFactory
     severities[sevNum].setBackgroundColor(Color.blue);
     severities[sevNum].setForegroundColor(Color.white);
     severities[sevNum].setName("Warning");
+    severities[sevNum].setSmallIcon("/com/alertscape/images/mini/flag_green.gif");
     sevNum++;
 
     severities[sevNum] = new Severity( );
@@ -47,6 +48,7 @@ public class SeverityFactory
     severities[sevNum].setBackgroundColor(new Color(236, 233, 0));
     severities[sevNum].setForegroundColor(Color.BLACK);
     severities[sevNum].setName("Minor");
+    severities[sevNum].setSmallIcon("/com/alertscape/images/mini/flag_white.gif");
     sevNum++;
 
     severities[sevNum] = new Severity( );
@@ -54,12 +56,14 @@ public class SeverityFactory
     severities[sevNum].setBackgroundColor(new Color(255, 130, 0));
     severities[sevNum].setForegroundColor(Color.BLACK);
     severities[sevNum].setName("Major");
+    severities[sevNum].setSmallIcon("/com/alertscape/images/mini/flag_orange.gif");
     sevNum++;
 
     severities[sevNum] = new Severity( );
     severities[sevNum].setLevel(sevNum);
     severities[sevNum].setBackgroundColor(new Color(198, 65, 0));
     severities[sevNum].setForegroundColor(Color.BLACK);
+    severities[sevNum].setSmallIcon("/com/alertscape/images/mini/flag_red.gif");
     severities[sevNum].setName("Critical");
     sevNum++;
 

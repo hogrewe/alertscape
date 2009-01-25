@@ -29,7 +29,7 @@ public class ConfigurableAlertService implements AlertService {
     for (Alert a : alert) {
       a.setAcknowledgedBy(user.getUsername());
       LOG.info("Acknowledging alert: " + a.getCompositeAlertId());
-      pump.processAlert(a);
+      pump.processUprampAlert(a);
     }
   }
 
@@ -37,7 +37,7 @@ public class ConfigurableAlertService implements AlertService {
     for (Alert a : alert) {
       a.setAcknowledgedBy(null);
       LOG.info("Unacknowledging alert: " + a.getCompositeAlertId());
-      pump.processAlert(a);
+      pump.processUprampAlert(a);
     }
   }
 
@@ -45,7 +45,7 @@ public class ConfigurableAlertService implements AlertService {
     for (Alert a : alert) {
       a.setStatus(AlertStatus.CLEARED);
       LOG.info("Clearing alert: " + a.getCompositeAlertId());
-      pump.processAlert(a);
+      pump.processUprampAlert(a);
     }
   }
 

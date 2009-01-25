@@ -3,7 +3,9 @@
  */
 package com.alertscape.pump;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
@@ -23,7 +25,8 @@ public class ConfigurableAlertPump implements AlertPump {
   private JmsOfframp jmsOfframp;
   private AlertSourceRepository alertSourceRepository;
   private AlertAttributeDefinitionDao definitionDao;
-
+  private Map<AlertSource, AlertSourceCallback> callbacks = new HashMap<AlertSource, AlertSourceCallback>();
+  
   public void processAlert(Alert a) throws AlertscapeException {
     if (dbOfframp != null) {
       dbOfframp.processAlert(a);
@@ -32,8 +35,19 @@ public class ConfigurableAlertPump implements AlertPump {
       jmsOfframp.processAlert(a);
     }
   }
+  
+  public void processUprampAlert(Alert a) throws AlertscapeException {
+    processAlert(a);
+    AlertSourceCallback callback = callbacks.get(a.getSource());
+    if(callback != null) {
+      callback.updateAlert(a);
+    }
+  }
 
-  public List<Alert> getAlerts(AlertSource source) throws AlertscapeException {
+  public List<Alert> registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertscapeException {
+    if(callback != null) {
+      callbacks.put(source, callback);
+    }
     return getDbOfframp().getAlertsForSource(source);
   }
 

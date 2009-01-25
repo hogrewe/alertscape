@@ -17,11 +17,17 @@ import com.alertscape.common.model.AlertSource;
 public interface AlertPump {
   void processAlert(Alert a) throws AlertscapeException;
 
-  List<Alert> getAlerts(AlertSource source) throws AlertscapeException;
+  List<Alert> registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertscapeException;
 
   List<Alert> getAllAlerts() throws AlertscapeException;
 
   AlertSource getAlertSource(String sourceName) throws AlertscapeException;
 
   List<AlertAttributeDefinition> getAttributeDefinitions();
+
+  /**
+   * @param a
+   * @throws AlertscapeException
+   */
+  void processUprampAlert(Alert a) throws AlertscapeException;
 }

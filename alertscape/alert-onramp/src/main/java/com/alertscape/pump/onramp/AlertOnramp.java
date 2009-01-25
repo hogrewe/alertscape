@@ -11,6 +11,7 @@ import java.util.Map;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
+import com.alertscape.pump.AlertSourceCallback;
 import com.alertscape.pump.onramp.equator.AlertEquator;
 import com.alertscape.pump.onramp.sender.AlertTransport;
 import com.alertscape.pump.onramp.sender.AlertTransportException;
@@ -19,7 +20,7 @@ import com.alertscape.pump.onramp.sender.AlertTransportException;
  * @author josh
  * 
  */
-public abstract class AlertOnramp {
+public abstract class AlertOnramp implements AlertSourceCallback {
   private static ASLogger LOG = ASLogger.getLogger(AlertOnramp.class);
   private AlertTransport transport;
   private long nextAlertId;
@@ -30,11 +31,25 @@ public abstract class AlertOnramp {
   private String sourceName;
 
   public void sendAlert(Alert alert) {
+    updateLocalAlert(alert);
+
+    try {
+      transport.sendAlert(alert);
+    } catch (AlertTransportException e) {
+      LOG.error("Couldn't send alert to transport", e);
+    }
+  }
+
+  private void updateLocalAlert(Alert alert) {
     alert.setSource(source);
     AlertDedupWrapper alertWrapper = new AlertDedupWrapper(equator, alert);
     Alert existing;
     synchronized (alertMap) {
       existing = alertMap.get(alertWrapper);
+      if (!alert.isStanding()) {
+        alertMap.remove(alertWrapper);
+        return;
+      }
       alertMap.put(alertWrapper, alert);
     }
     Date now = new Date();
@@ -48,23 +63,21 @@ public abstract class AlertOnramp {
         alert.setAlertId(nextAlertId++);
       }
       alert.setCount(1);
-      alert.setFirstOccurence(now);
+      if (alert.getFirstOccurence() == null) {
+        alert.setFirstOccurence(now);
+      }
     }
 
-    alert.setLastOccurence(now);
-
-    try {
-      transport.sendAlert(alert);
-    } catch (AlertTransportException e) {
-      LOG.error("Couldn't send alert to transport", e);
+    if (alert.getLastOccurence() == null) {
+      alert.setLastOccurence(now);
     }
   }
 
   public final void onrampInit() {
     try {
-      List<Alert> alerts = transport.getAlerts(source);
+      List<Alert> alerts = transport.registerAlertSource(source, this);
       for (Alert alert : alerts) {
-        if(alert.getAlertId() > nextAlertId) {
+        if (alert.getAlertId() > nextAlertId) {
           nextAlertId = alert.getAlertId() + 1;
         }
         AlertDedupWrapper alertWrapper = new AlertDedupWrapper(equator, alert);
@@ -76,6 +89,10 @@ public abstract class AlertOnramp {
     }
 
     init();
+  }
+
+  public void updateAlert(Alert alert) {
+    updateLocalAlert(alert);
   }
 
   protected abstract void init();
@@ -119,11 +136,11 @@ public abstract class AlertOnramp {
   }
 
   /**
-   * @param sourceName the sourceName to set
+   * @param sourceName
+   *          the sourceName to set
    */
   public void setSourceName(String sourceName) {
     this.sourceName = sourceName;
   }
-  
 
 }
