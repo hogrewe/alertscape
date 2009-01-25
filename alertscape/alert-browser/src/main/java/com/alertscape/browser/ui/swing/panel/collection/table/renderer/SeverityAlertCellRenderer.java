@@ -5,9 +5,11 @@ package com.alertscape.browser.ui.swing.panel.collection.table.renderer;
 
 import java.awt.Component;
 
+import javax.swing.JLabel;
 import javax.swing.JTable;
 
 import com.alertscape.common.model.severity.Severity;
+import com.alertscape.util.ImageFinder;
 
 /**
  * @author josh
@@ -23,8 +25,10 @@ public class SeverityAlertCellRenderer extends DefaultAlertCellRenderer
         Severity sev = (Severity) value;
         value = sev.getName();
 
-        return super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
-                row, column);
+        JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        l.setIcon(ImageFinder.getInstance().findImage(sev.getSmallIcon()));
+        
+        return l;
     }
 
     

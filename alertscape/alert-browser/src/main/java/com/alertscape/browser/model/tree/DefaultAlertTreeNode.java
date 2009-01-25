@@ -4,21 +4,23 @@
 package com.alertscape.browser.model.tree;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.FilterList;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+
 import ca.odell.glazedlists.matchers.Matcher;
 
 import com.alertscape.browser.model.criterion.AlertCriterion;
+import com.alertscape.browser.ui.swing.panel.collection.tree.TreeMatcherEditor;
+import com.alertscape.browser.ui.swing.tree.AlertTreeModel;
 import com.alertscape.common.model.Alert;
-import com.alertscape.common.model.AlertCollection;
-import com.alertscape.common.model.BinarySortAlertCollection;
+import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
@@ -29,34 +31,35 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
   private byte[] alertLock = new byte[0];
 
   private AlertTreeNode parent;
-  private List<DefaultAlertTreeNode> children;
+  private List<AlertTreeNode> children;
   /** This is the order that we should try to add the alerts to the children */
-  private List<DefaultAlertTreeNode> childAddOrder;
+  private List<AlertTreeNode> childAddOrder;
   private AlertTreeNode noMatchNode;
-  private Set<Alert> alerts;
-  /** Trade off space for speed in handling severity changes */
-  private Map<String, Alert>[] severityAlerts;
+  private Map<Alert, Alert> alerts;
+  private Map<Severity, Integer> severityCounts;
   private AlertCriterion alertCriterion;
   private BlinkCriterion blinkCriterion;
-  private int maxSeverity;
+  private Severity maxSeverity;
   private String icon;
   private String text;
   private String description;
   private boolean blink;
   private boolean exclusive;
   private Matcher<Alert> matcher;
-  private AlertCollection master;
-  private AlertCollection subCollection;
+  private TreeMatcherEditor matcherEditor;
+  private AlertTreeModel treeModel;
 
-  @SuppressWarnings("unchecked")
   public DefaultAlertTreeNode() {
-    alerts = new HashSet<Alert>();
+    alerts = new HashMap<Alert, Alert>();
     int numsevs = SeverityFactory.getInstance().getNumSeverities();
-    severityAlerts = new Map[numsevs];
+    severityCounts = new HashMap<Severity, Integer>(numsevs);
     for (int i = 0; i < numsevs; i++) {
-      severityAlerts[i] = new HashMap<String, Alert>();
+      Severity s = SeverityFactory.getInstance().getSeverity(i);
+      severityCounts.put(s, 0);
     }
-    children = new ArrayList<DefaultAlertTreeNode>();
+    maxSeverity = SeverityFactory.getInstance().getSeverity(0);
+    children = new ArrayList<AlertTreeNode>();
+    matcherEditor = new TreeMatcherEditor();
   }
 
   public DefaultAlertTreeNode(String text) {
@@ -64,36 +67,32 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
     setText(text);
   }
 
-  public AlertCollection setMasterCollection(AlertCollection master) {
-    if (master == null) {
-      subCollection = null;
-    } else {
-      EventList<Alert> masterList = master.getEventList();
-      FilterList<Alert> filterList = new FilterList<Alert>(masterList, matcher);
-      subCollection = new BinarySortAlertCollection(filterList);
-    }
-
-    for (AlertTreeNode child : getChildAddOrder()) {
-      child.setMasterCollection(subCollection);
-    }
-
-    return subCollection;
-  }
-
-  
-
-  public AlertCollection getCollection() {
-    return subCollection;
-  }
   public boolean addAlert(Alert a) {
     boolean added = false;
 
     synchronized (alertLock) {
-      added = alertCriterion == null || alertCriterion.matches(a);
-      alerts.add(a);
+      added = matcher == null || matcher.matches(a);
       if (added) {
-        if (!addToChildren(a) && noMatchNode != null) {
-          noMatchNode.addAlert(a);
+        Alert existing = alerts.get(a);
+        if (existing == null || existing.getSeverity() != a.getSeverity()) {
+          int count;
+          if (existing != null) {
+            count = severityCounts.get(existing.getSeverity());
+            count--;
+            severityCounts.put(existing.getSeverity(), count);
+          }
+          count = severityCounts.get(a.getSeverity());
+          count++;
+          severityCounts.put(a.getSeverity(), count);
+        }
+        determineMaxSeverity();
+        alerts.put(a, a);
+        if (treeModel != null) {
+          treeModel.nodeChanged(this);
+        }
+        matcherEditor.addAlert(a);
+        if (!addToChildren(a)) {
+          addNonChildMatchingAlert(a);
         }
       }
     }
@@ -101,9 +100,36 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
     return added;
   }
 
+  /**
+   * 
+   */
+  private void determineMaxSeverity() {
+    maxSeverity = SeverityFactory.getInstance().getSeverity(0);
+    for (Severity s : severityCounts.keySet()) {
+      if (s.getLevel() > maxSeverity.getLevel() && severityCounts.get(s) > 0) {
+        maxSeverity = s;
+      }
+    }
+  }
+
+  protected void addNonChildMatchingAlert(Alert alert) {
+    if (noMatchNode != null) {
+      noMatchNode.addAlert(alert);
+    }
+  }
+
   public void removeAlert(Alert a) {
     synchronized (alertLock) {
-      if (alerts.remove(a)) {
+      Alert existing = alerts.remove(a);
+      if (existing != null) {
+        int count = severityCounts.get(existing.getSeverity());
+        count--;
+        severityCounts.put(existing.getSeverity(), count);
+        determineMaxSeverity();
+        matcherEditor.removeAlert(a);
+        if (treeModel != null) {
+          treeModel.nodeChanged(this);
+        }
         for (AlertTreeNode child : getChildAddOrder()) {
           child.removeAlert(a);
         }
@@ -111,33 +137,42 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
     }
   }
 
-  public List<DefaultAlertTreeNode> getChildren() {
-    synchronized (alertLock) {
-      return Collections.unmodifiableList(children);
-    }
+  public List<AlertTreeNode> getChildren() {
+    return children;
   }
 
   public int getChildCount() {
-    synchronized (alertLock) {
-      return children.size();
+    return children.size();
+  }
+
+  public void addChild(AlertTreeNode child) {
+    addChild(child, children.size());
+  }
+
+  public void addChild(AlertTreeNode child, int index) {
+    children.add(index, child);
+    child.setTreeModel(treeModel);
+    child.setParent(this);
+    if (treeModel != null) {
+      treeModel.nodesWereInserted(this, new int[] { index });
     }
   }
 
-  public void addChild(DefaultAlertTreeNode child) {
-    children.add(child);
-    child.setMasterCollection(subCollection);
+  public void insert(MutableTreeNode child, int index) {
+    DefaultAlertTreeNode alertNode = (DefaultAlertTreeNode) child;
+    children.add(index, alertNode);
+    child.setParent(this);
   }
 
-  public void addChild(int index, DefaultAlertTreeNode child) {
-    children.add(index, child);
-    child.setMasterCollection(subCollection);
+  public int getAlertCount() {
+    return alerts.size();
   }
 
-  public void setChildAddOrder(List<DefaultAlertTreeNode> addOrder) {
+  public void setChildAddOrder(List<AlertTreeNode> addOrder) {
     this.childAddOrder = addOrder;
   }
 
-  protected List<DefaultAlertTreeNode> getChildAddOrder() {
+  protected List<AlertTreeNode> getChildAddOrder() {
     if (childAddOrder == null) {
       return children;
     } else {
@@ -148,10 +183,14 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
   public void clearAlerts() {
     synchronized (alertLock) {
       alerts.clear();
-      for (Map<String, Alert> element : severityAlerts) {
-        element.clear();
+      if (treeModel != null) {
+        treeModel.nodeChanged(this);
       }
-      maxSeverity = 0;
+      matcherEditor.clearAlerts();
+      for (Severity s : severityCounts.keySet()) {
+        severityCounts.put(s, 0);
+      }
+      determineMaxSeverity();
     }
 
   }
@@ -170,77 +209,34 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
     return added;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#isBlink()
-   */
   public boolean isBlink() {
     return blink;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#setBlink(boolean)
-   */
   public void setBlink(boolean blink) {
     this.blink = blink;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#getBlinkCriterion()
-   */
   public BlinkCriterion getBlinkCriterion() {
     return blinkCriterion;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.alertscape.browser.model.tree.AlertTreeNode#setBlinkCriterion(com.alertscape.browser.model.tree.BlinkCriterion)
-   */
   public void setBlinkCriterion(BlinkCriterion blinkCriterion) {
     this.blinkCriterion = blinkCriterion;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#getDescription()
-   */
   public String getDescription() {
     return description;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#setDescription(java.lang.String)
-   */
   public void setDescription(String description) {
     this.description = description;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#getAlertCriterion()
-   */
   public AlertCriterion getAlertCriterion() {
     return alertCriterion;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.alertscape.browser.model.tree.AlertTreeNode#setAlertCriterion(com.alertscape.browser.model.criterion.AlertCriterion
-   * )
-   */
   public void setAlertCriterion(AlertCriterion eventCriterion) {
     this.alertCriterion = eventCriterion;
   }
@@ -248,98 +244,42 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
   /**
    * @return Returns the events.
    */
-  protected Set<Alert> getAlerts() {
-    return alerts;
+  protected Collection<Alert> getAlerts() {
+    return alerts.keySet();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#getIcon()
-   */
   public String getIcon() {
     return icon;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#setIcon(java.lang.String)
-   */
   public void setIcon(String icon) {
     this.icon = icon;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#getMaxSeverity()
-   */
-  public int getMaxSeverity() {
+  public Severity getMaxSeverity() {
     return maxSeverity;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#setMaxSeverity(int)
-   */
-  public void setMaxSeverity(int maxSeverity) {
-    this.maxSeverity = maxSeverity;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#getParent()
-   */
   public AlertTreeNode getParent() {
     return parent;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#setParent(com.alertscape.browser.model.tree.AlertTreeNode)
-   */
   public void setParent(AlertTreeNode parent) {
     this.parent = parent;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#getText()
-   */
   public String getText() {
     return text;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#setText(java.lang.String)
-   */
   public void setText(String text) {
     this.text = text;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#getNoMatchNode()
-   */
   public AlertTreeNode getNoMatchNode() {
     return noMatchNode;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.alertscape.browser.model.tree.AlertTreeNode#setNoMatchNode(com.alertscape.browser.model.tree.DefaultAlertTreeNode
-   * )
-   */
   public void setNoMatchNode(DefaultAlertTreeNode noMatchNode) {
     this.noMatchNode = noMatchNode;
     if (!children.contains(noMatchNode)) {
@@ -347,20 +287,10 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#isExclusive()
-   */
   public boolean isExclusive() {
     return exclusive;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.alertscape.browser.model.tree.AlertTreeNode#setExclusive(boolean)
-   */
   public void setExclusive(boolean exclusive) {
     this.exclusive = exclusive;
   }
@@ -378,11 +308,78 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
    */
   public void setMatcher(Matcher<Alert> matcher) {
     this.matcher = matcher;
-    if(subCollection != null) {
-      EventList<Alert> list = subCollection.getEventList();
-      FilterList<Alert> filtered = (FilterList<Alert>) list;
-      filtered.setMatcher(matcher);
-    }
   }
 
+  public Enumeration<? extends AlertTreeNode> children() {
+    return Collections.enumeration(children);
+  }
+
+  public boolean getAllowsChildren() {
+    return true;
+  }
+
+  public TreeNode getChildAt(int childIndex) {
+    return children.get(childIndex);
+  }
+
+  public int getIndex(TreeNode node) {
+    return children.indexOf(node);
+  }
+
+  public boolean isLeaf() {
+    return children.size() == 0;
+  }
+
+  @Override
+  public String toString() {
+    return getText();
+  }
+
+  public void remove(int index) {
+    children.remove(index);
+  }
+
+  public void remove(MutableTreeNode node) {
+    children.remove(node);
+  }
+
+  public void removeFromParent() {
+    parent.remove(this);
+  }
+
+  public void setParent(MutableTreeNode newParent) {
+    parent = (AlertTreeNode) newParent;
+  }
+
+  public String getDisplayText() {
+    return getText() + " (" + alerts.size() + ")";
+  }
+
+  public void setUserObject(Object object) {
+  }
+
+  /**
+   * @return the matcherEditor
+   */
+  public TreeMatcherEditor getMatcherEditor() {
+    return matcherEditor;
+  }
+
+  /**
+   * @return the treeModel
+   */
+  public AlertTreeModel getTreeModel() {
+    return treeModel;
+  }
+
+  /**
+   * @param treeModel
+   *          the treeModel to set
+   */
+  public void setTreeModel(AlertTreeModel treeModel) {
+    this.treeModel = treeModel;
+    for (AlertTreeNode child : children) {
+      child.setTreeModel(treeModel);
+    }
+  }
 }

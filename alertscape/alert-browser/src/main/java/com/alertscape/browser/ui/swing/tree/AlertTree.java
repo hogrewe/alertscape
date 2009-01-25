@@ -6,6 +6,7 @@ package com.alertscape.browser.ui.swing.tree;
 import java.awt.Dimension;
 
 import javax.swing.JTree;
+import javax.swing.tree.TreeModel;
 
 import com.alertscape.common.model.Alert;
 
@@ -17,7 +18,7 @@ public class AlertTree extends JTree
 {
     private static final long serialVersionUID = 1L;
     
-    public AlertTree(AlertTreeModel model)
+    public AlertTree(TreeModel model)
     {
         super(model);
         setCellRenderer(new AlertTreeNodeRenderer());
