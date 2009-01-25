@@ -4,8 +4,10 @@
 package com.alertscape.pump.onramp.file;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +30,7 @@ public class IntermapperLogFileOnramp extends FileOnramp {
   private static final String WARN_REGEX = "^([\\w\\W]*\\w)\\W*::\\W*(.*)";
   private static final String CRIT_ENV_REGEX = "^(\\w*-Environmentals)\\W*:\\W*(\\w*)\\W*:(\\w*)\\W*\"(\\w*)\"";
   private static final String ETC_REGEX = "^(.*)::\\W*(.*)";
+  private static final String ITEM_REGEX = "^([A-Za-z]{3}?)([A-Za-z]{2}?)";
 
   private List<Set<String>> severityTypes = new ArrayList<Set<String>>();
 
@@ -38,6 +41,7 @@ public class IntermapperLogFileOnramp extends FileOnramp {
   private Pattern warnPattern;
   private Pattern critEnvPattern;
   private Pattern etcPattern;
+  private Pattern itemPattern;
 
   public IntermapperLogFileOnramp() {
     setRegex(PRIMARY_REGEX);
@@ -48,6 +52,7 @@ public class IntermapperLogFileOnramp extends FileOnramp {
     warnPattern = Pattern.compile(WARN_REGEX);
     critEnvPattern = Pattern.compile(CRIT_ENV_REGEX);
     etcPattern = Pattern.compile(ETC_REGEX);
+    itemPattern = Pattern.compile(ITEM_REGEX);
 
     Set<String> normalTypes = new HashSet<String>();
 
@@ -111,6 +116,19 @@ public class IntermapperLogFileOnramp extends FileOnramp {
     for (int i = 1; i < severityFactory.getNumSeverities(); i++) {
       if (severityTypes.get(i).contains(a.getType())) {
         a.setSeverity(severityFactory.getSeverity(i));
+      }
+    }
+    
+    String item = a.getItem();
+    if(item != null) {
+      Matcher itemMatcher = itemPattern.matcher(item);
+      if(itemMatcher.lookingAt()) {
+        Map<String, Object> attr = new HashMap<String, Object>();
+        String city = itemMatcher.group(1);
+        String stateProv = itemMatcher.group(2);
+        attr.put("city", city);
+        attr.put("stateprovince", stateProv);
+        a.setExtendedAttributes(attr);
       }
     }
     
