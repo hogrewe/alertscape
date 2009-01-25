@@ -5,17 +5,19 @@ package com.alertscape.browser.model.tree;
 
 import java.util.List;
 
+import javax.swing.tree.MutableTreeNode;
+
 import ca.odell.glazedlists.matchers.Matcher;
 
-import com.alertscape.browser.model.AlertFilter;
+import com.alertscape.browser.ui.swing.tree.AlertTreeModel;
 import com.alertscape.common.model.Alert;
-import com.alertscape.common.model.AlertCollection;
+import com.alertscape.common.model.severity.Severity;
 
 /**
  * @author josh
  * 
  */
-public interface AlertTreeNode extends AlertFilter {
+public interface AlertTreeNode extends MutableTreeNode {
 
   public static final String CHILD_ADDED_PROP = "ChildAdded";
   public static final String CHILD_REMOVED_PROP = "ChildRemoved";
@@ -35,17 +37,13 @@ public interface AlertTreeNode extends AlertFilter {
 
   void removeAlert(Alert a);
 
-  List<DefaultAlertTreeNode> getChildren();
+  List<AlertTreeNode> getChildren();
 
-  int getChildCount();
-
-  void addChild(DefaultAlertTreeNode child);
-
-  void addChild(int index, DefaultAlertTreeNode child);
-
-  void setChildAddOrder(List<DefaultAlertTreeNode> addOrder);
+  void setChildAddOrder(List<AlertTreeNode> addOrder);
 
   void clearAlerts();
+
+  void addChild(AlertTreeNode child);
 
   /**
    * @return Returns the blink.
@@ -94,24 +92,8 @@ public interface AlertTreeNode extends AlertFilter {
   /**
    * @return Returns the maxSeverity.
    */
-  int getMaxSeverity();
+  Severity getMaxSeverity();
 
-  /**
-   * @param maxSeverity
-   *          The maxSeverity to set.
-   */
-  void setMaxSeverity(int maxSeverity);
-
-  /**
-   * @return Returns the parent.
-   */
-  AlertTreeNode getParent();
-
-  /**
-   * @param parent
-   *          The parent to set.
-   */
-  void setParent(AlertTreeNode parent);
 
   /**
    * @return Returns the text.
@@ -145,8 +127,16 @@ public interface AlertTreeNode extends AlertFilter {
    *          the exclusive to set
    */
   void setExclusive(boolean exclusive);
-  
+
   void setMatcher(Matcher<Alert> matcher);
 
-  AlertCollection getCollection();
+  /**
+   * @return
+   */
+  String getDisplayText();
+  
+  int getAlertCount();
+  
+  void setTreeModel(AlertTreeModel treeModel);
+
 }

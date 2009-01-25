@@ -9,6 +9,7 @@ import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.pump.AlertPump;
+import com.alertscape.pump.AlertSourceCallback;
 
 /**
  * @author josh
@@ -25,9 +26,9 @@ public class LocalAlertTransport implements AlertTransport {
     }
   }
 
-  public List<Alert> getAlerts(AlertSource source) throws AlertTransportException {
+  public List<Alert> registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertTransportException {
     try {
-      return pump.getAlerts(source);
+      return pump.registerAlertSource(source, callback);
     } catch (AlertscapeException e) {
       throw new AlertTransportException("Couldn't get alerts from the pump", e);
     }
