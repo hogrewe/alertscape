@@ -285,6 +285,10 @@ public class Alert implements Serializable {
   public Object getExtendedAttribute(String name) {
     return extendedAttributes.get(name);
   }
+  
+  public Map<String, Object> getExtendedAttributes() {
+    return extendedAttributes;
+  }
 
   /**
    * @param extendedAttributes the extendedAttributes to set

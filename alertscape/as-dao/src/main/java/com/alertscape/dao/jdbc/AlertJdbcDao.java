@@ -5,14 +5,18 @@ package com.alertscape.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.AlertSourceRepository;
@@ -27,31 +31,30 @@ import com.alertscape.dao.DaoException;
  * 
  */
 public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
+  private static final ASLogger LOG = ASLogger.getLogger(AlertJdbcDao.class);
 
-  private static final String DELETE_EXT_ALERT_SQL = "delete from ext_alert_attributes where alert_source_id=? and alert_id=?";
   private static final String DELETE_ALERT_SQL = "delete from alerts where source_id=? and alertid=?";
-  private static final String GET_ALERT_SQL = "select * from alerts a "
-      + " left outer join ext_alert_attributes attr on attr.alert_source_id=a.source_id and attr.alert_id=a.alertid "
-      + " where a.source_id=? and a.alertid=?";
-  private static final String GET_ALL_ALERTS_SQL = "select * from alerts a "
-      + " left outer join ext_alert_attributes attr on attr.alert_source_id=a.source_id and attr.alert_id=a.alertid ";
+  private static final String GET_ALERT_SQL = "select * from alerts a  where a.source_id=? and a.alertid=?";
+  private static final String GET_ALL_ALERTS_SQL = "select * from alerts a ";
   private static final String GET_ALERTS_FOR_SOURCE_SQL = "select * from alerts a "
-      + " join alert_sources src on src.alert_source_id=a.source_id "
-      + " left outer join ext_alert_attributes attr on attr.alert_source_id=a.source_id and attr.alert_id=a.alertid "
-      + " where src.alert_source_name=?";
+      + " join alert_sources src on src.alert_source_id=a.source_id " + " where src.alert_source_name=?";
   private static final String INSERT_ALERT_SQL = "insert into alerts "
       + "(alertid, short_description, long_description, severity, count, source_id, first_occurence, last_occurence,"
       + "item, item_type, item_manager, item_manager_type, type, acknowledged_by) "
       + "values (?,?,?,?,?,(select alert_source_id from alert_sources where alert_source_name=?),?,?,?,?,?,?,?,?)";
-  private static final String INSERT_EXT_SQL_PRE = "insert into ext_alert_attributes "
-    + "(";
   private static final String UPDATE_ALERT_SQL = "update alerts set short_description=?, long_description=?, "
       + "severity=?, count=?, last_occurence=?, acknowledged_by=? where source_id=? and alertid=?";
+  private static final String DELETE_EXT_ALERT_SQL = "delete from ext_alert_attributes where source_id=? and alertid=?";
+  private static final String INSERT_EXT_SQL_PRE = "insert into ext_alert_attributes (";
+  private static final String UPDATE_EXT_SQL_PRE = "update ext_alert_attributes set ";
+  private static final String GET_EXT_SQL = "select * from ext_alert_attributes where source_id=? and alertid=?";
 
   private RowMapper alertMapper = new AlertMapper();
   private AlertSourceRepository alertSourceRepository;
 
   public void delete(final AlertSource source, final long alertId) throws DaoException {
+
+    deleteExtendedAttributes(source, alertId);
     PreparedStatementSetter pss = new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         int i = 1;
@@ -100,6 +103,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
     } else {
       insert(alert);
     }
+    saveExtendedAttributes(alert);
   }
 
   /**
@@ -153,6 +157,62 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
     return getJdbcTemplate().update(UPDATE_ALERT_SQL, pss);
   }
 
+  private void saveExtendedAttributes(Alert alert) {
+    Map<String, Object> attributes = alert.getExtendedAttributes();
+    
+    if(attributes.isEmpty()) {
+      return;
+    }
+
+    StringBuilder updateBuilder = new StringBuilder(UPDATE_EXT_SQL_PRE);
+    StringBuilder insertBuilder = new StringBuilder(INSERT_EXT_SQL_PRE);
+    StringBuilder insertValuesBuilder = new StringBuilder("(?,?,");
+
+    Object[] args = new Object[attributes.size() + 2];
+    int i = 0;
+    boolean first = true;
+    for (String attrName : attributes.keySet()) {
+      if (!first) {
+        updateBuilder.append(", ");
+        insertBuilder.append(", ");
+        insertValuesBuilder.append(", ");
+      }
+      first = false;
+      updateBuilder.append(attrName + "=? ");
+      args[i++] = attributes.get(attrName);
+      insertBuilder.append(attrName);
+      insertValuesBuilder.append("?");
+    }
+
+    args[i++] = alert.getSource().getSourceId();
+    args[i++] = alert.getAlertId();
+
+    updateBuilder.append(" where source_id=? and alertid=?");
+    insertBuilder.append(", source_id, alertid) values ");
+    insertValuesBuilder.append(")");
+
+    int numUpdated = getJdbcTemplate().update(updateBuilder.toString(), args);
+
+    if (numUpdated > 0) {
+      return;
+    }
+
+    String insert = insertBuilder.toString() + insertValuesBuilder.toString();
+    getJdbcTemplate().update(insert, args);
+
+  }
+
+  private void deleteExtendedAttributes(AlertSource source, long alertId) {
+    Object[] args = new Object[2];
+
+    int i = 0;
+
+    args[i++] = source.getSourceId();
+    args[i++] = alertId;
+
+    getJdbcTemplate().update(DELETE_EXT_ALERT_SQL, args);
+  }
+
   private final class AlertMapper implements RowMapper {
     public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
       SeverityFactory severityFactory = SeverityFactory.getInstance();
@@ -177,7 +237,51 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       alert.setSource(alertSourceRepository.getAlertSource(rs.getInt("source_id")));
 
       alert.setStatus(AlertStatus.STANDING);
+
+      try {
+        alert.setExtendedAttributes(getExtendedAttributes(alert));
+      } catch (Exception e) {
+        // This shouldn't happen, but it's no harm if it does
+      }
       return alert;
+    }
+
+    /**
+     * @param alert
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> getExtendedAttributes(Alert alert) {
+      Object[] args = new Object[2];
+      int i = 0;
+
+      args[i++] = alert.getSource().getSourceId();
+      args[i++] = alert.getAlertId();
+
+      Map<String, Object> attr = (Map<String, Object>) getJdbcTemplate().queryForObject(GET_EXT_SQL, args,
+          new ExtendedAttributeMapper());
+      return attr;
+    }
+  }
+
+  /**
+   * @author josh
+   * 
+   */
+  private final class ExtendedAttributeMapper implements RowMapper {
+    public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+      Map<String, Object> attr = new HashMap<String, Object>();
+      ResultSetMetaData metaData = rs.getMetaData();
+      for (int i = 0; i < metaData.getColumnCount(); i++) {
+        String label = metaData.getColumnLabel(i);
+        if (label.equalsIgnoreCase("source_id") || label.equalsIgnoreCase("alertid")) {
+          continue;
+        }
+        Object value = rs.getObject(i);
+        attr.put(label, value);
+      }
+
+      return attr;
     }
   }
 
