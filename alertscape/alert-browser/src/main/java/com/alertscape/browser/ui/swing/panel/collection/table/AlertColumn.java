@@ -43,7 +43,7 @@ class AlertColumn {
 
   public void setPropertyName(String propertyName) {
     if (this.propertyName == null || !this.propertyName.equals(propertyName)) {
-      propertyGetter = GetterHelper.makeEventGetter(propertyName);
+      propertyGetter = GetterHelper.makeAlertGetter(propertyName);
       if (propertyGetter != null) {
         columnClass = propertyGetter.getReturnType();
         if (columnClass.isPrimitive()) {

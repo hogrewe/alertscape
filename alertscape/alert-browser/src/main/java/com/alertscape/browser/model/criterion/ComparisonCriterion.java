@@ -90,7 +90,7 @@ public class ComparisonCriterion implements AlertCriterion {
 
   public void setField(String field) {
     if (this.field != field) {
-      fieldGetter = GetterHelper.makeEventGetter(field);
+      fieldGetter = GetterHelper.makeAlertGetter(field);
     }
     this.field = field;
   }

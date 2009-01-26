@@ -60,6 +60,14 @@
 		<property name="sourceName" value="SANDJ_US" />
 		<property name="asHome" value="/home/alertscape" />
 	</bean>
+	<bean id="syslogOnramp" class="com.alertscape.pump.onramp.db.DatabaseOnramp"
+		init-method="onrampInit" destroy-method="shutdown">
+		<property name="transport" ref="alertTransport" />
+		<property name="equator" ref="itemItemMgrDescEquator" />
+		<property name="sourceName" value="SYSLOG" />
+		<property name="asHome" value="/home/alertscape" />
+		<property name="onrampDao" ref="syslogOnrampDao" />
+	</bean>
 	<bean id="alertTransport" class="com.alertscape.pump.onramp.sender.LocalAlertTransport">
 		<property name="pump" ref="alertpump" />
 	</bean>
@@ -78,6 +86,15 @@
 			</list>
 		</property>
 	</bean>
+    <bean id="itemItemMgrDescEquator" class="com.alertscape.pump.onramp.equator.AlertEquator">
+        <property name="attributes">
+            <list>
+                <value>item</value>
+                <value>itemManager</value>
+                <value>longDescription</value>
+            </list>
+        </property>
+    </bean>
 	<bean id="alertpump" class="com.alertscape.pump.ConfigurableAlertPump">
 		<property name="dbOfframp" ref="dbOfframp" />
 		<property name="jmsOfframp" ref="jmsOfframp" />
@@ -91,6 +108,31 @@
 	</bean>
 	<bean id="dbOfframp" class="com.alertscape.pump.offramp.DatabaseOfframp">
 		<property name="alertDao" ref="alertDao" />
+	</bean>
+	<bean id="syslogOnrampDao" class="com.alertscape.pump.onramp.db.AlertOnrampJdbcDao"
+		init-method="init">
+		<property name="dataSource" ref="bresDataSource" />
+		<property name="tableName" value="syslog_events" />
+		<property name="idColumn" value="seq" />
+		<property name="columnsToFields">
+			<map>
+				<entry key="host" value="item" />
+				<entry key="facility" value="itemManager" />
+				<entry key="msg" value="longDescription" />
+				<entry key="level" value="severity" />
+			</map>
+		</property>
+		<property name="severityMapping">
+			<map>
+				<entry key="info" value="0" />
+				<entry key="notice" value="0" />
+				<entry key="debug" value="0" />
+				<entry key="warning" value="1" />
+				<entry key="err" value="2" />
+				<entry key="alert" value="3" />
+				<entry key="crit" value="4" />
+			</map>
+		</property>
 	</bean>
 	<bean id="alertDao" class="com.alertscape.dao.jdbc.AlertJdbcDao">
 		<property name="dataSource" ref="asDataSource" />
@@ -114,10 +156,17 @@
 		the DataSource (parameterized for configuration via a
 		PropertyPlaceHolderConfigurer)
 	-->
-	<bean id="asDataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="dbPoolFactory">
+	<bean id="asDataSource" class="org.apache.commons.dbcp.PoolingDataSource"
+		depends-on="dbPoolFactory">
 		<property name="pool" ref="connectionPool" />
 	</bean>
+	<bean id="bresDataSource" class="org.apache.commons.dbcp.PoolingDataSource"
+		depends-on="bresDbPoolFactory">
+		<property name="pool" ref="bresConnectionPool" />
+	</bean>
 	<bean id="connectionPool" class="org.apache.commons.pool.impl.GenericObjectPool">
+	</bean>
+	<bean id="bresConnectionPool" class="org.apache.commons.pool.impl.GenericObjectPool">
 	</bean>
 	<bean id="dbPoolFactory" class="org.apache.commons.dbcp.PoolableConnectionFactory">
 		<constructor-arg ref="dbDsFactory" />
@@ -127,10 +176,23 @@
 		</constructor-arg>
 		<constructor-arg value="select 1 from dual" />
 		<constructor-arg index="4" value="false" />
-		<constructor-arg index="5" value="false" />
+		<constructor-arg index="5" value="true" />
+	</bean>
+	<bean id="bresDbPoolFactory" class="org.apache.commons.dbcp.PoolableConnectionFactory">
+		<constructor-arg ref="bresDbDsFactory" />
+		<constructor-arg ref="bresConnectionPool" />
+		<constructor-arg index="2">
+			<null />
+		</constructor-arg>
+		<constructor-arg value="select 1 from dual" />
+		<constructor-arg index="4" value="false" />
+		<constructor-arg index="5" value="true" />
 	</bean>
 	<bean id="dbDsFactory" class="org.apache.commons.dbcp.DataSourceConnectionFactory">
 		<constructor-arg ref="basicAsDataSource" />
+	</bean>
+	<bean id="bresDbDsFactory" class="org.apache.commons.dbcp.DataSourceConnectionFactory">
+		<constructor-arg ref="bresBasicAsDataSource" />
 	</bean>
 	<bean id="basicAsDataSource" destroy-method="close"
 		class="org.apache.commons.dbcp.BasicDataSource">
@@ -138,6 +200,13 @@
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
+	</bean>
+	<bean id="bresBasicAsDataSource" destroy-method="close"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.bres.url}" />
+		<property name="username" value="${jdbc.bres.username}" />
+		<property name="password" value="${jdbc.bres.password}" />
 	</bean>
 
 	<!-- Service endpoints -->

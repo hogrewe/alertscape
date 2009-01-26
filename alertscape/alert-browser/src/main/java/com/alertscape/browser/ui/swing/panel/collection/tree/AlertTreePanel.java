@@ -13,7 +13,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import ca.odell.glazedlists.EventList;
@@ -22,18 +21,17 @@ import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.matchers.CompositeMatcherEditor;
 import ca.odell.glazedlists.matchers.MatcherEditor;
-import ca.odell.glazedlists.matchers.Matchers;
 import ca.odell.glazedlists.util.concurrent.Lock;
 
 import com.alertscape.browser.model.AlertFilter;
 import com.alertscape.browser.model.tree.AlertTreeNode;
 import com.alertscape.browser.model.tree.DefaultAlertTreeNode;
 import com.alertscape.browser.model.tree.DynamicGrowingAlertTreeNode;
+import com.alertscape.browser.model.tree.NonEmptyAttributeMatcher;
 import com.alertscape.browser.ui.swing.tree.AlertTreeModel;
 import com.alertscape.browser.ui.swing.tree.AlertTreeNodeRenderer;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
-import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.BinarySortAlertCollection;
 
 /**
@@ -54,37 +52,15 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
     root.setText("All Alerts");
     root.setIcon("/com/alertscape/images/common/as_logo2_16.png");
 
-    DefaultAlertTreeNode sources = new DefaultAlertTreeNode("Sources");
+    DynamicGrowingAlertTreeNode sources = new DynamicGrowingAlertTreeNode();
+    sources.setText("Sources");
+    sources.setDynamicPath("source");
     root.addChild(sources);
-
-    DefaultAlertTreeNode intermapper = new DefaultAlertTreeNode("InterMapper");
-    intermapper.setIcon("/com/alertscape/images/tree/intermapper.png");
-    intermapper.setMatcher(Matchers.beanPropertyMatcher(Alert.class, "source", new AlertSource(6, "INTERMAPPER")));
-    sources.addChild(intermapper);
-
-    DefaultAlertTreeNode kyriaki = new DefaultAlertTreeNode("Kyriaki");
-    kyriaki.setIcon("/com/alertscape/images/tree/kyriaki.png");
-    kyriaki.setMatcher(Matchers.beanPropertyMatcher(Alert.class, "source", new AlertSource(2, "KYRIAKI_NET")));
-    sources.addChild(kyriaki);
-
-    DefaultAlertTreeNode types = new DefaultAlertTreeNode("Types");
-    root.addChild(types);
-
-    DefaultAlertTreeNode utilGt50 = new DefaultAlertTreeNode("util >= 50");
-    utilGt50.setMatcher(Matchers.beanPropertyMatcher(Alert.class, "type", "util >= 50"));
-    types.addChild(utilGt50);
-
-    DefaultAlertTreeNode utilGt90 = new DefaultAlertTreeNode("util >= 90");
-    utilGt90.setMatcher(Matchers.beanPropertyMatcher(Alert.class, "type", "util >= 90"));
-    types.addChild(utilGt90);
-
-    DefaultAlertTreeNode linkDown = new DefaultAlertTreeNode("LINK DOWN");
-    linkDown.setMatcher(Matchers.beanPropertyMatcher(Alert.class, "type", "LINK DOWN"));
-    types.addChild(linkDown);
 
     DynamicGrowingAlertTreeNode itemDyn = new DynamicGrowingAlertTreeNode();
     itemDyn.setText("Items");
-    itemDyn.setDynamicPath("item.type");
+    itemDyn.setMatcher(new NonEmptyAttributeMatcher("stateprovince"));
+    itemDyn.setDynamicPath("cat{stateprovince}:cat{city}:item:type");
     root.addChild(itemDyn);
 
     treeModel = new AlertTreeModel(root);
