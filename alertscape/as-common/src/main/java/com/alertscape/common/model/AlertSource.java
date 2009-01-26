@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author josh
  * 
  */
-public class AlertSource implements Serializable {
+public class AlertSource implements Serializable, Comparable<AlertSource> {
   private static final long serialVersionUID = -5824147623789511142L;
   private int sourceId;
   private String sourceName;
@@ -57,5 +57,9 @@ public class AlertSource implements Serializable {
     if (sourceId != other.sourceId)
       return false;
     return true;
+  }
+
+  public int compareTo(AlertSource o) {
+    return getSourceName().compareTo(o.getSourceName());
   }
 }

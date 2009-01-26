@@ -41,7 +41,7 @@ public class Alert implements Serializable {
 
   private Map<String, Object> majorTags;
   private Map<String, Object> minorTags;
-  private Map<String, Object> extendedAttributes = Collections.emptyMap();
+  private Map<String, Object> extendedAttributes;
 
   public long getCount() {
     return count;
@@ -283,7 +283,11 @@ public class Alert implements Serializable {
    * @return the extendedAttributes
    */
   public Object getExtendedAttribute(String name) {
-    return extendedAttributes.get(name);
+    return extendedAttributes == null ? null : extendedAttributes.get(name);
+  }
+  
+  public Map<String, Object> getExtendedAttributes() {
+    return extendedAttributes;
   }
 
   /**

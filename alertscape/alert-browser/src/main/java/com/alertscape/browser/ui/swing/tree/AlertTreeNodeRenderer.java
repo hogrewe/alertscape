@@ -66,8 +66,8 @@ public class AlertTreeNodeRenderer extends DefaultTreeCellRenderer {
     }
     if(severity.getSmallIcon() != null) {
       Icon[] icons = new Icon[2];
-      icons[0] = finder.findImage(severity.getSmallIcon());
-      icons[1] = nodeIcon;
+      icons[0] = nodeIcon;
+      icons[1] = finder.findImage(severity.getSmallIcon());
       nodeIcon = new CompositeIcon(icons);
     }
 

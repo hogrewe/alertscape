@@ -74,6 +74,8 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
       added = matcher == null || matcher.matches(a);
       if (added) {
         Alert existing = alerts.get(a);
+        Severity startingSev = getMaxSeverity();
+        int startingCount = alerts.size();
         if (existing == null || existing.getSeverity() != a.getSeverity()) {
           int count;
           if (existing != null) {
@@ -87,7 +89,7 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
         }
         determineMaxSeverity();
         alerts.put(a, a);
-        if (treeModel != null) {
+        if (treeModel != null && (alerts.size() != startingCount || getMaxSeverity() != startingSev)) {
           treeModel.nodeChanged(this);
         }
         matcherEditor.addAlert(a);
@@ -120,6 +122,8 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
 
   public void removeAlert(Alert a) {
     synchronized (alertLock) {
+      Severity startingSev = getMaxSeverity();
+      int startingCount = alerts.size();
       Alert existing = alerts.remove(a);
       if (existing != null) {
         int count = severityCounts.get(existing.getSeverity());
@@ -127,7 +131,7 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
         severityCounts.put(existing.getSeverity(), count);
         determineMaxSeverity();
         matcherEditor.removeAlert(a);
-        if (treeModel != null) {
+        if (treeModel != null && (alerts.size() != startingCount || getMaxSeverity() != startingSev)) {
           treeModel.nodeChanged(this);
         }
         for (AlertTreeNode child : getChildAddOrder()) {
@@ -183,16 +187,15 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
   public void clearAlerts() {
     synchronized (alertLock) {
       alerts.clear();
-      if (treeModel != null) {
-        treeModel.nodeChanged(this);
-      }
       matcherEditor.clearAlerts();
       for (Severity s : severityCounts.keySet()) {
         severityCounts.put(s, 0);
       }
       determineMaxSeverity();
+      if (treeModel != null) {
+        treeModel.nodeChanged(this);
+      }
     }
-
   }
 
   protected boolean addToChildren(Alert a) {

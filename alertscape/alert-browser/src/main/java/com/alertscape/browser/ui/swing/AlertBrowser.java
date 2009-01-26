@@ -41,6 +41,7 @@ import com.alertscape.browser.common.auth.AuthenticationListener;
 import com.alertscape.browser.localramp.firstparty.preferences.LoadPreferencesAction;
 import com.alertscape.browser.localramp.firstparty.preferences.SavePreferencesAction;
 import com.alertscape.browser.localramp.firstparty.preferences.UserPreferencesPanel;
+import com.alertscape.browser.model.AlertListenerExceptionListener;
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.model.JmsAlertListener;
 import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
@@ -105,9 +106,9 @@ public class AlertBrowser extends JFrame {
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     treePanel = new AlertTreePanel();
     treePanel.init();
-    
+
     collection = new BinarySortAlertCollection();
-    
+
     AlertCollection treeCollection = treePanel.setMasterCollection(collection);
 
     JPanel p = new JPanel();
@@ -128,10 +129,9 @@ public class AlertBrowser extends JFrame {
 
     Icon bgImage = ImageFinder.getInstance().findImage("/com/alertscape/images/common/hdr_background_small.png");
 
-
     // Summary
     JPanel outerSummaryPanel = new JPanel();
-//    outerSummaryPanel.setBorder(BorderFactory.createTitledBorder("Summary"));
+    // outerSummaryPanel.setBorder(BorderFactory.createTitledBorder("Summary"));
     outerSummaryPanel.setLayout(new GridLayout(1, 1));
     outerSummaryPanel.add(summaryPanel);
 
@@ -149,12 +149,12 @@ public class AlertBrowser extends JFrame {
     unackAction.setParentFrame(this);
     JButton unackButton = actionToolbar.add(unackAction);
     unackButton.setOpaque(false);
-    
+
     ClearAlertAction clearAction = new ClearAlertAction();
     clearAction.setParentFrame(this);
     JButton clearButton = actionToolbar.add(clearAction);
-    clearButton.setOpaque(false);    
-    
+    clearButton.setOpaque(false);
+
     AlertMailAction mailAction = new AlertMailAction();
     mailAction.setParentFrame(this);
     JButton mailButton = actionToolbar.add(mailAction);
@@ -169,7 +169,7 @@ public class AlertBrowser extends JFrame {
     customTagAction.setParentFrame(this);
     JButton customTagButton = actionToolbar.add(customTagAction);
     customTagButton.setOpaque(false);
-    
+
     LoginAction loginAction = new LoginAction();
     loginAction.setParentFrame(this);
     JButton loginButton = actionToolbar.add(loginAction);
@@ -209,8 +209,8 @@ public class AlertBrowser extends JFrame {
     northPanel.add(outerSummaryPanel);
 
     p.add(outerTablePanel, BorderLayout.CENTER);
-//    p.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-    
+    // p.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
     JPanel overallPane = new JPanel();
     overallPane.setLayout(new BorderLayout());
     overallPane.add(northPanel, BorderLayout.NORTH);
@@ -257,7 +257,7 @@ public class AlertBrowser extends JFrame {
     actionsMenu.add(mailAction);
     actionsMenu.add(predefinedTagAction);
     actionsMenu.add(customTagAction);
- 
+
     // - email alerts
     // - quick tags:
     // - acknowledge alerts (acknowledged by field is just a tag)
@@ -271,25 +271,22 @@ public class AlertBrowser extends JFrame {
     // - clear/delete alerts
     // - tag alerts (major/minor?)
 
-    
     JMenu preferencesMenu = new JMenu("Preferences");
-    //preferencesMenu.add(ackAction);
-    
+    // preferencesMenu.add(ackAction);
+
     // build a list of all of the userpreferencepanels
-    List <UserPreferencesPanel>panels = new ArrayList();
+    List<UserPreferencesPanel> panels = new ArrayList();
     panels.add(filterPanel);
     panels.add(tablePanel);
     panels.add(summaryPanel);
-    
+
     SavePreferencesAction savePrefsAction = new SavePreferencesAction(panels);
     savePrefsAction.setParentFrame(this);
     preferencesMenu.add(savePrefsAction);
     LoadPreferencesAction loadPrefsAction = new LoadPreferencesAction(panels);
     loadPrefsAction.setParentFrame(this);
     preferencesMenu.add(loadPrefsAction);
-    
 
-    
     JMenu helpMenu = new JMenu("Help");
     // helpMenu.setMnemonic(KeyEvent.VK_H);
     // - About AMP
@@ -307,7 +304,6 @@ public class AlertBrowser extends JFrame {
 
     this.setJMenuBar(menubar);
 
-    
     // create the popupmenu for the table
     JPopupMenu popup = new JPopupMenu();
     popup.add(ackAction);
@@ -317,8 +313,8 @@ public class AlertBrowser extends JFrame {
     popup.add(mailAction);
     popup.add(predefinedTagAction);
     popup.add(customTagAction);
-    tablePanel.setPopup(popup); 
-    
+    tablePanel.setPopup(popup);
+
     // jframe housekeeping
     setTitle("AMP - Alertscape Management Portal");
     URL cevImageUrl = getClass().getResource("/com/alertscape/images/common/as_logo2_32.png");
@@ -328,21 +324,19 @@ public class AlertBrowser extends JFrame {
 
     Authentication.addAuthenticationListener(new AuthenticationListener() {
       public void handleAuthEvent(AuthenticationEvent e) {
-      	// TODO: there is probably a better way to do this than throwing it into a thread, but this is at least an improvement over locking the ui for 2 minutes while it DLs alerts...
-      	Thread t = new Thread()
-      	{
-      		public void run()
-      		{
-      			initJms();
-      		}
-      	};
-      	
-      	t.start();
-        
+        // TODO: there is probably a better way to do this than throwing it into a thread, but this is at least an
+        // improvement over locking the ui for 2 minutes while it DLs alerts...
+        Thread t = new Thread() {
+          public void run() {
+            initJms();
+          }
+        };
+
+        t.start();
+
       }
     });
 
-    
     // GenerateEvents gen = new GenerateEvents(collection);
     // int groupSize = 1000;
     // List<Alert> events = new ArrayList<Alert>(groupSize);
@@ -361,10 +355,21 @@ public class AlertBrowser extends JFrame {
   }
 
   private void initJms() {
-    JmsAlertListener listener = new JmsAlertListener();
+    final JmsAlertListener listener = new JmsAlertListener();
     listener.setCollection(collection);
     listener.setFactory(jmsFactory);
+    listener.setExceptionListener(new AlertListenerExceptionListener() {
+      public void onException(Exception e) {
+        LOG.error("Received exception from alert listener, reconnecting", e);
+        collection.clearAlerts();
+        connect(listener);
+      }
+    });
 
+    connect(listener);
+  }
+
+  private void connect(JmsAlertListener listener) {
     try {
       listener.startListening();
       // GET ALL ALERTS
@@ -376,6 +381,7 @@ public class AlertBrowser extends JFrame {
     } catch (AlertscapeException e) {
       JOptionPane.showMessageDialog(this, "Couldn't initalize alert listener", "Alert Listener Error",
           JOptionPane.ERROR_MESSAGE);
+      listener.disconnect();
     }
   }
 
