@@ -10,6 +10,7 @@ import java.util.List;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -38,22 +39,28 @@ public class JmsAlertListener implements AlertListener {
   private MessageListener listener;
   private List<Alert> alertQueue = new ArrayList<Alert>();
   private AlertProcessor processor;
+  private AlertListenerExceptionListener exceptionListener;
 
   public void init() throws AlertscapeException {
+    processor = new AlertProcessor();
+    listener = new AlertMessageListener();
+    connect();
+  }
+
+  private void connect() throws AlertscapeException {
     try {
-      processor = new AlertProcessor();
       connection = factory.createConnection();
       connection.start();
+      connection.setExceptionListener(new ForwardingExceptionListener());
       session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
       // TODO: this should be injected
       topic = session.createTopic("com.alertscape.pump.Alerts");
 
       consumer = session.createConsumer(topic);
-      listener = new AlertMessageListener();
       consumer.setMessageListener(listener);
     } catch (JMSException e) {
-      throw new AlertscapeException("Couldn't initialize JMS topic", e);
+      throw new AlertscapeException("Couldn't connect to JMS", e);
     }
   }
 
@@ -95,6 +102,20 @@ public class JmsAlertListener implements AlertListener {
    */
   public void setTopic(Destination queue) {
     this.topic = queue;
+  }
+
+  /**
+   * @author josh
+   * 
+   */
+  private final class ForwardingExceptionListener implements ExceptionListener {
+    public void onException(JMSException e) {
+      if (exceptionListener == null) {
+        LOG.error("No exception listener, received exception from JMS", e);
+      } else {
+        exceptionListener.onException(e);
+      }
+    }
   }
 
   /**
@@ -166,5 +187,40 @@ public class JmsAlertListener implements AlertListener {
    */
   public void setFactory(ConnectionFactory factory) {
     this.factory = factory;
+  }
+
+  public void setExceptionListener(AlertListenerExceptionListener listener) {
+    this.exceptionListener = listener;
+  }
+
+  /**
+   * 
+   */
+  public void disconnect() {
+    try {
+      stopProcessing();
+    } catch (AlertscapeException e) {
+    }
+
+    if (consumer != null) {
+      try {
+        consumer.close();
+      } catch (JMSException e) {
+      }
+    }
+
+    if (session != null) {
+      try {
+        session.close();
+      } catch (JMSException e) {
+      }
+    }
+
+    if (connection != null) {
+      try {
+        connection.close();
+      } catch (JMSException e) {
+      }
+    }
   }
 }

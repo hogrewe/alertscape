@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -159,8 +160,8 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
 
   private void saveExtendedAttributes(Alert alert) {
     Map<String, Object> attributes = alert.getExtendedAttributes();
-    
-    if(attributes.isEmpty()) {
+
+    if (attributes == null || attributes.isEmpty()) {
       return;
     }
 
@@ -238,11 +239,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
 
       alert.setStatus(AlertStatus.STANDING);
 
-      try {
-        alert.setExtendedAttributes(getExtendedAttributes(alert));
-      } catch (Exception e) {
-        // This shouldn't happen, but it's no harm if it does
-      }
+      alert.setExtendedAttributes(getExtendedAttributes(alert));
       return alert;
     }
 
@@ -258,8 +255,15 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       args[i++] = alert.getSource().getSourceId();
       args[i++] = alert.getAlertId();
 
-      Map<String, Object> attr = (Map<String, Object>) getJdbcTemplate().queryForObject(GET_EXT_SQL, args,
-          new ExtendedAttributeMapper());
+      Map<String, Object> attr = null;
+      try {
+        List<Map<String, Object>> list = getJdbcTemplate().query(GET_EXT_SQL, args, new ExtendedAttributeMapper());
+        if(!list.isEmpty()) {
+          attr = list.get(0);
+        }
+      } catch (DataAccessException e) {
+        LOG.info("Couldn't get attributes", e);
+      }
       return attr;
     }
   }
@@ -273,11 +277,11 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       Map<String, Object> attr = new HashMap<String, Object>();
       ResultSetMetaData metaData = rs.getMetaData();
       for (int i = 0; i < metaData.getColumnCount(); i++) {
-        String label = metaData.getColumnLabel(i);
+        String label = metaData.getColumnLabel(i + 1);
         if (label.equalsIgnoreCase("source_id") || label.equalsIgnoreCase("alertid")) {
           continue;
         }
-        Object value = rs.getObject(i);
+        Object value = rs.getObject(i + 1);
         attr.put(label, value);
       }
 

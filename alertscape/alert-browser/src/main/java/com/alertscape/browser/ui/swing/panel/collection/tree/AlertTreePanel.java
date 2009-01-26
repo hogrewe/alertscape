@@ -13,7 +13,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import ca.odell.glazedlists.EventList;
@@ -29,6 +28,7 @@ import com.alertscape.browser.model.AlertFilter;
 import com.alertscape.browser.model.tree.AlertTreeNode;
 import com.alertscape.browser.model.tree.DefaultAlertTreeNode;
 import com.alertscape.browser.model.tree.DynamicGrowingAlertTreeNode;
+import com.alertscape.browser.model.tree.NonEmptyAttributeMatcher;
 import com.alertscape.browser.ui.swing.tree.AlertTreeModel;
 import com.alertscape.browser.ui.swing.tree.AlertTreeNodeRenderer;
 import com.alertscape.common.model.Alert;
@@ -84,7 +84,8 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
 
     DynamicGrowingAlertTreeNode itemDyn = new DynamicGrowingAlertTreeNode();
     itemDyn.setText("Items");
-    itemDyn.setDynamicPath("item.type");
+    itemDyn.setMatcher(new NonEmptyAttributeMatcher("stateprovince"));
+    itemDyn.setDynamicPath("cat{stateprovince}:cat{city}:item:type");
     root.addChild(itemDyn);
 
     treeModel = new AlertTreeModel(root);

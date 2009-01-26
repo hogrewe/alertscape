@@ -127,7 +127,7 @@
 		</constructor-arg>
 		<constructor-arg value="select 1 from dual" />
 		<constructor-arg index="4" value="false" />
-		<constructor-arg index="5" value="false" />
+		<constructor-arg index="5" value="true" />
 	</bean>
 	<bean id="dbDsFactory" class="org.apache.commons.dbcp.DataSourceConnectionFactory">
 		<constructor-arg ref="basicAsDataSource" />
