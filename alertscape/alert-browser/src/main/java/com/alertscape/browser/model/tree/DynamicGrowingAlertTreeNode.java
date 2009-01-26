@@ -60,7 +60,7 @@ public class DynamicGrowingAlertTreeNode extends DefaultAlertTreeNode {
         usesAttribute = true;
         childField = m.group(1);
       } else {
-        childGetter = GetterHelper.makeEventGetter(childField);
+        childGetter = GetterHelper.makeAlertGetter(childField);
       }
     }
   }

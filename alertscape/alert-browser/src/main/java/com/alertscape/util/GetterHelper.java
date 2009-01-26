@@ -16,10 +16,10 @@ import com.alertscape.common.model.Alert;
  */
 public class GetterHelper {
   private static final ASLogger LOG = ASLogger.getLogger(GetterHelper.class);
-  private static final Class<Alert> EVENT_CLASS = Alert.class;
+  private static final Class<Alert> ALERT_CLASS = Alert.class;
 
-  public static Method makeEventGetter(String fieldName) {
-    return makeGetter(EVENT_CLASS, fieldName);
+  public static Method makeAlertGetter(String fieldName) {
+    return makeGetter(ALERT_CLASS, fieldName);
   }
 
   public static Method makeGetter(Class<?> c, String fieldName) {

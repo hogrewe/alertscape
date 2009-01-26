@@ -3,6 +3,7 @@
  */
 package com.alertscape.pump.onramp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -76,12 +77,14 @@ public abstract class AlertOnramp implements AlertSourceCallback {
   public final void onrampInit() {
     try {
       List<Alert> alerts = transport.registerAlertSource(source, this);
-      for (Alert alert : alerts) {
-        if (alert.getAlertId() > nextAlertId) {
-          nextAlertId = alert.getAlertId() + 1;
+      synchronized (alertMap) {
+        for (Alert alert : alerts) {
+          if (alert.getAlertId() > nextAlertId) {
+            nextAlertId = alert.getAlertId() + 1;
+          }
+          AlertDedupWrapper alertWrapper = new AlertDedupWrapper(equator, alert);
+          alertMap.put(alertWrapper, alert);
         }
-        AlertDedupWrapper alertWrapper = new AlertDedupWrapper(equator, alert);
-        alertMap.put(alertWrapper, alert);
       }
       source = transport.getSource(sourceName);
     } catch (AlertTransportException e) {
@@ -141,6 +144,12 @@ public abstract class AlertOnramp implements AlertSourceCallback {
    */
   public void setSourceName(String sourceName) {
     this.sourceName = sourceName;
+  }
+
+  public List<Alert> getStanding() {
+    synchronized (alertMap) {
+      return new ArrayList<Alert>(alertMap.values());
+    }
   }
 
 }
