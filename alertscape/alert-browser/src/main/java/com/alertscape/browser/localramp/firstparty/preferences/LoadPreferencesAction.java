@@ -36,7 +36,7 @@ public class LoadPreferencesAction extends AbstractLocalRampAction
 	@Override
 	protected String getActionDescription()
 	{
-		return "Load Browser Preferences from Disk";
+		return "Load Default Preferences";
 	}
 
 	@Override
@@ -61,19 +61,19 @@ public class LoadPreferencesAction extends AbstractLocalRampAction
 	@Override
 	protected String getActionTitle()
 	{
-		return "Load Browser Profile";
+		return "Load Default Preferences";
 	}
 
 	@Override
 	protected String getActionWindowTitle()
 	{
-		return "Load Browser Profile";
+		return "Load Default Preferences";
 	}
 
 	@Override
 	protected LocalRamp getLocalRamp()
 	{
-		return new ReadSingleObjectFromFileLocalRamp("amp_profile.obj");		
+		return new ReadSingleObjectFromFileLocalRamp("amp_default_preferences.obj");		
 	}
 
 	@Override

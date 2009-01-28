@@ -75,7 +75,7 @@ public class SavePreferencesPanel extends AbstractLocalRampPanel {
     JPanel buttonBar = ButtonBarFactory.buildOKCancelBar(okButton, cancelButton);
     add(buttonBar, BorderLayout.SOUTH);
     JPanel messagePanel = new JPanel();
-    messagePanel.add(new JLabel("Are you sure you want to save these AMP settings?"));
+    messagePanel.add(new JLabel("Save these preferences as default?"));
     add(messagePanel, BorderLayout.CENTER);
     return true;
   }
