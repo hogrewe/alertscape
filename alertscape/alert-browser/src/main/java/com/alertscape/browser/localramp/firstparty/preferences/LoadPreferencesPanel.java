@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +77,7 @@ public class LoadPreferencesPanel extends AbstractLocalRampPanel {
     JPanel buttonBar = ButtonBarFactory.buildOKCancelBar(okButton, cancelButton);
     add(buttonBar, BorderLayout.SOUTH);
     JPanel messagePanel = new JPanel();
-    messagePanel.add(new JLabel("Are you sure you want to load AMP settings?"));
+    messagePanel.add(new JLabel("Load default preferences?"));
     add(messagePanel, BorderLayout.CENTER);
     
     // the object here is the set of values to push to all of the prefpanels if they hit ok....
