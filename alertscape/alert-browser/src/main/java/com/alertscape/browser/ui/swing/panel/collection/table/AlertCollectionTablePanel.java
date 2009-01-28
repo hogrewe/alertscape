@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,8 @@ import com.alertscape.common.model.severity.Severity;
 public class AlertCollectionTablePanel extends JPanel implements AlertCollectionPanel, UserPreferencesPanel {
   private static final long serialVersionUID = 1L;
   private static final String PREFERENCES_COL_WIDTHS = "ColumnWidths";
+  private static final String PREFERENCES_COL_SORTING = "ColumnSortingIndexes";
+  private static final String PREFERENCES_COL_SORT_COMPARATORS = "ColumnSortingComparatorIndexes";
 
   // member variables
   private JTable collectionTable;
@@ -281,12 +284,26 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
     }
     map.put(PREFERENCES_COL_WIDTHS, widths);
 
+    // get the sorting configuration
+    List<Integer> sorting = chooser.getSortingColumns();
+    map.put(PREFERENCES_COL_SORTING, sorting);
+
+    // create a map of sorted column number to the comparator being used for that column
+    HashMap innerMap = new HashMap();
+    Iterator<Integer> it = sorting.iterator();    
+    while (it.hasNext())
+    {
+    	Integer nextCol = it.next();
+    	Integer nextComparatorIndex = chooser.getColumnComparatorIndex(nextCol.intValue());
+    	innerMap.put(nextCol, nextComparatorIndex);
+    	innerMap.put(nextCol + "_Reverse", new Boolean(chooser.isColumnReverse(nextCol.intValue())));
+    }
+    map.put("PREFERENCES_COL_SORT_COMPARATORS", innerMap);
+    
     return map;
   }
 
   public void setUserPreferences(Map preferences) {
-    // TODO Auto-generated method stub
-
     // set the column widths: this assumes that the columns have already been added, and are in the correct order!
     TableColumn column = null;
     int columncount = collectionTable.getColumnCount();
@@ -299,6 +316,21 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
       column.setPreferredWidth(width);
       column.setWidth(width);
     }
+    
+    // set the sorting configuration
+    List<Integer> sorting = (List<Integer>) preferences.get(PREFERENCES_COL_SORTING);
+    Map comparatorIndexMap = (Map) preferences.get("PREFERENCES_COL_SORT_COMPARATORS");  
+ 
+    chooser.clearComparator();
+    Iterator<Integer> it = sorting.iterator();
+    while (it.hasNext())
+    {
+    	Integer nextCol = it.next();
+    	chooser.appendComparator(nextCol.intValue(), 
+    			 										 ((Integer)comparatorIndexMap.get(nextCol)).intValue(),
+    			 										((Boolean)comparatorIndexMap.get(nextCol + "_Reverse")).booleanValue());    	
+    }
+    
   }
 
   class PopupListener extends MouseAdapter {
