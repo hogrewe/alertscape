@@ -46,8 +46,8 @@ public class CreateChartPanelAction extends AbstractAction
 				List<Alert> alerts = AlertBrowser.getCurrentContext().getSelectedAlerts();
 				if (alerts.size() > 0)
 				{
-					String title = "Pie Chart (item," + alerts.size() + ")";
-					String tooltip = title;
+					String title = "Pie Chart";
+					String tooltip = "Pie Chart (item, " + alerts.size() + ")";
 					AlertPieChartPanel piechart = new AlertPieChartPanel(alerts, "item", title, tooltip);
 											
 					// add the chart to a tab, adjacent to the tabular view
