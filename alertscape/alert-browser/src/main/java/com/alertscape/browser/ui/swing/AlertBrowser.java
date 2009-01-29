@@ -5,8 +5,11 @@ package com.alertscape.browser.ui.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -38,6 +42,7 @@ import com.alertscape.AlertscapeException;
 import com.alertscape.browser.common.auth.Authentication;
 import com.alertscape.browser.common.auth.AuthenticationEvent;
 import com.alertscape.browser.common.auth.AuthenticationListener;
+import com.alertscape.browser.localramp.firstparty.preferences.BackgroundPreferenceLoader;
 import com.alertscape.browser.localramp.firstparty.preferences.LoadPreferencesAction;
 import com.alertscape.browser.localramp.firstparty.preferences.SavePreferencesAction;
 import com.alertscape.browser.localramp.firstparty.preferences.UserPreferencesPanel;
@@ -45,6 +50,7 @@ import com.alertscape.browser.model.AlertListenerExceptionListener;
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.model.JmsAlertListener;
 import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
+import com.alertscape.browser.ui.swing.panel.collection.chart.CreateChartPanelAction;
 import com.alertscape.browser.ui.swing.panel.collection.filter.TextFilterPanel;
 import com.alertscape.browser.ui.swing.panel.collection.summary.AlertCollectionSummaryPanel;
 import com.alertscape.browser.ui.swing.panel.collection.table.AlertCollectionTablePanel;
@@ -73,7 +79,7 @@ import com.alertscape.util.ImageFinder;
 public class AlertBrowser extends JFrame {
   private static final long serialVersionUID = 1L;
   private static final ASLogger LOG = ASLogger.getLogger(AlertBrowser.class);
-
+  
   private AlertCollection collection;
   private ConnectionFactory jmsFactory;
   private static AlertService alertService;
@@ -81,7 +87,11 @@ public class AlertBrowser extends JFrame {
   private static BrowserContext currentContext = new BrowserContext();
   private static AlertCollectionTablePanel tablePanel;
   private AlertTreePanel treePanel;
-
+  private static JTabbedPane tabbedPane;
+  private static ImageIcon closeIcon;
+	
+  
+  
   public AlertBrowser() {
   }
 
@@ -107,6 +117,10 @@ public class AlertBrowser extends JFrame {
     treePanel = new AlertTreePanel();
     treePanel.init();
 
+		URL imageUrl = getClass().getResource("/com/alertscape/images/mini/expanded.gif");
+		ImageIcon icon = new ImageIcon(imageUrl);
+ 		closeIcon = icon;
+    
     collection = new BinarySortAlertCollection();
 
     AlertCollection treeCollection = treePanel.setMasterCollection(collection);
@@ -170,11 +184,16 @@ public class AlertBrowser extends JFrame {
     JButton customTagButton = actionToolbar.add(customTagAction);
     customTagButton.setOpaque(false);
 
+    CreateChartPanelAction chartAction = new CreateChartPanelAction();
+    chartAction.setParentFrame(this);
+    JButton chartButton = actionToolbar.add(chartAction);
+    chartButton.setOpaque(false);
+    
     LoginAction loginAction = new LoginAction();
     loginAction.setParentFrame(this);
     JButton loginButton = actionToolbar.add(loginAction);
     loginButton.setOpaque(false);
-
+    
     // Table
     JPanel outerTablePanel = new JPanel();
     outerTablePanel.setLayout(new BorderLayout());
@@ -202,13 +221,17 @@ public class AlertBrowser extends JFrame {
     outerTablePanel.add(bgPanel, BorderLayout.NORTH);
     outerTablePanel.add(tablePanel, BorderLayout.CENTER);
 
+    tabbedPane = new JTabbedPane();
+    tabbedPane.addTab("Tabular", null, outerTablePanel, "Tabular View of Alerts");
+    
     // North
     JPanel northPanel = new JPanel();
     northPanel.setLayout(new GridLayout(2, 1));
     northPanel.add(filterPanel);
     northPanel.add(outerSummaryPanel);
 
-    p.add(outerTablePanel, BorderLayout.CENTER);
+    p.add(tabbedPane, BorderLayout.CENTER);
+    //p.add(outerTablePanel, BorderLayout.CENTER);
     // p.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
     JPanel overallPane = new JPanel();
@@ -247,6 +270,7 @@ public class AlertBrowser extends JFrame {
     // - Select All
     // - Find (search for alert: in the tree, in the table, in the history)
     // - window configurations (dock type stuff)
+    editMenu.add(chartAction);
 
     JMenu actionsMenu = new JMenu("Actions");
     // actionsMenu.setMnemonic(KeyEvent.VK_A);
@@ -275,15 +299,15 @@ public class AlertBrowser extends JFrame {
     // preferencesMenu.add(ackAction);
 
     // build a list of all of the userpreferencepanels
-    List<UserPreferencesPanel> panels = new ArrayList();
-    panels.add(filterPanel);
-    panels.add(tablePanel);
-    panels.add(summaryPanel);
+    List<UserPreferencesPanel> prefPanels = new ArrayList();
+    prefPanels.add(filterPanel);
+    prefPanels.add(tablePanel);
+    prefPanels.add(summaryPanel);
 
-    SavePreferencesAction savePrefsAction = new SavePreferencesAction(panels);
+    SavePreferencesAction savePrefsAction = new SavePreferencesAction(prefPanels);
     savePrefsAction.setParentFrame(this);
     preferencesMenu.add(savePrefsAction);
-    LoadPreferencesAction loadPrefsAction = new LoadPreferencesAction(panels);
+    LoadPreferencesAction loadPrefsAction = new LoadPreferencesAction(prefPanels);
     loadPrefsAction.setParentFrame(this);
     preferencesMenu.add(loadPrefsAction);
 
@@ -322,6 +346,10 @@ public class AlertBrowser extends JFrame {
     setIconImage(cevImage.getImage());
     setVisible(true);
 
+    // before getting the alerts, try to grab the default preferences if there are any
+    BackgroundPreferenceLoader prefLoader = new BackgroundPreferenceLoader(prefPanels);
+    prefLoader.loadDefaultPreferences();
+    
     Authentication.addAuthenticationListener(new AuthenticationListener() {
       public void handleAuthEvent(AuthenticationEvent e) {
         // TODO: there is probably a better way to do this than throwing it into a thread, but this is at least an
@@ -384,7 +412,46 @@ public class AlertBrowser extends JFrame {
       listener.disconnect();
     }
   }
-
+  
+  // this method will create a new tab, with the given title, icon, and panel as contents, to the main browser.
+  public static void addTabbedPanel(String title, ImageIcon icon, final JPanel panel, String tooltip)
+  {
+  	tabbedPane.addTab(title, icon, panel, tooltip);
+  	int newindex = tabbedPane.getTabCount()-1;
+  	JPanel pnl = new JPanel(new BorderLayout());
+  	JLabel label = new JLabel(title, icon, JLabel.LEFT);
+  	label.setOpaque(false);
+  	JButton button = new JButton();
+  	button.setIcon(closeIcon);
+  	button.setOpaque(false);
+  	button.setPreferredSize(new Dimension(17,17));
+  	button.setBorder(BorderFactory.createEmptyBorder());
+  	button.setBorderPainted(false);
+  	button.setHorizontalAlignment(JButton.CENTER);
+  	button.setToolTipText("Close Tab");
+  	pnl.setOpaque(false);
+  	
+  	JToolBar closeBar = new JToolBar();
+  	closeBar.setOpaque(false);
+  	closeBar.setBorderPainted(false);
+  	closeBar.setFloatable(false);
+  	closeBar.add(button);
+  	
+  	pnl.add(label, BorderLayout.WEST);
+  	pnl.add(closeBar, BorderLayout.EAST);
+  	tabbedPane.setTabComponentAt(newindex, pnl);
+  	
+  	button.addActionListener(new ActionListener()
+  	{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				//tabbedPane.removeTabAt(newindex);
+				tabbedPane.remove(panel);
+			}	
+  	});  	
+  	
+  }
+  
   /**
    * @return the jmsFactory
    */
