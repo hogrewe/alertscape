@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.AlertSourceRepository;
 import com.alertscape.common.model.Alert.AlertStatus;
+import com.alertscape.common.model.equator.AlertEquator;
+import com.alertscape.common.model.equator.AttributeEquator;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
 import com.alertscape.dao.AlertDao;
@@ -52,6 +55,19 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
 
   private RowMapper alertMapper = new AlertMapper();
   private AlertSourceRepository alertSourceRepository;
+  public Map<String, String> attributeToColumnMap = new HashMap<String, String>();
+
+  public AlertJdbcDao() {
+    // TODO: blech, this is ugly
+    attributeToColumnMap.put("acknowledgedBy", "acknowledged_by");
+    attributeToColumnMap.put("item", "item");
+    attributeToColumnMap.put("itemType", "item_type");
+    attributeToColumnMap.put("itemManager", "item_manager");
+    attributeToColumnMap.put("itemManagerType", "item_manager_type");
+    attributeToColumnMap.put("longDescription", "long_description");
+    attributeToColumnMap.put("shortDescription", "short_description");
+    attributeToColumnMap.put("type", "type");
+  }
 
   public void delete(final AlertSource source, final long alertId) throws DaoException {
 
@@ -78,6 +94,41 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
     };
     List<Alert> alerts = getJdbcTemplate().query(GET_ALERT_SQL, pss, alertMapper);
     if (alerts != null && !alerts.isEmpty()) {
+      return alerts.get(0);
+    } else {
+      return null;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public Alert get(Alert a, AlertEquator equator) {
+    if (equator == null) {
+      return null;
+    }
+
+    StringBuilder builder = new StringBuilder("select * from alerts where ");
+    List<Object> args = new ArrayList<Object>();
+
+    boolean first = true;
+    for (AttributeEquator eq : equator.getAttributeEquators()) {
+      String attributeName = eq.getAttributeName();
+      String fieldName = attributeToColumnMap.get(attributeName);
+      if (fieldName != null) {
+        if (!first) {
+          builder.append(" and ");
+        }
+        first = false;
+        builder.append(fieldName + "=?");
+        args.add(eq.getValue(a));
+      } else {
+        LOG.error("Attribute passed in for filtering on alert, but not mapped to a column: " + attributeName);
+      }
+    }
+    List<Alert> alerts = getJdbcTemplate().query(builder.toString(), args.toArray(), alertMapper);
+    if (alerts != null && !alerts.isEmpty()) {
+      if (alerts.size() > 1) {
+        LOG.error("Looking for a unique alert but found multiple; returning first one: " + a + ", " + equator);
+      }
       return alerts.get(0);
     } else {
       return null;
@@ -258,7 +309,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       Map<String, Object> attr = null;
       try {
         List<Map<String, Object>> list = getJdbcTemplate().query(GET_EXT_SQL, args, new ExtendedAttributeMapper());
-        if(!list.isEmpty()) {
+        if (!list.isEmpty()) {
           attr = list.get(0);
         }
       } catch (DataAccessException e) {

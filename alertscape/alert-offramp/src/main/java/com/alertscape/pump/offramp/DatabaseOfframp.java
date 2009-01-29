@@ -8,7 +8,9 @@ import java.util.List;
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
+import com.alertscape.common.model.equator.AlertEquator;
 import com.alertscape.dao.AlertDao;
+import com.alertscape.dao.DaoException;
 
 /**
  * @author josh
@@ -33,6 +35,20 @@ public class DatabaseOfframp implements AlertOfframp {
 
   public List<Alert> getAllAlerts() throws AlertscapeException {
     return getAlertDao().getAllAlerts();
+  }
+
+  /**
+   * @param source
+   * @param alertId
+   * @return
+   * @throws DaoException
+   */
+  public Alert getAlert(AlertSource source, long alertId) throws AlertscapeException {
+    return getAlertDao().get(source, alertId);
+  }
+  
+  public Alert getAlert(Alert a, AlertEquator equator) {
+    return getAlertDao().get(a, equator);
   }
 
   public String getOfframpName() {

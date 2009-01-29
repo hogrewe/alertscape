@@ -1,9 +1,10 @@
 /**
  * 
  */
-package com.alertscape.pump.onramp.equator;
+package com.alertscape.common.model.equator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.alertscape.AlertscapeException;
@@ -17,23 +18,14 @@ import com.alertscape.common.model.Alert;
 public class AlertEquator {
   private static final ASLogger LOG = ASLogger.getLogger(AlertEquator.class);
 
-  private List<AlertPropertyEquator> equators = new ArrayList<AlertPropertyEquator>();
+  private List<AttributeEquator> equators = new ArrayList<AttributeEquator>();
 
   public AlertEquator() {
 
   }
 
-  public AlertEquator(List<String> attributes, List<String> majorTags, List<String> minorTags)
-      throws AlertscapeException {
+  public AlertEquator(List<String> attributes) throws AlertscapeException {
     setAttributes(attributes);
-    for (String majorTag : majorTags) {
-      MajorTagEquator eq = new MajorTagEquator(majorTag);
-      equators.add(eq);
-    }
-    for (String minorTag : minorTags) {
-      MinorTagEquator eq = new MinorTagEquator(minorTag);
-      equators.add(eq);
-    }
   }
 
   public void setAttributes(List<String> attributes) throws AlertscapeException {
@@ -45,6 +37,10 @@ public class AlertEquator {
       equators.add(eq);
       LOG.info("Setting new attribute equator: " + eq);
     }
+  }
+  
+  public Collection<AttributeEquator> getAttributeEquators() {
+    return equators;
   }
 
   public boolean equal(Alert a1, Alert a2) {

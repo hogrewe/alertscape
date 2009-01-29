@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.alertscape.pump.onramp.equator;
+package com.alertscape.common.model.equator;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -12,7 +12,8 @@ import com.alertscape.AlertscapeException;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 
-final class AttributeEquator extends AbstractAlertPropertyEquator {
+public final class AttributeEquator extends AbstractAlertPropertyEquator {
+  private static final long serialVersionUID = -2121846549972224268L;
   private static final ASLogger LOG = ASLogger.getLogger(AttributeEquator.class);
   protected static final Object[] NO_ARGS = new Object[0];
 
@@ -29,8 +30,12 @@ final class AttributeEquator extends AbstractAlertPropertyEquator {
     }
   }
 
+  public String getAttributeName() {
+    return attributeName;
+  }
+
   @Override
-  protected Object getValue(Alert a) {
+  public Object getValue(Alert a) {
     try {
       return method.invoke(a, NO_ARGS);
     } catch (IllegalArgumentException e) {
