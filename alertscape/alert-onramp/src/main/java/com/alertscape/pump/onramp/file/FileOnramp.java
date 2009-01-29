@@ -9,6 +9,7 @@ import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +22,8 @@ import com.alertscape.pump.onramp.AbstractPollingAlertOnramp;
  * 
  */
 public abstract class FileOnramp extends AbstractPollingAlertOnramp {
+  private static final String LINE_HASH = "LINE_HASH";
+  private static final String LINE_POINTER = "LINE_POINTER";
   private static final ASLogger LOG = ASLogger.getLogger(FileOnramp.class);
   private String filename;
   private long currentLinePointer;
@@ -81,16 +84,6 @@ public abstract class FileOnramp extends AbstractPollingAlertOnramp {
   protected abstract Alert createAlert(Matcher matcher);
 
   @Override
-  protected void setState(Object[] state) {
-    if(state == null) {
-      LOG.info("Couldn't find state for " + getSourceName());
-      return;
-    }
-    currentLinePointer = (Long) state[0];
-    currentLineHash = (String) state[1];
-  }
-
-  @Override
   protected void readUntilEnd() throws Exception {
     int linesProcessed = 0;
     long startTime = System.currentTimeMillis();
@@ -113,8 +106,8 @@ public abstract class FileOnramp extends AbstractPollingAlertOnramp {
           long perSecond = (linesProcessed * 1000 / elapsed);
           LOG.info(getSourceName() + ", nothing left to process, done with " + linesProcessed + " lines in "
               + (endTime - startTime) + "ms at " + perSecond + "/s");
-          writeState(currentLinePointer, currentLineHash);
         }
+        saveState();
         return;
       }
       String nextLineHash = hashLine(line);
@@ -129,6 +122,8 @@ public abstract class FileOnramp extends AbstractPollingAlertOnramp {
       }
       currentLinePointer = nextLinePointer;
       currentLineHash = nextLineHash;
+      state.put(LINE_POINTER, currentLinePointer);
+      state.put(LINE_HASH, currentLineHash);
       linesProcessed++;
       if (linesProcessed % 1000 == 0) {
         long endTime = System.currentTimeMillis();
@@ -138,6 +133,7 @@ public abstract class FileOnramp extends AbstractPollingAlertOnramp {
             + perSecond + "/s");
         linesProcessed = 0;
         startTime = System.currentTimeMillis();
+        saveState();
       }
     }
   }
@@ -181,6 +177,12 @@ public abstract class FileOnramp extends AbstractPollingAlertOnramp {
     m.reset();
     m.update(line.getBytes(), 0, line.length());
     return new BigInteger(1, m.digest()).toString(16);
+  }
+
+  @Override
+  protected void initState(Map<String, Object> state) {
+    currentLinePointer = (Long) state.get(LINE_POINTER);
+    currentLineHash = (String) state.get(LINE_HASH);
   }
 
 }

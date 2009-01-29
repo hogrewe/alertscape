@@ -1,11 +1,12 @@
 /**
  * 
  */
-package com.alertscape.pump.onramp.equator;
+package com.alertscape.common.model.equator;
 
 import com.alertscape.common.model.Alert;
 
 abstract class AbstractAlertPropertyEquator implements AlertPropertyEquator {
+  private static final long serialVersionUID = 8585160369396401861L;
   private boolean ignoreCase;
 
   public final boolean equal(Alert a1, Alert a2) {

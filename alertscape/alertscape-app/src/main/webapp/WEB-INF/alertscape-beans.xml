@@ -71,14 +71,14 @@
 	<bean id="alertTransport" class="com.alertscape.pump.onramp.sender.LocalAlertTransport">
 		<property name="pump" ref="alertpump" />
 	</bean>
-	<bean id="defaultAlertEquator" class="com.alertscape.pump.onramp.equator.AlertEquator">
+	<bean id="defaultAlertEquator" class="com.alertscape.common.model.equator.AlertEquator">
 		<property name="attributes">
 			<list>
 				<value>longDescription</value>
 			</list>
 		</property>
 	</bean>
-	<bean id="itemTypeEquator" class="com.alertscape.pump.onramp.equator.AlertEquator">
+	<bean id="itemTypeEquator" class="com.alertscape.common.model.equator.AlertEquator">
 		<property name="attributes">
 			<list>
 				<value>item</value>
@@ -86,7 +86,7 @@
 			</list>
 		</property>
 	</bean>
-    <bean id="itemItemMgrDescEquator" class="com.alertscape.pump.onramp.equator.AlertEquator">
+    <bean id="itemItemMgrDescEquator" class="com.alertscape.common.model.equator.AlertEquator">
         <property name="attributes">
             <list>
                 <value>item</value>

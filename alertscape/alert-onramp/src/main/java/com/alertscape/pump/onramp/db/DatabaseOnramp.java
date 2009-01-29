@@ -5,6 +5,7 @@ package com.alertscape.pump.onramp.db;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
@@ -15,6 +16,10 @@ import com.alertscape.pump.onramp.AbstractPollingAlertOnramp;
  * 
  */
 public class DatabaseOnramp extends AbstractPollingAlertOnramp {
+  /**
+   * 
+   */
+  private static final String LAST_ID = "LAST_ID";
   private static final ASLogger LOG = ASLogger.getLogger(DatabaseOnramp.class);
   private AlertOnrampDao onrampDao;
   private int batchSize = 1000;
@@ -41,12 +46,11 @@ public class DatabaseOnramp extends AbstractPollingAlertOnramp {
     long startTime = System.currentTimeMillis();
     List<Alert> nextAlerts = new ArrayList<Alert>(batchSize);
 
-    while (true) {
+    while (!isStopped()) {
       nextAlerts.clear();
       lastId = onrampDao.getNextAlerts(batchSize, lastId, nextAlerts);
       if (nextAlerts.isEmpty()) {
         if (linesProcessed > 0) {
-          writeState(lastId);
           long endTime = System.currentTimeMillis();
           long elapsed = endTime - startTime;
           if (elapsed < 1) {
@@ -55,8 +59,8 @@ public class DatabaseOnramp extends AbstractPollingAlertOnramp {
           long perSecond = (linesProcessed * 1000 / elapsed);
           LOG.info(getSourceName() + " processed " + linesProcessed + " lines in " + (endTime - startTime) + "ms at "
               + perSecond + "/s");
-          writeState(lastId);
         }
+        saveState();
         return;
       }
       for (Alert alert : nextAlerts) {
@@ -70,18 +74,11 @@ public class DatabaseOnramp extends AbstractPollingAlertOnramp {
               + perSecond + "/s");
           linesProcessed = 0;
           startTime = System.currentTimeMillis();
+          state.put(LAST_ID, lastId);
+          saveState();
         }
       }
     }
-  }
-
-  @Override
-  protected void setState(Object[] state) {
-    if(state == null) {
-      LOG.info("Couldn't find state for " + getSourceName());
-      return;
-    }
-    lastId = state[0];
   }
 
   /**
@@ -99,4 +96,8 @@ public class DatabaseOnramp extends AbstractPollingAlertOnramp {
     this.batchSize = batchSize;
   }
 
+  @Override
+  protected void initState(Map<String, Object> state) {
+    lastId = state.get(LAST_ID);
+  }
 }
