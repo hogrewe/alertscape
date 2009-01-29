@@ -4,15 +4,15 @@
 package com.alertscape.pump.onramp;
 
 import com.alertscape.common.model.Alert;
-import com.alertscape.pump.onramp.equator.AlertEquator;
+import com.alertscape.common.model.equator.AlertEquator;
 
 /**
  * @author josh
  * 
  */
 public class AlertDedupWrapper {
-  public AlertEquator equator;
-  public Alert alert;
+  private AlertEquator equator;
+  private Alert alert;
 
   public AlertDedupWrapper(AlertEquator equator, Alert alert) {
     this.equator = equator;
@@ -40,6 +40,13 @@ public class AlertDedupWrapper {
     AlertDedupWrapper dedup = (AlertDedupWrapper) obj;
 
     return equator.equal(alert, dedup.alert);
+  }
+
+  /**
+   * @return the alert
+   */
+  public Alert getAlert() {
+    return alert;
   }
 
 }

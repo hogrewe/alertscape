@@ -1,11 +1,12 @@
 /**
  * 
  */
-package com.alertscape.pump.onramp.equator;
+package com.alertscape.common.model.equator;
 
 import com.alertscape.common.model.Alert;
 
 final class MajorTagEquator extends AbstractAlertPropertyEquator {
+  private static final long serialVersionUID = -6574801858968644791L;
   private String majorTagName;
 
   public MajorTagEquator(String majorTagName) {
@@ -18,9 +19,8 @@ final class MajorTagEquator extends AbstractAlertPropertyEquator {
   }
 
   @Override
-  public String toString() { 
+  public String toString() {
     return "MajorTag:" + majorTagName;
   }
-  
 
 }
