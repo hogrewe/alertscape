@@ -90,8 +90,6 @@ public class AlertBrowser extends JFrame {
   private static JTabbedPane tabbedPane;
   private static ImageIcon closeIcon;
   private static ImageIcon detailsIcon;
-	
-  
   
   public AlertBrowser() {
   }
@@ -118,7 +116,7 @@ public class AlertBrowser extends JFrame {
     treePanel = new AlertTreePanel();
     treePanel.init();
 
-		URL imageUrl = getClass().getResource("/com/alertscape/images/mini/expanded.gif");
+		URL imageUrl = getClass().getResource("/com/alertscape/images/mini/close_tab.png");
 		closeIcon = new ImageIcon(imageUrl);
  		
 		URL imageUrl2 = getClass().getResource("/com/alertscape/images/mini/page_text.gif");
@@ -226,7 +224,7 @@ public class AlertBrowser extends JFrame {
 
     tabbedPane = new JTabbedPane();
     
-    addTabbedPanel("Details", detailsIcon, outerTablePanel, "Tabular view of alerts", false);
+    addTabbedPanel("Details", detailsIcon, outerTablePanel, "Tabular view of alerts", false, false);
     
     //tabbedPane.addTab("Details", null, outerTablePanel, "Tabular view of alerts");
     
@@ -333,7 +331,9 @@ public class AlertBrowser extends JFrame {
     popup.addSeparator();
     popup.add(mailAction);
     popup.add(predefinedTagAction);
-    popup.add(customTagAction);
+    popup.add(customTagAction);    
+    popup.addSeparator();
+    popup.add(chartAction);
     tablePanel.setPopup(popup);
 
     // jframe housekeeping
@@ -411,7 +411,7 @@ public class AlertBrowser extends JFrame {
   }
   
   // this method will create a new tab, with the given title, icon, and panel as contents, to the main browser.
-  public static void addTabbedPanel(String title, ImageIcon icon, final JPanel panel, String tooltip, boolean showCloseButton)
+  public static void addTabbedPanel(String title, ImageIcon icon, final JPanel panel, String tooltip, boolean showCloseButton, boolean selectNow)
   {
   	tabbedPane.addTab(title, icon, panel, tooltip);
   	int newindex = tabbedPane.getTabCount()-1;
@@ -449,6 +449,11 @@ public class AlertBrowser extends JFrame {
 				tabbedPane.remove(panel);
 			}	
   	});  	
+
+  	if (selectNow)
+  	{
+  		tabbedPane.setSelectedIndex(newindex);
+  	}
   	
   }
   

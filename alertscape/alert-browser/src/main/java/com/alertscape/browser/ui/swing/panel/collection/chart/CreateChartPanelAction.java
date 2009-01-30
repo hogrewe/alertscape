@@ -55,7 +55,7 @@ public class CreateChartPanelAction extends AbstractAction
 					AlertPieChartPanel piechart = new AlertPieChartPanel(alerts, "item", title, tooltip);
 											
 					// add the chart to a tab, adjacent to the tabular view
-					AlertBrowser.addTabbedPanel(title, chartIcon, piechart, tooltip, true);
+					AlertBrowser.addTabbedPanel(title, chartIcon, piechart, tooltip, true, true);
 				}
 			}
 		};
