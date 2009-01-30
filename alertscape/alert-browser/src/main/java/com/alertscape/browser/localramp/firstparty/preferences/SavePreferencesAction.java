@@ -37,7 +37,7 @@ public class SavePreferencesAction extends AbstractLocalRampAction
 	@Override
 	protected String getActionDescription()
 	{
-		return "Save Browser Preferences to Disk";
+		return "Save Preferences as Default";
 	}
 
 	@Override
@@ -62,19 +62,19 @@ public class SavePreferencesAction extends AbstractLocalRampAction
 	@Override
 	protected String getActionTitle()
 	{
-		return "Save Browser Profile";
+		return "Save Preferences as Default";
 	}
 
 	@Override
 	protected String getActionWindowTitle()
 	{
-		return "Save Browser Profile";
+		return "Save Preferences as Default";
 	}
 
 	@Override
 	protected LocalRamp getLocalRamp()
 	{
-		return new WriteSingleObjectToFileLocalRamp("amp_profile.obj");
+		return new WriteSingleObjectToFileLocalRamp("amp_default_preferences.obj");
 	}
 
 	@Override
