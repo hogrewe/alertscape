@@ -45,7 +45,7 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
   private static final long serialVersionUID = 1L;
   private AlertCollection subCollection;
   private JLabel[] sevLabels;
-  private JToggleButton[] sevButtons;
+  private JCheckBox[] sevButtons;
   private JLabel totalLabel;
   private SeverityMatcherEditor severityMatcher = new SeverityMatcherEditor();
   private Map<Severity, Integer> severityCounts;
@@ -150,7 +150,7 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
     SeverityFactory fact = SeverityFactory.getInstance();
     int max = fact.getNumSeverities();
     sevLabels = new JLabel[max];
-    sevButtons = new JToggleButton[max];
+    sevButtons = new JCheckBox[max];
     FormLayout layout = new FormLayout("r:d:g, 3dlu, [22dlu,p]");
     for (int i = 0; i < max; i++) 
     {
@@ -167,6 +167,7 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
       sevTotal.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
       sevTotal.setForeground(s.getForegroundColor());
       sevTotal.setHorizontalAlignment(SwingConstants.CENTER);
+      sevTotal.setName(s.getName());
 
       JPanel totalPanel = new JPanel(new BorderLayout());
       totalPanel.setBackground(s.getBackgroundColor());
@@ -239,11 +240,14 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
   public Map getUserPreferences() {
     Map vals = new HashMap();
 
-    for (int i = 0; i < sevLabels.length; i++) {
-      JToggleButton button = sevButtons[i];
+    for (int i = 0; i < sevLabels.length; i++) 
+    {
+      JCheckBox button = sevButtons[i];
       JLabel label = sevLabels[i];
-
-      vals.put(label.getText(), new Boolean(button.isSelected()));
+      Boolean flag = new Boolean(button.isSelected());
+      boolean val = flag.booleanValue();
+      String key = label.getName();
+      vals.put(key, flag);
     }
 
     return vals;
@@ -254,9 +258,12 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
       JToggleButton button = sevButtons[i];
       JLabel label = sevLabels[i];
 
-      Boolean istoggled = (Boolean) preferences.get(label.getText());
-      if (istoggled != null) {
-        button.setSelected(istoggled.booleanValue());
+      String key = label.getName();
+      Boolean istoggled = (Boolean) preferences.get(key);
+      if (istoggled != null) 
+      {
+      	boolean toggled = istoggled.booleanValue();
+        button.setSelected(toggled);
       }
     }
   }
