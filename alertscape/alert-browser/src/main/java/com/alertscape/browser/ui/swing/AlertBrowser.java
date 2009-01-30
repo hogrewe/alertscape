@@ -89,6 +89,7 @@ public class AlertBrowser extends JFrame {
   private AlertTreePanel treePanel;
   private static JTabbedPane tabbedPane;
   private static ImageIcon closeIcon;
+  private static ImageIcon detailsIcon;
 	
   
   
@@ -118,8 +119,10 @@ public class AlertBrowser extends JFrame {
     treePanel.init();
 
 		URL imageUrl = getClass().getResource("/com/alertscape/images/mini/expanded.gif");
-		ImageIcon icon = new ImageIcon(imageUrl);
- 		closeIcon = icon;
+		closeIcon = new ImageIcon(imageUrl);
+ 		
+		URL imageUrl2 = getClass().getResource("/com/alertscape/images/mini/page_text.gif");
+		detailsIcon = new ImageIcon(imageUrl2);
     
     collection = new BinarySortAlertCollection();
 
@@ -145,7 +148,7 @@ public class AlertBrowser extends JFrame {
 
     // Summary
     JPanel outerSummaryPanel = new JPanel();
-    // outerSummaryPanel.setBorder(BorderFactory.createTitledBorder("Summary"));
+    outerSummaryPanel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
     outerSummaryPanel.setLayout(new GridLayout(1, 1));
     outerSummaryPanel.add(summaryPanel);
 
@@ -222,11 +225,14 @@ public class AlertBrowser extends JFrame {
     outerTablePanel.add(tablePanel, BorderLayout.CENTER);
 
     tabbedPane = new JTabbedPane();
-    tabbedPane.addTab("Tabular", null, outerTablePanel, "Tabular View of Alerts");
+    
+    addTabbedPanel("Details", detailsIcon, outerTablePanel, "Tabular view of alerts", false);
+    
+    //tabbedPane.addTab("Details", null, outerTablePanel, "Tabular view of alerts");
     
     // North
     JPanel northPanel = new JPanel();
-    northPanel.setLayout(new GridLayout(2, 1));
+    northPanel.setLayout(new GridLayout(1, 2));
     northPanel.add(filterPanel);
     northPanel.add(outerSummaryPanel);
 
@@ -238,6 +244,7 @@ public class AlertBrowser extends JFrame {
     overallPane.setLayout(new BorderLayout());
     overallPane.add(northPanel, BorderLayout.NORTH);
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treePanel, p);
+    splitPane.setBorder(BorderFactory.createMatteBorder(1,0,1,0,Color.lightGray));
     overallPane.add(splitPane, BorderLayout.CENTER);
     overallPane.add(new AlertBrowserStatusPanel(), BorderLayout.SOUTH);
     setContentPane(overallPane);
@@ -261,43 +268,33 @@ public class AlertBrowser extends JFrame {
     // - Export (to CSV, Excel)
     // - Print (selected alerts or all alerts in view)
 
+    // the edit menu is where actions reside that actually modify the alert
     JMenu editMenu = new JMenu("Edit");
-    // editMenu.setMnemonic(KeyEvent.VK_E);
-    // ideas for the edit menu
+    editMenu.add(ackAction);
+    editMenu.add(unackAction);
+    editMenu.add(clearAction);
+    editMenu.addSeparator();
+    editMenu.add(mailAction);
+    editMenu.add(predefinedTagAction);
+    editMenu.add(customTagAction);
     // - Copy
     // - Paste
     // - Cut
     // - Select All
-    // - Find (search for alert: in the tree, in the table, in the history)
-    // - window configurations (dock type stuff)
-    editMenu.add(chartAction);
-
-    JMenu actionsMenu = new JMenu("Actions");
-    // actionsMenu.setMnemonic(KeyEvent.VK_A);
-    actionsMenu.add(ackAction);
-    actionsMenu.add(unackAction);
-    actionsMenu.add(clearAction);
-    actionsMenu.addSeparator();
-    actionsMenu.add(mailAction);
-    actionsMenu.add(predefinedTagAction);
-    actionsMenu.add(customTagAction);
-
-    // - email alerts
-    // - quick tags:
-    // - acknowledge alerts (acknowledged by field is just a tag)
-    // - unacknowledge alerts (acknowledged by field is just a tag)
     // - assign alerts (name is just a tag)
     // - move alerts (folder is just a tag)
-    // - view comments
-    // - add comment
+    // - add comment  
+    
+    JMenu viewMenu = new JMenu("View");
+    viewMenu.add(chartAction);
+    // - Find (search for alert: in the tree, in the table, in the history)
+    // - window configurations (dock type stuff)
     // - view history
     // - view ticket
-    // - clear/delete alerts
-    // - tag alerts (major/minor?)
-
+    // - view comments
+    // filter configuration
+    
     JMenu preferencesMenu = new JMenu("Preferences");
-    // preferencesMenu.add(ackAction);
-
     // build a list of all of the userpreferencepanels
     List<UserPreferencesPanel> prefPanels = new ArrayList();
     prefPanels.add(filterPanel);
@@ -322,7 +319,7 @@ public class AlertBrowser extends JFrame {
 
     menubar.add(fileMenu);
     menubar.add(editMenu);
-    menubar.add(actionsMenu);
+    menubar.add(viewMenu);
     menubar.add(preferencesMenu);
     menubar.add(helpMenu);
 
@@ -414,7 +411,7 @@ public class AlertBrowser extends JFrame {
   }
   
   // this method will create a new tab, with the given title, icon, and panel as contents, to the main browser.
-  public static void addTabbedPanel(String title, ImageIcon icon, final JPanel panel, String tooltip)
+  public static void addTabbedPanel(String title, ImageIcon icon, final JPanel panel, String tooltip, boolean showCloseButton)
   {
   	tabbedPane.addTab(title, icon, panel, tooltip);
   	int newindex = tabbedPane.getTabCount()-1;
@@ -438,7 +435,10 @@ public class AlertBrowser extends JFrame {
   	closeBar.add(button);
   	
   	pnl.add(label, BorderLayout.WEST);
-  	pnl.add(closeBar, BorderLayout.EAST);
+  	if (showCloseButton)
+  	{
+  		pnl.add(closeBar, BorderLayout.EAST);
+  	}
   	tabbedPane.setTabComponentAt(newindex, pnl);
   	
   	button.addActionListener(new ActionListener()
