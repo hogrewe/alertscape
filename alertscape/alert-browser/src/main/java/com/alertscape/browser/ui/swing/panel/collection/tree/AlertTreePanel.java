@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -66,9 +67,12 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
     treeModel = new AlertTreeModel(root);
     alertTree = new JTree(treeModel);
     alertTree.setCellRenderer(new AlertTreeNodeRenderer());
-    alertTree.setMinimumSize(new Dimension(200, 200));
+    alertTree.setMinimumSize(new Dimension(300, 200));
 
     JScrollPane treePane = new JScrollPane(alertTree);
+    treePane.setBorder(BorderFactory.createEmptyBorder());
+    //treePane.setViewportBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    treePane.setViewportBorder(BorderFactory.createMatteBorder(5,5,5,5, alertTree.getBackground()));
 
     compositeEditor = new CompositeMatcherEditor<Alert>();
 

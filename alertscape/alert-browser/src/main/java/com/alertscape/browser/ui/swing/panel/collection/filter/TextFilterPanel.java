@@ -4,11 +4,14 @@
 package com.alertscape.browser.ui.swing.panel.collection.filter;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -49,6 +52,8 @@ public class TextFilterPanel extends JPanel implements AlertFilter, UserPreferen
     searchText = new JTextField();
     searchText.setMinimumSize(new Dimension(100,20));
     searchText.setPreferredSize(new Dimension(300,20));
+//    searchText.setBorder(BorderFactory.createLineBorder(Color.lightGray));  // lame - for some reason this hoses the margin, so I commented it out
+    searchText.setMargin(new Insets(1,3,1,1));
     FormLayout layout = new FormLayout("right:pref, 3dlu, default:grow", "");
     DefaultFormBuilder builder = new DefaultFormBuilder(layout);
     builder.append("Quick Filter: ", searchText);

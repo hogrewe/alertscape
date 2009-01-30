@@ -19,6 +19,7 @@ public class CreateChartPanelAction extends AbstractAction
 	private static final long serialVersionUID = 1L;
 	private JFrame parentFrame;
 	private ImageIcon myIcon;
+	private ImageIcon chartIcon;
 
 	public CreateChartPanelAction()
 	{	
@@ -27,7 +28,10 @@ public class CreateChartPanelAction extends AbstractAction
 		putValue(SMALL_ICON, getActionIcon());
 		putValue(SHORT_DESCRIPTION, getActionDescription());
 		putValue(MNEMONIC_KEY, getActionMnemonic());
-		putValue(ACCELERATOR_KEY, getActionAccelerator());		
+		putValue(ACCELERATOR_KEY, getActionAccelerator());	
+		
+		URL imageUrl = getClass().getResource("/com/alertscape/images/mini/page_component.gif");
+		chartIcon = new ImageIcon(imageUrl);
 	}
 	
 	public void setParentFrame(JFrame parentFrame)
@@ -46,12 +50,12 @@ public class CreateChartPanelAction extends AbstractAction
 				List<Alert> alerts = AlertBrowser.getCurrentContext().getSelectedAlerts();
 				if (alerts.size() > 0)
 				{
-					String title = "Pie Chart";
+					String title = "Chart";
 					String tooltip = "Pie Chart (item, " + alerts.size() + ")";
 					AlertPieChartPanel piechart = new AlertPieChartPanel(alerts, "item", title, tooltip);
 											
 					// add the chart to a tab, adjacent to the tabular view
-					AlertBrowser.addTabbedPanel(title, null, piechart, tooltip);
+					AlertBrowser.addTabbedPanel(title, chartIcon, piechart, tooltip, true);
 				}
 			}
 		};
