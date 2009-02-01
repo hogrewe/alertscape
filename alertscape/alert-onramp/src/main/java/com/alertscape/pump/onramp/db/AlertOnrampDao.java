@@ -11,7 +11,7 @@ import com.alertscape.common.model.Alert;
  * @author josh
  * 
  */
-public interface AlertOnrampDao {
+public interface AlertOnrampDao<ID> {
   /**
    * This method should read in at most batchSize alerts from the database, starting at lastId and append the alerts to
    * nextAlerts. The return value is the last "id" pulled from the database.
@@ -21,5 +21,5 @@ public interface AlertOnrampDao {
    * @param nextAlerts
    * @return
    */
-  Object getNextAlerts(int batchSize, Object lastId, List<Alert> nextAlerts);
+  ID getNextAlerts(int batchSize, ID lastId, List<Alert> nextAlerts);
 }

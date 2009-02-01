@@ -15,20 +15,20 @@ import com.alertscape.pump.onramp.AbstractPollingAlertOnramp;
  * @author josh
  * 
  */
-public class DatabaseOnramp extends AbstractPollingAlertOnramp {
+public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
   /**
    * 
    */
   private static final String LAST_ID = "LAST_ID";
   private static final ASLogger LOG = ASLogger.getLogger(DatabaseOnramp.class);
-  private AlertOnrampDao onrampDao;
+  private AlertOnrampDao<ID> onrampDao;
   private int batchSize = 1000;
-  private Object lastId;
+  private ID lastId;
 
   /**
    * @return the onrampDao
    */
-  public AlertOnrampDao getOnrampDao() {
+  public AlertOnrampDao<ID> getOnrampDao() {
     return onrampDao;
   }
 
@@ -36,7 +36,7 @@ public class DatabaseOnramp extends AbstractPollingAlertOnramp {
    * @param onrampDao
    *          the onrampDao to set
    */
-  public void setOnrampDao(AlertOnrampDao onrampDao) {
+  public void setOnrampDao(AlertOnrampDao<ID> onrampDao) {
     this.onrampDao = onrampDao;
   }
 
@@ -96,8 +96,9 @@ public class DatabaseOnramp extends AbstractPollingAlertOnramp {
     this.batchSize = batchSize;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   protected void initState(Map<String, Object> state) {
-    lastId = state.get(LAST_ID);
+    lastId = (ID) state.get(LAST_ID);
   }
 }

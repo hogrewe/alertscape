@@ -91,14 +91,16 @@ public abstract class AlertOnramp implements AlertSourceCallback {
   public final void onrampInit() {
     try {
       source = transport.getSource(sourceName);
-      transport.registerAlertSource(source, this);
+      nextAlertId = transport.registerAlertSource(source, this);
       stateFilename = "." + getSourceName() + ".state";
       File dir = new File(getAsHome());
       stateFile = new File(dir, stateFilename);
 
       cache = new AlertCache(source);
 
-      readState();
+      state = readState();
+      nextAlertId = (Long) state.get(ALERT_ID_STATE);
+      
     } catch (AlertTransportException e) {
       LOG.error("Couldn't get initalize from transport", e);
     }

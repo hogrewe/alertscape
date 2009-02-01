@@ -23,17 +23,19 @@ import com.alertscape.dao.DaoException;
  * 
  */
 public class AlertSourceJdbcDao extends JdbcDaoSupport implements AlertSourceDao {
-  private static final String GET_ALL_SOURCES_SQL = "select * from alert_sources";
-  private static final String GET_SOURCE_SQL = "select * from alert_sources where alert_source_id=?";
+  public static final String GET_ALL_SOURCES_SQL = "select * from alert_sources";
+  public static final String GET_SOURCE_SQL = "select * from alert_sources where alert_source_id=?";
   private static final String INSERT_SOURCE_SQL = "insert into alert_sources (alert_source_id, alert_source_name, "
       + "short_description) values (?,?,?)";
   private static final String UPDATE_SOURCE_SQL = "upate alert_sources set alert_source_name=?, short_description=? "
       + " where alert_source_id=?";
-  private static final String UPDATE_ID_SEQ = "update alert_sources set alert_id_seq=? where alert_source_id=?";
+  public static final String UPDATE_ID_SEQ = "update alert_sources set alert_id_seq=? where alert_source_id=? "
+      + "and alert_id_seq < ?";
+  public static final String GET_ALERT_ID_SEQ = "select alert_id_seq from alert_sources where alert_source_id=?";
 
-  private Map<Integer, AlertSource> sourcesMap = new HashMap<Integer, AlertSource>();
+  public Map<Integer, AlertSource> sourcesMap = new HashMap<Integer, AlertSource>();
 
-  private AlertSourceMapper sourceMapper = new AlertSourceMapper();
+  public AlertSourceMapper sourceMapper = new AlertSourceMapper();
 
   public AlertSource get(int sourceId) throws DaoException {
     AlertSource source;
@@ -60,14 +62,19 @@ public class AlertSourceJdbcDao extends JdbcDaoSupport implements AlertSourceDao
       // TODO: UPDATE EXISTING SOURCE
     }
   }
+  
+  public long getAlertIdSeq(AlertSource source) {
+    return getJdbcTemplate().queryForLong(GET_ALERT_ID_SEQ, new Object[] {source.getSourceId()});
+  }
 
-  public void reserveAlertIdSeq(final AlertSource source, final int numToReserve) throws DaoException {
+  public void updateAlertIdSeq(final AlertSource source, final long alertId) {
     // getJdbcTemplate().
     getJdbcTemplate().update(UPDATE_ID_SEQ, new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         int i = 1;
-        ps.setLong(i++, numToReserve);
+        ps.setLong(i++, alertId);
         ps.setInt(i++, source.getSourceId());
+        ps.setLong(i++, alertId);
       }
     });
   }

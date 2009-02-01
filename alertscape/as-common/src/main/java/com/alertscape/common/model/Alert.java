@@ -16,6 +16,7 @@ import com.alertscape.common.model.severity.Severity;
  * @version $Version: $
  */
 public class Alert implements Serializable {
+  private static final long COMBINED_ID_MULTIPLIER = (long) Math.pow(10, 15);
   private static final long serialVersionUID = -1396527085374975232L;
 
   public enum AlertStatus {
@@ -190,7 +191,7 @@ public class Alert implements Serializable {
   }
 
   public void addMajorTag(String name, Object value) {
-  	getMajorTags().put(name, value);
+    getMajorTags().put(name, value);
   }
 
   public Object getMajorTag(String name) {
@@ -220,7 +221,7 @@ public class Alert implements Serializable {
   }
 
   public void addMinorTag(String name, Object value) {
-  	getMinorTags().put(name, value);
+    getMinorTags().put(name, value);
   }
 
   public Object getMinorTag(String name) {
@@ -232,7 +233,7 @@ public class Alert implements Serializable {
    */
   public long getCompositeAlertId() {
     if (compositeAlertId <= 0) {
-      compositeAlertId = (source == null ? 0 : source.getSourceId() * (long) Math.pow(10, 10)) + alertId;
+      compositeAlertId = (source == null ? 0 : source.getSourceId() * COMBINED_ID_MULTIPLIER) + alertId;
     }
     return compositeAlertId;
   }
@@ -245,7 +246,8 @@ public class Alert implements Serializable {
   }
 
   /**
-   * @param acknowledgedBy the acknowledgedBy to set
+   * @param acknowledgedBy
+   *          the acknowledgedBy to set
    */
   public void setAcknowledgedBy(String acknowledgedBy) {
     this.acknowledgedBy = acknowledgedBy;
@@ -285,17 +287,18 @@ public class Alert implements Serializable {
   public Object getExtendedAttribute(String name) {
     return extendedAttributes == null ? null : extendedAttributes.get(name);
   }
-  
+
   public Map<String, Object> getExtendedAttributes() {
     return extendedAttributes;
   }
 
   /**
-   * @param extendedAttributes the extendedAttributes to set
+   * @param extendedAttributes
+   *          the extendedAttributes to set
    */
   public void setExtendedAttributes(Map<String, Object> extendedAttributes) {
     this.extendedAttributes = extendedAttributes;
-    if(this.extendedAttributes == null) {
+    if (this.extendedAttributes == null) {
       this.extendedAttributes = Collections.emptyMap();
     }
   }

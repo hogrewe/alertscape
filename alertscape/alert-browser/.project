@@ -2,9 +2,9 @@
   <name>alert-browser</name>
   <comment/>
   <projects>
+    <project>alert-service-interfaces</project>
     <project>alert-tester</project>
     <project>as-common</project>
-    <project>alert-service-interfaces</project>
   </projects>
   <buildSpec>
     <buildCommand>

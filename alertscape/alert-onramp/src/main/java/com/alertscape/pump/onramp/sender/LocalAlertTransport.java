@@ -25,9 +25,9 @@ public class LocalAlertTransport implements AlertTransport {
     }
   }
 
-  public void registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertTransportException {
+  public long registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertTransportException {
     try {
-      pump.registerAlertSource(source, callback);
+      return pump.registerAlertSource(source, callback);
     } catch (AlertscapeException e) {
       throw new AlertTransportException("Couldn't get alerts from the pump", e);
     }

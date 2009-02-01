@@ -18,6 +18,8 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
@@ -156,6 +158,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       insert(alert);
     }
     saveExtendedAttributes(alert);
+    getAlertSourceRepository().updateAlertIdSeq(alert.getSource(), alert.getAlertId()+1);
   }
 
   /**

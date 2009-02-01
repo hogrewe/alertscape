@@ -79,7 +79,7 @@ import com.alertscape.util.ImageFinder;
 public class AlertBrowser extends JFrame {
   private static final long serialVersionUID = 1L;
   private static final ASLogger LOG = ASLogger.getLogger(AlertBrowser.class);
-  
+
   private AlertCollection collection;
   private ConnectionFactory jmsFactory;
   private static AlertService alertService;
@@ -89,9 +89,7 @@ public class AlertBrowser extends JFrame {
   private AlertTreePanel treePanel;
   private static JTabbedPane tabbedPane;
   private static ImageIcon closeIcon;
-	
-  
-  
+
   public AlertBrowser() {
   }
 
@@ -117,10 +115,10 @@ public class AlertBrowser extends JFrame {
     treePanel = new AlertTreePanel();
     treePanel.init();
 
-		URL imageUrl = getClass().getResource("/com/alertscape/images/mini/expanded.gif");
-		ImageIcon icon = new ImageIcon(imageUrl);
- 		closeIcon = icon;
-    
+    URL imageUrl = getClass().getResource("/com/alertscape/images/mini/expanded.gif");
+    ImageIcon icon = new ImageIcon(imageUrl);
+    closeIcon = icon;
+
     collection = new BinarySortAlertCollection();
 
     AlertCollection treeCollection = treePanel.setMasterCollection(collection);
@@ -135,7 +133,7 @@ public class AlertBrowser extends JFrame {
     List<AlertAttributeDefinition> extendedAttributes = null;
     try {
       extendedAttributes = alertService.getAttributeDefinitions();
-    } catch (AlertscapeException e) {
+    } catch (Exception e) {
       LOG.error("Couldn't get attribute definitions", e);
     }
     tablePanel = new AlertCollectionTablePanel(summaryCollection, extendedAttributes);
@@ -188,12 +186,12 @@ public class AlertBrowser extends JFrame {
     chartAction.setParentFrame(this);
     JButton chartButton = actionToolbar.add(chartAction);
     chartButton.setOpaque(false);
-    
+
     LoginAction loginAction = new LoginAction();
     loginAction.setParentFrame(this);
     JButton loginButton = actionToolbar.add(loginAction);
     loginButton.setOpaque(false);
-    
+
     // Table
     JPanel outerTablePanel = new JPanel();
     outerTablePanel.setLayout(new BorderLayout());
@@ -223,7 +221,7 @@ public class AlertBrowser extends JFrame {
 
     tabbedPane = new JTabbedPane();
     tabbedPane.addTab("Tabular", null, outerTablePanel, "Tabular View of Alerts");
-    
+
     // North
     JPanel northPanel = new JPanel();
     northPanel.setLayout(new GridLayout(2, 1));
@@ -231,7 +229,7 @@ public class AlertBrowser extends JFrame {
     northPanel.add(outerSummaryPanel);
 
     p.add(tabbedPane, BorderLayout.CENTER);
-    //p.add(outerTablePanel, BorderLayout.CENTER);
+    // p.add(outerTablePanel, BorderLayout.CENTER);
     // p.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
     JPanel overallPane = new JPanel();
@@ -349,7 +347,7 @@ public class AlertBrowser extends JFrame {
     // before getting the alerts, try to grab the default preferences if there are any
     BackgroundPreferenceLoader prefLoader = new BackgroundPreferenceLoader(prefPanels);
     prefLoader.loadDefaultPreferences();
-    
+
     Authentication.addAuthenticationListener(new AuthenticationListener() {
       public void handleAuthEvent(AuthenticationEvent e) {
         // TODO: there is probably a better way to do this than throwing it into a thread, but this is at least an
@@ -412,46 +410,43 @@ public class AlertBrowser extends JFrame {
       listener.disconnect();
     }
   }
-  
+
   // this method will create a new tab, with the given title, icon, and panel as contents, to the main browser.
-  public static void addTabbedPanel(String title, ImageIcon icon, final JPanel panel, String tooltip)
-  {
-  	tabbedPane.addTab(title, icon, panel, tooltip);
-  	int newindex = tabbedPane.getTabCount()-1;
-  	JPanel pnl = new JPanel(new BorderLayout());
-  	JLabel label = new JLabel(title, icon, JLabel.LEFT);
-  	label.setOpaque(false);
-  	JButton button = new JButton();
-  	button.setIcon(closeIcon);
-  	button.setOpaque(false);
-  	button.setPreferredSize(new Dimension(17,17));
-  	button.setBorder(BorderFactory.createEmptyBorder());
-  	button.setBorderPainted(false);
-  	button.setHorizontalAlignment(JButton.CENTER);
-  	button.setToolTipText("Close Tab");
-  	pnl.setOpaque(false);
-  	
-  	JToolBar closeBar = new JToolBar();
-  	closeBar.setOpaque(false);
-  	closeBar.setBorderPainted(false);
-  	closeBar.setFloatable(false);
-  	closeBar.add(button);
-  	
-  	pnl.add(label, BorderLayout.WEST);
-  	pnl.add(closeBar, BorderLayout.EAST);
-  	tabbedPane.setTabComponentAt(newindex, pnl);
-  	
-  	button.addActionListener(new ActionListener()
-  	{
-			public void actionPerformed(ActionEvent arg0)
-			{
-				//tabbedPane.removeTabAt(newindex);
-				tabbedPane.remove(panel);
-			}	
-  	});  	
-  	
+  public static void addTabbedPanel(String title, ImageIcon icon, final JPanel panel, String tooltip) {
+    tabbedPane.addTab(title, icon, panel, tooltip);
+    int newindex = tabbedPane.getTabCount() - 1;
+    JPanel pnl = new JPanel(new BorderLayout());
+    JLabel label = new JLabel(title, icon, JLabel.LEFT);
+    label.setOpaque(false);
+    JButton button = new JButton();
+    button.setIcon(closeIcon);
+    button.setOpaque(false);
+    button.setPreferredSize(new Dimension(17, 17));
+    button.setBorder(BorderFactory.createEmptyBorder());
+    button.setBorderPainted(false);
+    button.setHorizontalAlignment(JButton.CENTER);
+    button.setToolTipText("Close Tab");
+    pnl.setOpaque(false);
+
+    JToolBar closeBar = new JToolBar();
+    closeBar.setOpaque(false);
+    closeBar.setBorderPainted(false);
+    closeBar.setFloatable(false);
+    closeBar.add(button);
+
+    pnl.add(label, BorderLayout.WEST);
+    pnl.add(closeBar, BorderLayout.EAST);
+    tabbedPane.setTabComponentAt(newindex, pnl);
+
+    button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        // tabbedPane.removeTabAt(newindex);
+        tabbedPane.remove(panel);
+      }
+    });
+
   }
-  
+
   /**
    * @return the jmsFactory
    */

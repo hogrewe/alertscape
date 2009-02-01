@@ -32,7 +32,7 @@
 		<property name="sourceName" value="INTERMAPPER" />
 		<property name="asHome" value="/home/alertscape" />
 	</bean>
-	<bean id="kyriakiOnramp" class="com.alertscape.pump.onramp.file.WebAccessLogFileOnramp"
+	<bean id="kyriakiOnramp" class="com.alertscape.pump.onramp.file.SimpleRegexFileOnramp"
 		init-method="onrampInit" destroy-method="shutdown">
 		<property name="transport" ref="alertTransport" />
 		<property name="equator" ref="defaultAlertEquator" />
