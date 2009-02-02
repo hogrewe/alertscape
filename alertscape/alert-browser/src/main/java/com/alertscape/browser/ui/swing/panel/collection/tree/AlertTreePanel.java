@@ -4,12 +4,16 @@
 package com.alertscape.browser.ui.swing.panel.collection.tree;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -66,9 +70,12 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
     treeModel = new AlertTreeModel(root);
     alertTree = new JTree(treeModel);
     alertTree.setCellRenderer(new AlertTreeNodeRenderer());
-    alertTree.setMinimumSize(new Dimension(200, 200));
+    alertTree.setMinimumSize(new Dimension(300, 200));
 
     JScrollPane treePane = new JScrollPane(alertTree);
+    treePane.setBorder(BorderFactory.createMatteBorder(0,0,0,1,Color.lightGray));
+    //treePane.setViewportBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    treePane.setViewportBorder(BorderFactory.createMatteBorder(5,5,5,5, alertTree.getBackground()));
 
     compositeEditor = new CompositeMatcherEditor<Alert>();
 
@@ -88,8 +95,20 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
       }
     });
 
+    JPanel headerPanel = new JPanel(new BorderLayout());
+    JLabel headerLabel = new JLabel("Containment");
+    headerLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    JToolBar treeToolbar = new JToolBar();  // this is for future use, like 'find in tree', 'create folder', 'delete folder', whatever.  // .amybe it shoul;d be a combobox, depends on how many we will have...
+    treeToolbar.setOpaque(false);
+    treeToolbar.setFloatable(false);    
+    headerPanel.add(headerLabel, BorderLayout.WEST);
+    headerPanel.add(treeToolbar, BorderLayout.EAST);
+    headerPanel.setBorder(BorderFactory.createMatteBorder(0,0,1,1,Color.lightGray));
+    
     setLayout(new BorderLayout());
+    add(headerPanel, BorderLayout.NORTH);
     add(treePane, BorderLayout.CENTER);
+    
   }
 
   public AlertCollection setMasterCollection(AlertCollection master) {

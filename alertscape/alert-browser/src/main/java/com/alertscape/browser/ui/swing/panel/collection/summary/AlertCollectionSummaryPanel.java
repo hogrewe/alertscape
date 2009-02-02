@@ -45,7 +45,7 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
   private static final long serialVersionUID = 1L;
   private AlertCollection subCollection;
   private JLabel[] sevLabels;
-  private JToggleButton[] sevButtons;
+  private JCheckBox[] sevButtons;
   private JLabel totalLabel;
   private SeverityMatcherEditor severityMatcher = new SeverityMatcherEditor();
   private Map<Severity, Integer> severityCounts;
@@ -145,47 +145,53 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
   }
 
   protected void init() {
-    // setLayout(null);
     JPanel summaryPanel = new JPanel();
     summaryPanel.setLayout(new GridLayout(1,6));
     SeverityFactory fact = SeverityFactory.getInstance();
     int max = fact.getNumSeverities();
     sevLabels = new JLabel[max];
-    sevButtons = new JToggleButton[max];
+    sevButtons = new JCheckBox[max];
     FormLayout layout = new FormLayout("r:d:g, 3dlu, [22dlu,p]");
-    for (int i = 0; i < max; i++) {
+    for (int i = 0; i < max; i++) 
+    {
       Severity s = fact.getSeverity(i);
       severityCounts.put(s, 0);
 
       JCheckBox sevButton = new JCheckBox();
-
-      // sevButton.setForeground(s.getForegroundColor( ));
-      // sevButton.setBackground(s.getBackgroundColor( ));
-      sevButton.setText(s.getName());
       sevButton.setToolTipText("Show/Hide " + s.getName() + " alerts");
       sevButton.addItemListener(new SeverityItemListener(s));
       sevButton.setSelected(true);
+      sevButton.setOpaque(false);
+      
       JLabel sevTotal = new JLabel();
       sevTotal.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
       sevTotal.setForeground(s.getForegroundColor());
       sevTotal.setHorizontalAlignment(SwingConstants.CENTER);
+      sevTotal.setName(s.getName());
+
       JPanel totalPanel = new JPanel(new BorderLayout());
       totalPanel.setBackground(s.getBackgroundColor());
-      totalPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-      totalPanel.add(sevTotal, BorderLayout.CENTER);
+      totalPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+      totalPanel.add(sevTotal, BorderLayout.EAST);
+      totalPanel.add(sevButton, BorderLayout.WEST);
       
-      DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-      builder.append(sevButton, totalPanel);
-
-      JPanel wrapper = builder.getPanel();
-      summaryPanel.add(wrapper);
+      //DefaultFormBuilder builder = new DefaultFormBuilder(layout);
+      //builder.append(sevButton, totalPanel);
+      //JPanel wrapper = builder.getPanel();
+      //summaryPanel.add(wrapper);
+      
+      summaryPanel.add(totalPanel);
       sevLabels[i] = sevTotal;
       sevButtons[i] = sevButton;
     }
+      
     JLabel totalHeader = new JLabel();
-    totalHeader.setText("Total");
+    totalHeader.setText("\u03A3");
+    totalHeader.setToolTipText("Total alerts");
+    totalHeader.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
     totalHeader.setHorizontalAlignment(SwingConstants.CENTER);
     totalHeader.setFont(totalHeader.getFont().deriveFont(Font.BOLD));
+    
     totalLabel = new JLabel();
     totalLabel.setHorizontalAlignment(SwingConstants.CENTER);
     totalLabel.setFont(totalLabel.getFont().deriveFont(Font.BOLD));
@@ -193,14 +199,19 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
     totalLabel.setText("0");
 
     JPanel totalCountPanel = new JPanel(new BorderLayout());
-    totalCountPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-    totalCountPanel.add(totalLabel, BorderLayout.CENTER);
+    totalCountPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+    totalCountPanel.add(totalLabel, BorderLayout.EAST);
+    totalCountPanel.add(totalHeader, BorderLayout.WEST);
+    
+//    JPanel totalCountPanel = new JPanel(new BorderLayout());
+//    totalCountPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+//    totalCountPanel.add(totalLabel, BorderLayout.CENTER);
 
-    DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-    builder.append(totalHeader, totalCountPanel);
-
-    JPanel totalPanel = builder.getPanel();
-    summaryPanel.add(totalPanel);
+//    DefaultFormBuilder builder = new DefaultFormBuilder(layout);
+//    builder.append(totalHeader, totalCountPanel);
+//    JPanel totalPanel = builder.getPanel();
+    
+    summaryPanel.add(totalCountPanel);
     summaryPanel.setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 7));
 
     setLayout(new BorderLayout());
@@ -229,11 +240,14 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
   public Map getUserPreferences() {
     Map vals = new HashMap();
 
-    for (int i = 0; i < sevLabels.length; i++) {
-      JToggleButton button = sevButtons[i];
+    for (int i = 0; i < sevLabels.length; i++) 
+    {
+      JCheckBox button = sevButtons[i];
       JLabel label = sevLabels[i];
-
-      vals.put(label.getText(), new Boolean(button.isSelected()));
+      Boolean flag = new Boolean(button.isSelected());
+      boolean val = flag.booleanValue();
+      String key = label.getName();
+      vals.put(key, flag);
     }
 
     return vals;
@@ -244,9 +258,12 @@ public class AlertCollectionSummaryPanel extends JPanel implements AlertFilter, 
       JToggleButton button = sevButtons[i];
       JLabel label = sevLabels[i];
 
-      Boolean istoggled = (Boolean) preferences.get(label.getText());
-      if (istoggled != null) {
-        button.setSelected(istoggled.booleanValue());
+      String key = label.getName();
+      Boolean istoggled = (Boolean) preferences.get(key);
+      if (istoggled != null) 
+      {
+      	boolean toggled = istoggled.booleanValue();
+        button.setSelected(toggled);
       }
     }
   }

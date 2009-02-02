@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -129,6 +130,7 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
     collectionTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     setLayout(new BorderLayout());
     JScrollPane tableScroller = new JScrollPane(collectionTable);
+    tableScroller.setBorder(BorderFactory.createEmptyBorder());
     add(tableScroller, BorderLayout.CENTER);
 
     // set up the table column widths to their default sizes
