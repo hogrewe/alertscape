@@ -45,10 +45,11 @@ public class ConfigurableAlertPump implements AlertPump {
     }
   }
 
-  public void registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertscapeException {
+  public long registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertscapeException {
     if (callback != null) {
       callbacks.put(source, callback);
     }
+    return getAlertSourceRepository().getNextAlertIdSeq(source);
   }
 
   public Alert getAlert(AlertSource source, long alertId) throws AlertscapeException {

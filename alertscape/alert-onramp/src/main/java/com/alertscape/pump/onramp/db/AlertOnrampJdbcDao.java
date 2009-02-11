@@ -25,7 +25,7 @@ import com.alertscape.common.model.severity.SeverityFactory;
  * @author josh
  * 
  */
-public class AlertOnrampJdbcDao extends JdbcDaoSupport implements AlertOnrampDao {
+public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnrampDao<ID> {
   private static final ASLogger LOG = ASLogger.getLogger(AlertOnrampJdbcDao.class);
   private String tableName;
   private String whereClause;
@@ -37,11 +37,11 @@ public class AlertOnrampJdbcDao extends JdbcDaoSupport implements AlertOnrampDao
   private Map<String, Method> cachedSetters;
 
   @SuppressWarnings("unchecked")
-  public Object getNextAlerts(int batchSize, Object lastId, List<Alert> nextAlerts) {
+  public ID getNextAlerts(int batchSize, ID lastId, List<Alert> nextAlerts) {
     if(lastId == null) {
-      lastId = 0;
+      lastId = (ID) new Integer(0);
     }
-    final Object[] lastIdHolder = new Object[1];
+    final ID[] lastIdHolder = (ID[]) new Object[1];
     lastIdHolder[0] = lastId;
     List<Alert> alerts = getJdbcTemplate().query(query, new Object[]{lastId, batchSize}, new RowMapper() {
       public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -80,7 +80,7 @@ public class AlertOnrampJdbcDao extends JdbcDaoSupport implements AlertOnrampDao
           alert.getExtendedAttributes().put(attrName, value); 
         }
         
-        lastIdHolder[0] = rs.getObject(idColumn);
+        lastIdHolder[0] = (ID) rs.getObject(idColumn);
         return alert;
       }
     });

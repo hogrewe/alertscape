@@ -78,7 +78,6 @@ public class IntermapperLogFileOnramp extends FileOnramp {
     severityTypes.add(critTypes);
   }
 
-  @Override
   protected Alert createAlert(Matcher matcher) {
     Alert a = null;
 

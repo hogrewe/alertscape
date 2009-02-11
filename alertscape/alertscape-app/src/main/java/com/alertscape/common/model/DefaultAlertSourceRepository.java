@@ -41,6 +41,14 @@ public class DefaultAlertSourceRepository implements AlertSourceRepository {
 
     return alertSource == null ? DEFAULT_SOURCE : alertSource;
   }
+  
+  public void updateAlertIdSeq(AlertSource source, long alertId) {
+    getSourceDao().updateAlertIdSeq(source, alertId);
+  }
+  
+  public long getNextAlertIdSeq(AlertSource source) {
+    return getSourceDao().getAlertIdSeq(source);
+  }
 
   public void init() {
     try {

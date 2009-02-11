@@ -18,7 +18,7 @@ import com.alertscape.common.model.equator.AlertEquator;
 public interface AlertPump {
   void processAlert(Alert a) throws AlertscapeException;
 
-  void registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertscapeException;
+  long registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertscapeException;
 
   List<Alert> getAllAlerts() throws AlertscapeException;
 

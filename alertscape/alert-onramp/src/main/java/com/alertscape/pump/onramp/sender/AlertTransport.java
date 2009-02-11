@@ -15,7 +15,7 @@ import com.alertscape.pump.AlertSourceCallback;
 public interface AlertTransport {
   void sendAlert(Alert a) throws AlertTransportException;
 
-  void registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertTransportException;
+  long registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertTransportException;
 
   AlertSource getSource(String sourceName) throws AlertTransportException;
 
