@@ -20,6 +20,10 @@
       <artifactId>alert-offramp</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.codehaus.castor</groupId>
+      <artifactId>castor</artifactId>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>

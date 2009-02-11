@@ -61,10 +61,18 @@ public abstract class AbstractPollingAlertOnramp extends AlertOnramp implements 
   }
 
   private class PollingRunner implements Runnable {
+    private static final int MAX_SLOWDOWN_MULTIPLIER = 128;
+
     public void run() {
+      int slowdown = 1;
       while (!stopped) {
         try {
-          readUntilEnd();
+          int processed = readUntilEnd();
+          if(processed < 1 && slowdown < MAX_SLOWDOWN_MULTIPLIER) {
+            slowdown *= 2;
+          } else {
+            slowdown = 1;
+          }
         } catch (Exception e) {
           LOG.error("Problem reading alerts", e);
         }
@@ -78,7 +86,7 @@ public abstract class AbstractPollingAlertOnramp extends AlertOnramp implements 
     }
   }
 
-  protected abstract void readUntilEnd() throws Exception;
+  protected abstract int readUntilEnd() throws Exception;
 
   public void shutdown() {
     setStopped(true);

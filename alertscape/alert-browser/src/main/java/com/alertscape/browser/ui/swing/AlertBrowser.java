@@ -79,7 +79,7 @@ import com.alertscape.util.ImageFinder;
 public class AlertBrowser extends JFrame {
   private static final long serialVersionUID = 1L;
   private static final ASLogger LOG = ASLogger.getLogger(AlertBrowser.class);
-  
+
   private AlertCollection collection;
   private ConnectionFactory jmsFactory;
   private static AlertService alertService;
@@ -136,7 +136,7 @@ public class AlertBrowser extends JFrame {
     List<AlertAttributeDefinition> extendedAttributes = null;
     try {
       extendedAttributes = alertService.getAttributeDefinitions();
-    } catch (AlertscapeException e) {
+    } catch (Exception e) {
       LOG.error("Couldn't get attribute definitions", e);
     }
     tablePanel = new AlertCollectionTablePanel(summaryCollection, extendedAttributes);
@@ -189,12 +189,12 @@ public class AlertBrowser extends JFrame {
     chartAction.setParentFrame(this);
     JButton chartButton = actionToolbar.add(chartAction);
     chartButton.setOpaque(false);
-    
+
     LoginAction loginAction = new LoginAction();
     loginAction.setParentFrame(this);
     JButton loginButton = actionToolbar.add(loginAction);
     loginButton.setOpaque(false);
-    
+
     // Table
     JPanel outerTablePanel = new JPanel();
     outerTablePanel.setLayout(new BorderLayout());
@@ -235,7 +235,7 @@ public class AlertBrowser extends JFrame {
     northPanel.add(outerSummaryPanel);
 
     p.add(tabbedPane, BorderLayout.CENTER);
-    //p.add(outerTablePanel, BorderLayout.CENTER);
+    // p.add(outerTablePanel, BorderLayout.CENTER);
     // p.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
     JPanel overallPane = new JPanel();
@@ -346,7 +346,7 @@ public class AlertBrowser extends JFrame {
     // before getting the alerts, try to grab the default preferences if there are any
     BackgroundPreferenceLoader prefLoader = new BackgroundPreferenceLoader(prefPanels);
     prefLoader.loadDefaultPreferences();
-    
+
     Authentication.addAuthenticationListener(new AuthenticationListener() {
       public void handleAuthEvent(AuthenticationEvent e) {
         // TODO: there is probably a better way to do this than throwing it into a thread, but this is at least an
@@ -409,7 +409,7 @@ public class AlertBrowser extends JFrame {
       listener.disconnect();
     }
   }
-  
+
   // this method will create a new tab, with the given title, icon, and panel as contents, to the main browser.
   public static void addTabbedPanel(String title, ImageIcon icon, final JPanel panel, String tooltip, boolean showCloseButton, boolean selectNow)
   {
@@ -456,7 +456,7 @@ public class AlertBrowser extends JFrame {
   	}
   	
   }
-  
+
   /**
    * @return the jmsFactory
    */

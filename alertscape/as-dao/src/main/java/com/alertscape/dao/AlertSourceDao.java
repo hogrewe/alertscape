@@ -15,4 +15,6 @@ public interface AlertSourceDao {
   AlertSource get(int sourceId) throws DaoException;
   List<AlertSource> getAllSources() throws DaoException;
   void save(AlertSource source) throws DaoException;
+  void updateAlertIdSeq(final AlertSource source, final long alertId);
+  long getAlertIdSeq(AlertSource source);
 }
