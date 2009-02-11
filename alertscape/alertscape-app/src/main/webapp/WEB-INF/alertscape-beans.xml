@@ -23,44 +23,7 @@
 		</property>
 	</bean>
 	<amq:topic id="uiAlertStream" physicalName="com.alertscape.pump.Alerts" />
-	<bean id="intermapperOnramp"
-		class="com.alertscape.pump.onramp.file.IntermapperLogFileOnramp"
-		init-method="onrampInit" destroy-method="shutdown">
-		<property name="transport" ref="alertTransport" />
-		<property name="equator" ref="itemTypeEquator" />
-		<property name="filename" value="/home/alertscape/onramps/intermapper.log" />
-		<property name="sourceName" value="INTERMAPPER" />
-		<property name="asHome" value="/home/alertscape" />
-	</bean>
-	<bean id="kyriakiOnramp" class="com.alertscape.pump.onramp.file.SimpleRegexFileOnramp"
-		init-method="onrampInit" destroy-method="shutdown">
-		<property name="transport" ref="alertTransport" />
-		<property name="equator" ref="defaultAlertEquator" />
-		<property name="filename" value="/home/alertscape/onramps/kyriaki-access.log" />
-		<property name="siteName" value="kyriaki.net" />
-		<property name="sourceName" value="KYRIAKI_NET" />
-		<property name="asHome" value="/home/alertscape" />
-	</bean>
-	<bean id="htsOnramp" class="com.alertscape.pump.onramp.file.WebAccessLogFileOnramp"
-		init-method="onrampInit" destroy-method="shutdown">
-		<property name="transport" ref="alertTransport" />
-		<property name="equator" ref="defaultAlertEquator" />
-		<property name="filename"
-			value="/home/alertscape/onramps/healthtakenseriously-access.log" />
-		<property name="siteName" value="HealthTakenSeriously" />
-		<property name="sourceName" value="HTS_COM" />
-		<property name="asHome" value="/home/alertscape" />
-	</bean>
-	<bean id="sandjOnramp" class="com.alertscape.pump.onramp.file.WebAccessLogFileOnramp"
-		init-method="onrampInit" destroy-method="shutdown">
-		<property name="transport" ref="alertTransport" />
-		<property name="equator" ref="defaultAlertEquator" />
-		<property name="filename" value="/home/alertscape/onramps/sandj-access.log" />
-		<property name="siteName" value="SAndJ" />
-		<property name="sourceName" value="SANDJ_US" />
-		<property name="asHome" value="/home/alertscape" />
-	</bean>
-	<bean id="syslogOnramp" class="com.alertscape.pump.onramp.db.DatabaseOnramp"
+	<!--	<bean id="syslogOnramp" class="com.alertscape.pump.onramp.db.DatabaseOnramp"
 		init-method="onrampInit" destroy-method="shutdown">
 		<property name="transport" ref="alertTransport" />
 		<property name="equator" ref="itemItemMgrDescEquator" />
@@ -68,38 +31,30 @@
 		<property name="asHome" value="/home/alertscape" />
 		<property name="onrampDao" ref="syslogOnrampDao" />
 	</bean>
+	-->
 	<bean id="alertTransport" class="com.alertscape.pump.onramp.sender.LocalAlertTransport">
 		<property name="pump" ref="alertpump" />
 	</bean>
-	<bean id="defaultAlertEquator" class="com.alertscape.common.model.equator.AlertEquator">
+	<bean id="itemItemMgrDescEquator" class="com.alertscape.common.model.equator.AlertEquator">
 		<property name="attributes">
 			<list>
+				<value>item</value>
+				<value>itemManager</value>
 				<value>longDescription</value>
 			</list>
 		</property>
 	</bean>
-	<bean id="itemTypeEquator" class="com.alertscape.common.model.equator.AlertEquator">
-		<property name="attributes">
-			<list>
-				<value>item</value>
-				<value>type</value>
-			</list>
-		</property>
-	</bean>
-    <bean id="itemItemMgrDescEquator" class="com.alertscape.common.model.equator.AlertEquator">
-        <property name="attributes">
-            <list>
-                <value>item</value>
-                <value>itemManager</value>
-                <value>longDescription</value>
-            </list>
-        </property>
-    </bean>
 	<bean id="alertpump" class="com.alertscape.pump.ConfigurableAlertPump">
 		<property name="dbOfframp" ref="dbOfframp" />
 		<property name="jmsOfframp" ref="jmsOfframp" />
 		<property name="definitionDao" ref="definitionDao" />
 		<property name="alertSourceRepository" ref="alertSourceRepository" />
+	</bean>
+	<bean id="alertscapeServer" class="com.alertscape.app.AlertscapeServer"
+		init-method="init" destroy-method="shutdown">
+		<property name="pump" ref="alertpump" />
+		<property name="sourceDao" ref="sourceDao"/>
+        <property name="asHome" value="/home/alertscape" />
 	</bean>
 	<bean id="alertSourceRepository"
 		class="com.alertscape.common.model.DefaultAlertSourceRepository"
@@ -109,8 +64,9 @@
 	<bean id="dbOfframp" class="com.alertscape.pump.offramp.DatabaseOfframp">
 		<property name="alertDao" ref="alertDao" />
 	</bean>
+	<!--
 	<bean id="syslogOnrampDao" class="com.alertscape.pump.onramp.db.AlertOnrampJdbcDao"
-		init-method="init">
+		>
 		<property name="dataSource" ref="bresDataSource" />
 		<property name="tableName" value="syslog_events" />
 		<property name="idColumn" value="seq" />
@@ -134,6 +90,7 @@
 			</map>
 		</property>
 	</bean>
+	-->
 	<bean id="alertDao" class="com.alertscape.dao.jdbc.AlertJdbcDao">
 		<property name="dataSource" ref="asDataSource" />
 		<property name="alertSourceRepository" ref="alertSourceRepository" />
@@ -165,8 +122,10 @@
 		<property name="pool" ref="bresConnectionPool" />
 	</bean>
 	<bean id="connectionPool" class="org.apache.commons.pool.impl.GenericObjectPool">
+		<property name="testOnBorrow" value="true" />
 	</bean>
 	<bean id="bresConnectionPool" class="org.apache.commons.pool.impl.GenericObjectPool">
+		<property name="testOnBorrow" value="true" />
 	</bean>
 	<bean id="dbPoolFactory" class="org.apache.commons.dbcp.PoolableConnectionFactory">
 		<constructor-arg ref="dbDsFactory" />

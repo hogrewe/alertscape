@@ -79,7 +79,7 @@ public abstract class AlertOnramp implements AlertSourceCallback {
     if (!alert.isStanding()) {
       return cache.remove(alertWrapper);
     }
-    
+
     existing = cache.get(alertWrapper);
     if (existing == null) {
       existing = transport.getAlert(alert, equator);
@@ -90,7 +90,11 @@ public abstract class AlertOnramp implements AlertSourceCallback {
 
   public final void onrampInit() {
     try {
-      source = transport.getSource(sourceName);
+      if (source == null) {
+        source = transport.getSource(sourceName);
+      } else {
+        sourceName = source.getSourceName();
+      }
       nextAlertId = transport.registerAlertSource(source, this);
       stateFilename = "." + getSourceName() + ".state";
       File dir = new File(getAsHome());
@@ -99,8 +103,12 @@ public abstract class AlertOnramp implements AlertSourceCallback {
       cache = new AlertCache(source);
 
       state = readState();
-      nextAlertId = (Long) state.get(ALERT_ID_STATE);
-      
+      if (state != null) {
+        Object o = state.get(ALERT_ID_STATE);
+        if(o != null) {
+          nextAlertId = (Long)o;           
+        }
+      }
     } catch (AlertTransportException e) {
       LOG.error("Couldn't get initalize from transport", e);
     }

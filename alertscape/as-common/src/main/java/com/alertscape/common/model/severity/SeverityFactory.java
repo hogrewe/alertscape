@@ -33,6 +33,7 @@ public class SeverityFactory
     severities[sevNum].setBackgroundColor(new Color(16, 187, 12));
     severities[sevNum].setForegroundColor(Color.BLACK);
     severities[sevNum].setName("Normal");
+    severities[sevNum].setSmallIcon("/com/alertscape/images/function/circle_green.png");
     sevNum++;
     
     severities[sevNum] = new Severity( );
@@ -40,7 +41,7 @@ public class SeverityFactory
     severities[sevNum].setBackgroundColor(Color.blue);
     severities[sevNum].setForegroundColor(Color.white);
     severities[sevNum].setName("Warning");
-    severities[sevNum].setSmallIcon("/com/alertscape/images/mini/flag_green.gif");
+    severities[sevNum].setSmallIcon("/com/alertscape/images/function/circle_blue.png");
     sevNum++;
 
     severities[sevNum] = new Severity( );
@@ -48,7 +49,7 @@ public class SeverityFactory
     severities[sevNum].setBackgroundColor(new Color(236, 233, 0));
     severities[sevNum].setForegroundColor(Color.BLACK);
     severities[sevNum].setName("Minor");
-    severities[sevNum].setSmallIcon("/com/alertscape/images/mini/flag_white.gif");
+//    severities[sevNum].setSmallIcon("/com/alertscape/images/mini/flag_white.gif");
     sevNum++;
 
     severities[sevNum] = new Severity( );
@@ -56,14 +57,14 @@ public class SeverityFactory
     severities[sevNum].setBackgroundColor(new Color(255, 130, 0));
     severities[sevNum].setForegroundColor(Color.BLACK);
     severities[sevNum].setName("Major");
-    severities[sevNum].setSmallIcon("/com/alertscape/images/mini/flag_orange.gif");
+    severities[sevNum].setSmallIcon("/com/alertscape/images/function/circle_orange.png");
     sevNum++;
 
     severities[sevNum] = new Severity( );
     severities[sevNum].setLevel(sevNum);
     severities[sevNum].setBackgroundColor(new Color(198, 65, 0));
     severities[sevNum].setForegroundColor(Color.BLACK);
-    severities[sevNum].setSmallIcon("/com/alertscape/images/mini/flag_red.gif");
+    severities[sevNum].setSmallIcon("/com/alertscape/images/function/circle_red.png");
     severities[sevNum].setName("Critical");
     sevNum++;
 

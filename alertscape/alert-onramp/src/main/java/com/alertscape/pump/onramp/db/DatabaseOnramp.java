@@ -41,7 +41,7 @@ public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
   }
 
   @Override
-  protected void readUntilEnd() throws Exception {
+  protected int readUntilEnd() throws Exception {
     int linesProcessed = 0;
     long startTime = System.currentTimeMillis();
     List<Alert> nextAlerts = new ArrayList<Alert>(batchSize);
@@ -61,7 +61,7 @@ public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
               + perSecond + "/s");
         }
         saveState();
-        return;
+        return linesProcessed;
       }
       for (Alert alert : nextAlerts) {
         sendAlert(alert);
@@ -79,6 +79,7 @@ public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
         }
       }
     }
+    return linesProcessed;
   }
 
   /**

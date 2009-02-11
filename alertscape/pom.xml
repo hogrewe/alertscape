@@ -26,8 +26,8 @@
       <plugin>  
         <artifactId>maven-compiler-plugin</artifactId>  
         <configuration>  
-          <source>1.5</source>  
-          <target>1.5</target>  
+          <source>1.6</source>  
+          <target>1.6</target>  
         </configuration>  
       </plugin>  
     </plugins>  
@@ -138,6 +138,11 @@
         <groupId>jfree</groupId>
         <artifactId>jfreechart</artifactId>
         <version>1.0.9</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.castor</groupId>
+        <artifactId>castor</artifactId>
+        <version>1.2</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>

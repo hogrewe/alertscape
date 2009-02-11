@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.alertscape.common.model.severity.Severity;
 
 /**
@@ -301,6 +303,16 @@ public class Alert implements Serializable {
     if (this.extendedAttributes == null) {
       this.extendedAttributes = Collections.emptyMap();
     }
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this).append("source", source).append("alertId", alertId).append("item", item).append(
+        "itemType", itemType).append("itemManager", itemManager).append("itemManagerType", itemManagerType).append(
+        "acknowledgedBy", acknowledgedBy).append("count", count).append("exgtendedAttributes", extendedAttributes)
+        .append("firstOccurence", firstOccurence).append("lastOccurence", lastOccurence).append("longDescription",
+            longDescription).append("severity", severity).append("shortDescription", shortDescription).append("status",
+            status).append("type", type).toString();
   }
 
 }

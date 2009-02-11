@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileOnramp>
+	<filename>/home/alertscape/onramps/kyriaki-access.log
+	</filename>
+	<regex>
+    <![CDATA[
+    ([^ ]+) [^ ]+ ([^\[]+) \[([^ ]+) [^ ]+\] \"([^ ]+) ([^ ]+) [^\"]+\" ([\d|-]+) ([\d|-]+) \"(.*?)\" \"([^\"]*)\"
+    ]]>
+	</regex>
+	<uniqueFields>
+		<field>longDescription</field>
+	</uniqueFields>
+	<severityDeterminedField>type</severityDeterminedField>
+	<severityMappings>
+		<severity level="0">
+			<fieldValue>HTTP Request : 200</fieldValue>
+		</severity>
+		<severity level="2">
+			<fieldValue>HTTP Request : 403</fieldValue>
+		</severity>
+		<severity level="3">
+			<fieldValue>HTTP Request : 404</fieldValue>
+			<fieldValue>HTTP Request : 503</fieldValue>
+		</severity>
+		<severity level="4">
+			<fieldValue>HTTP Request : 500</fieldValue>
+		</severity>
+	</severityMappings>
+
+	<lineProcessor>
+		<fieldMappings>
+			<field name="item" value="$4 $5" />
+			<field name="itemType" value="URL" />
+            <field name="itemManager" value="kyriaki.net" />
+            <field name="itemManagerType" value="website" />
+            <field name="longDescription" value="Request from $1 for $5, code: $6" />
+            <field name="itemManagerType" value="website" />
+		</fieldMappings>
+		<categoryMappings>
+			<category name="customer" value="$1" />
+		</categoryMappings>
+	</lineProcessor>
+
+</fileOnramp>

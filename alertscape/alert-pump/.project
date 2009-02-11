@@ -3,8 +3,8 @@
   <comment/>
   <projects>
     <project>as-common</project>
-    <project>as-dao</project>
     <project>alert-offramp</project>
+    <project>as-dao</project>
   </projects>
   <buildSpec>
     <buildCommand>
