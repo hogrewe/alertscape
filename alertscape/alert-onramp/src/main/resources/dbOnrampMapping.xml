@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+ "http://castor.org/mapping.dtd">
+
+<mapping>
+    <description>Mapping for a db onramp</description>
+
+    <class name="com.alertscape.pump.onramp.db.ConfigurableDatabaseOnramp">
+        <map-to xml="dbOnramp" />
+        <field name="regex" type="string">
+            <bind-xml name="regex" />
+        </field>
+        
+        <field name="regexColumn" type="string">
+            <bind-xml name="regexColumn" />
+        </field>
+        
+        <field name="jndiDatasource" type="string">
+            <bind-xml name="jndiDatasource" />
+        </field>
+
+        <field name="tableName" type="string">
+            <bind-xml name="tableName" />
+        </field>
+
+        <field name="idColumn" type="string">
+            <bind-xml name="idColumn" />
+        </field>
+
+        <field name="whereClause" type="string">
+            <bind-xml name="whereClause" />
+        </field>
+
+        <field name="driverClassName" type="string">
+            <bind-xml name="driverClassName" />
+        </field>
+
+        <field name="url" type="string">
+            <bind-xml name="url" />
+        </field>
+
+        <field name="username" type="string">
+            <bind-xml name="username" />
+        </field>
+
+        <field name="password" type="string">
+            <bind-xml name="password" />
+        </field>
+
+        <field name="columnsToFields" collection="map">
+            <bind-xml name="mapping" location="columnsToFields">
+                <class name="org.exolab.castor.mapping.MapItem">
+                    <field name="key" type="string">
+                        <bind-xml name="column" node="attribute" />
+                    </field>
+                    <field name="value" type="string">
+                        <bind-xml name="field" node="attribute" />
+                    </field>
+                </class>
+            </bind-xml>
+        </field>
+
+        <field name="columnsToAttributes" collection="map">
+            <bind-xml name="mapping" location="columnsToAttributes">
+                <class name="org.exolab.castor.mapping.MapItem">
+                    <field name="key" type="string">
+                        <bind-xml name="column" node="attribute" />
+                    </field>
+                    <field name="value" type="string">
+                        <bind-xml name="attribute"  node="attribute"/>
+                    </field>
+                </class>
+            </bind-xml>
+        </field>
+
+        <field name="uniqueFields" type="string" collection="arraylist">
+            <bind-xml name="field" location="uniqueFields" />
+        </field>
+
+        <field name="severityDeterminedField" type="string">
+            <bind-xml name="severityDeterminedField" />
+        </field>
+
+        <field name="severityMappings" collection="map">
+            <bind-xml name="severity" location="severityMappings">
+                <class name="org.exolab.castor.mapping.MapItem">
+                    <field name="key" type="integer">
+                        <bind-xml name="level" node="attribute" />
+                    </field>
+                    <field name="value" type="string" collection="arraylist">
+                        <bind-xml name="fieldValue" />
+                    </field>
+                </class>
+            </bind-xml>
+        </field>
+
+        <field name="lineProcessor"
+            type="com.alertscape.pump.onramp.file.SimpleRegexLineProcessor">
+            <bind-xml name="lineProcessor" node="element" />
+        </field>
+    </class>
+
+    <class name="com.alertscape.pump.onramp.file.SimpleRegexLineProcessor"
+        extends="com.alertscape.pump.onramp.file.AlertLineProcessor">
+        <field name="fieldMappings" collection="map">
+            <bind-xml name="field" location="fieldMappings">
+                <class name="org.exolab.castor.mapping.MapItem">
+                    <field name="key" type="string">
+                        <bind-xml name="name" node="attribute" />
+                    </field>
+                    <field name="value" type="string">
+                        <bind-xml name="value" node="attribute" />
+                    </field>
+                </class>
+            </bind-xml>
+        </field>
+
+        <field name="categoryMappings" collection="map">
+            <bind-xml name="category" location="categoryMappings">
+                <class name="org.exolab.castor.mapping.MapItem">
+                    <field name="key" type="string">
+                        <bind-xml name="name" node="attribute" />
+                    </field>
+                    <field name="value" type="string">
+                        <bind-xml name="value" node="attribute"/>
+                    </field>
+                </class>
+            </bind-xml>
+        </field>
+    </class>
+</mapping>

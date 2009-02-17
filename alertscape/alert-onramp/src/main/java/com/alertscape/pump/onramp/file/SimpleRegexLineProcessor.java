@@ -26,6 +26,12 @@ public class SimpleRegexLineProcessor implements AlertLineProcessor {
   public Alert createAlert(Matcher matcher) {
     Alert a = new Alert();
 
+    populateAlert(a, matcher);
+
+    return a;
+  }
+  
+  public Alert populateAlert(Alert a, Matcher matcher) {
     for (String field : getFieldMappings().keySet()) {
       // TODO: Is this a good idea?
       String replacement = getFieldMappings().get(field);

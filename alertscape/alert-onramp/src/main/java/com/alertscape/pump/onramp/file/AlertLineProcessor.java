@@ -18,4 +18,10 @@ public interface AlertLineProcessor {
    */
   Alert createAlert(Matcher matcher);
 
+  /**
+   * @param line
+   * @return
+   */
+  Alert populateAlert(Alert alert, Matcher matcher);
+
 }
