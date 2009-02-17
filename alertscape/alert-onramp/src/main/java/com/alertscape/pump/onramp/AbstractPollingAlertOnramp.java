@@ -3,13 +3,22 @@
  */
 package com.alertscape.pump.onramp;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import com.alertscape.AlertscapeException;
 import com.alertscape.common.logging.ASLogger;
+import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.equator.AlertEquator;
+import com.alertscape.common.model.severity.Severity;
+import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
  * @author josh
@@ -20,8 +29,14 @@ public abstract class AbstractPollingAlertOnramp extends AlertOnramp implements 
   protected long sleepTimeBetweenReads = 10;
   private boolean stopped;
   private PollingRunner runner;
+  
+  private List<String> uniqueFields;
+  private String severityDeterminedField;
+  private Map<Integer, List<String>> severityMappings;
+  private Method severityFieldGetter;
 
-  public void init() {
+
+  public void init() throws AlertscapeException {
     registerMBean();
     runner = new PollingRunner();
     start();
@@ -78,7 +93,7 @@ public abstract class AbstractPollingAlertOnramp extends AlertOnramp implements 
         }
         try {
           synchronized (this) {
-            wait(sleepTimeBetweenReads);
+            wait(sleepTimeBetweenReads * slowdown);
           }
         } catch (InterruptedException e) {
         }
@@ -120,5 +135,91 @@ public abstract class AbstractPollingAlertOnramp extends AlertOnramp implements 
   public Map<String, Object> showState() {
     return state;
   }
+
+  protected Severity determineSeverity(Alert a) {
+    Severity s = SeverityFactory.getInstance().getSeverity(0);
+
+    try {
+      Object sevFieldValue = severityFieldGetter.invoke(a, (Object[]) null);
+      for (Integer level : severityMappings.keySet()) {
+        List<String> values = severityMappings.get(level);
+        for (String value : values) {
+          if (value != null && sevFieldValue != null && value.equals(sevFieldValue.toString())) {
+            return SeverityFactory.getInstance().getSeverity(level);
+          }
+        }
+      }
+    } catch (Exception e) {
+      LOG.error("Couldn't get field from " + severityFieldGetter.getName() + " to determine severity", e);
+    }
+
+    return s;
+  }
+
+  /**
+   * @return the uniqueFields
+   */
+  public List<String> getUniqueFields() {
+    return uniqueFields;
+  }
+
+  /**
+   * @param uniqueFields
+   *          the uniqueFields to set
+   */
+  public void setUniqueFields(List<String> uniqueFields) {
+    this.uniqueFields = uniqueFields;
+    if (uniqueFields == null) {
+      setEquator(null);
+    } else {
+      try {
+        setEquator(new AlertEquator(uniqueFields));
+      } catch (AlertscapeException e) {
+        LOG.error("Couldn't set eauator", e);
+      }
+    }
+  }
+
+  /**
+   * @return the severityDeterminedField
+   */
+  public String getSeverityDeterminedField() {
+    return severityDeterminedField;
+  }
+
+  /**
+   * @param severityDeterminedField
+   *          the severityDeterminedField to set
+   */
+  public void setSeverityDeterminedField(String severityDeterminedField) {
+    this.severityDeterminedField = severityDeterminedField;
+    if (severityDeterminedField == null) {
+      severityFieldGetter = null;
+      return;
+    }
+    try {
+      PropertyDescriptor d = new PropertyDescriptor(getSeverityDeterminedField(), Alert.class);
+      severityFieldGetter = d.getReadMethod();
+    } catch (IntrospectionException e) {
+      LOG.error("Couldn't make getter for " + getSeverityDeterminedField(), e);
+    }
+
+  }
+
+  /**
+   * @return the severityMappings
+   */
+  public Map<Integer, List<String>> getSeverityMappings() {
+    return severityMappings;
+  }
+
+  /**
+   * @param severityMappings
+   *          the severityMappings to set
+   */
+  public void setSeverityMappings(Map<Integer, List<String>> severityMappings) {
+    this.severityMappings = severityMappings;
+  }
+
 
 }

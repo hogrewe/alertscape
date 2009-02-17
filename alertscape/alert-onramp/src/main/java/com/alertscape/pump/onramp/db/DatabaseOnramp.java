@@ -9,6 +9,8 @@ import java.util.Map;
 
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.severity.Severity;
+import com.alertscape.common.model.severity.SeverityFactory;
 import com.alertscape.pump.onramp.AbstractPollingAlertOnramp;
 
 /**
@@ -16,11 +18,9 @@ import com.alertscape.pump.onramp.AbstractPollingAlertOnramp;
  * 
  */
 public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
-  /**
-   * 
-   */
   private static final String LAST_ID = "LAST_ID";
   private static final ASLogger LOG = ASLogger.getLogger(DatabaseOnramp.class);
+
   private AlertOnrampDao<ID> onrampDao;
   private int batchSize = 1000;
   private ID lastId;
@@ -63,7 +63,12 @@ public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
         saveState();
         return linesProcessed;
       }
+      Severity defaultSev = SeverityFactory.getInstance().getSeverity(0);
       for (Alert alert : nextAlerts) {
+        if(alert.getSeverity() == null || alert.getSeverity() == defaultSev) {
+          Severity severity = determineSeverity(alert);
+          alert.setSeverity(severity);
+        }
         sendAlert(alert);
         linesProcessed++;
         if (linesProcessed % 1000 == 0) {
@@ -102,4 +107,5 @@ public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
   protected void initState(Map<String, Object> state) {
     lastId = (ID) state.get(LAST_ID);
   }
+
 }
