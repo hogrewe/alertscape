@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -20,6 +22,7 @@ import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
+import com.alertscape.pump.onramp.file.AlertLineProcessor;
 
 /**
  * @author josh
@@ -35,35 +38,39 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
   private Map<String, Integer> severityMapping;
   private String query;
   private Map<String, Method> cachedSetters;
+  private AlertLineProcessor lineProcessor;
+  private String regex;
+  private Pattern pattern;
+  private String regexColumn;
 
   @SuppressWarnings("unchecked")
   public ID getNextAlerts(int batchSize, ID lastId, List<Alert> nextAlerts) {
-    if(lastId == null) {
+    if (lastId == null) {
       lastId = (ID) new Integer(0);
     }
     final ID[] lastIdHolder = (ID[]) new Object[1];
     lastIdHolder[0] = lastId;
-    List<Alert> alerts = getJdbcTemplate().query(query, new Object[]{lastId, batchSize}, new RowMapper() {
+    List<Alert> alerts = getJdbcTemplate().query(query, new Object[] { lastId, batchSize }, new RowMapper() {
       public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
         Alert alert = new Alert();
         SeverityFactory factory = SeverityFactory.getInstance();
         alert.setSeverity(factory.getSeverity(0));
-        
+
         for (String column : columnsToFields.keySet()) {
           Object value = rs.getObject(column);
           String fieldName = columnsToFields.get(column);
-          if(fieldName.equals("severity")) {
+          if (fieldName.equals("severity")) {
             Integer sevNum = severityMapping.get(value);
-            if(sevNum == null || sevNum < 0) {
+            if (sevNum == null || sevNum < 0) {
               sevNum = 0;
             } else if (sevNum >= factory.getNumSeverities()) {
-              sevNum = factory.getNumSeverities()-1;
+              sevNum = factory.getNumSeverities() - 1;
             }
             Severity severity = factory.getSeverity(sevNum);
             value = severity;
           }
           Method setter = getSetter(fieldName);
-          if(setter != null) {
+          if (setter != null) {
             try {
               setter.invoke(alert, value);
             } catch (Exception e) {
@@ -71,15 +78,22 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
             }
           }
         }
-        
+
         for (String column : columnsToAttributes.keySet()) {
           Object value = rs.getObject(column);
-          
+
           String attrName = columnsToAttributes.get(column);
-          
-          alert.getExtendedAttributes().put(attrName, value); 
+
+          alert.getExtendedAttributes().put(attrName, value);
         }
         
+        if(pattern != null) {
+          Matcher matcher = pattern.matcher(rs.getString(regexColumn));
+          if(matcher.matches()) {
+            alert = getLineProcessor().populateAlert(alert, matcher);
+          }
+        }
+
         lastIdHolder[0] = (ID) rs.getObject(idColumn);
         return alert;
       }
@@ -91,11 +105,11 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
   public void init() {
     generateQuery();
     cachedSetters = new HashMap<String, Method>();
-    if(columnsToAttributes == null) {
+    if (columnsToAttributes == null) {
       columnsToAttributes = Collections.emptyMap();
     }
-    
-    if(columnsToFields == null) {
+
+    if (columnsToFields == null) {
       LOG.error("No field mappings defined");
     }
   }
@@ -163,7 +177,7 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
   private void generateQuery() {
     query = "select * from " + tableName + " where " + (whereClause == null ? "" : whereClause + " and ") + idColumn
         + ">? order by " + idColumn + " limit ?";
-    
+
     LOG.info("Generated query: " + query);
   }
 
@@ -181,13 +195,13 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
   public void setIdColumn(String idColumn) {
     this.idColumn = idColumn;
   }
-  
+
   protected Method getSetter(String fieldName) {
     Method setter = cachedSetters.get(fieldName);
-    if(setter != null) {
+    if (setter != null) {
       return setter;
     }
-    
+
     try {
       PropertyDescriptor d = new PropertyDescriptor(fieldName, Alert.class);
       setter = d.getWriteMethod();
@@ -206,9 +220,61 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
   }
 
   /**
-   * @param severityMapping the severityMapping to set
+   * @param severityMapping
+   *          the severityMapping to set
    */
   public void setSeverityMapping(Map<String, Integer> severityMapping) {
     this.severityMapping = severityMapping;
+  }
+
+  /**
+   * @return the lineProcessor
+   */
+  public AlertLineProcessor getLineProcessor() {
+    return lineProcessor;
+  }
+
+  /**
+   * @param lineProcessor
+   *          the lineProcessor to set
+   */
+  public void setLineProcessor(AlertLineProcessor lineProcessor) {
+    this.lineProcessor = lineProcessor;
+  }
+
+  /**
+   * @return the regex
+   */
+  public String getRegex() {
+    return regex;
+  }
+
+  /**
+   * @param regex
+   *          the regex to set
+   */
+  public void setRegex(String regex) {
+    if (regex == null) {
+      this.regex = null;
+      pattern = null;
+    } else {
+      this.regex = regex.trim();
+      pattern = Pattern.compile(this.regex);
+    }
+  }
+
+  /**
+   * @return the regexColumn
+   */
+  public String getRegexColumn() {
+    return regexColumn;
+  }
+
+  /**
+   * @param regexColumn
+   *          the regexColumn to set
+   */
+  public void setRegexColumn(String regexColumn) {
+    this.regexColumn = regexColumn;
   }
 }

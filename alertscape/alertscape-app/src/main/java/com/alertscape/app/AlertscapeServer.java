@@ -7,7 +7,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
@@ -34,13 +36,16 @@ public class AlertscapeServer {
   private AlertTransport transport;
   private String asHome;
   private AlertSourceDao sourceDao;
+  private Set<AlertOnramp> onramps = new HashSet<AlertOnramp>();
   
   public void init() {
     initOnramps();
   }
   
   public void shutdown() {
-    
+    for (AlertOnramp onramp : onramps) {
+      onramp.shutdown();
+    }
   }
 
   public void initOnramps() {
@@ -55,7 +60,9 @@ public class AlertscapeServer {
       for (AlertSource alertSource : sources) {
         if (alertSource.isActive()) {
           try {
-            createOnramp(alertSource);
+            AlertOnramp onramp = createOnramp(alertSource);
+            onramp.onrampInit();
+            onramps.add(onramp);
           } catch (Exception e) {
             LOG.error("Couldn't initialize onramp " + alertSource, e);
           }
@@ -66,7 +73,7 @@ public class AlertscapeServer {
     }
   }
 
-  protected void createOnramp(AlertSource source) throws IOException, MappingException, MarshalException,
+  protected AlertOnramp createOnramp(AlertSource source) throws IOException, MappingException, MarshalException,
       ValidationException {
     XMLContext context = new XMLContext();
     Mapping mapping = new Mapping();
@@ -80,7 +87,7 @@ public class AlertscapeServer {
     onramp.setAsHome(asHome);
     onramp.setSource(source);
 
-    onramp.onrampInit();
+    return onramp;
   }
 
   /**

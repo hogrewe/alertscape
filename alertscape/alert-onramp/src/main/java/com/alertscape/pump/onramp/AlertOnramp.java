@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alertscape.AlertscapeException;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
@@ -88,7 +89,7 @@ public abstract class AlertOnramp implements AlertSourceCallback {
     return existing;
   }
 
-  public final void onrampInit() {
+  public final void onrampInit() throws AlertscapeException {
     try {
       if (source == null) {
         source = transport.getSource(sourceName);
@@ -108,6 +109,7 @@ public abstract class AlertOnramp implements AlertSourceCallback {
         if(o != null) {
           nextAlertId = (Long)o;           
         }
+        initState(state);
       }
     } catch (AlertTransportException e) {
       LOG.error("Couldn't get initalize from transport", e);
@@ -120,7 +122,9 @@ public abstract class AlertOnramp implements AlertSourceCallback {
     updateCached(alert);
   }
 
-  protected abstract void init();
+  protected abstract void init() throws AlertscapeException;
+  
+  public abstract void shutdown();
 
   public AlertTransport getTransport() {
     return transport;

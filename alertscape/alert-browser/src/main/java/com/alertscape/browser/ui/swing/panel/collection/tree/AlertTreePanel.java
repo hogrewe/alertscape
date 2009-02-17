@@ -64,7 +64,7 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
     DynamicGrowingAlertTreeNode itemDyn = new DynamicGrowingAlertTreeNode();
     itemDyn.setText("Items");
     itemDyn.setMatcher(new NonEmptyAttributeMatcher("stateprovince"));
-    itemDyn.setDynamicPath("cat{stateprovince}:cat{city}:item:type");
+    itemDyn.setDynamicPath("cat{stateprovince}:cat{city}:type");
     root.addChild(itemDyn);
 
     treeModel = new AlertTreeModel(root);
@@ -78,6 +78,7 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
     treePane.setViewportBorder(BorderFactory.createMatteBorder(5,5,5,5, alertTree.getBackground()));
 
     compositeEditor = new CompositeMatcherEditor<Alert>();
+    compositeEditor.setMode(CompositeMatcherEditor.OR);
 
     alertTree.addTreeSelectionListener(new TreeSelectionListener() {
       @SuppressWarnings("unchecked")

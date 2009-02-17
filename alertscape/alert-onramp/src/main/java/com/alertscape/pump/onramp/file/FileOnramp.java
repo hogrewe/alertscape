@@ -3,26 +3,18 @@
  */
 package com.alertscape.pump.onramp.file;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.alertscape.AlertscapeException;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
-import com.alertscape.common.model.equator.AlertEquator;
-import com.alertscape.common.model.severity.Severity;
-import com.alertscape.common.model.severity.SeverityFactory;
 import com.alertscape.pump.onramp.AbstractPollingAlertOnramp;
 
 /**
@@ -33,18 +25,17 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
   private static final String LINE_HASH = "LINE_HASH";
   private static final String LINE_POINTER = "LINE_POINTER";
   private static final ASLogger LOG = ASLogger.getLogger(FileOnramp.class);
+  private static final long MAX_FILE_CHECK_TIME = 30000l;
   private String filename;
-  private long currentLinePointer;
-  private String currentLineHash;
+  private long lastFileCheck;
+  private long lastLinePointer;
+  private String lastLineHash;
+  private String lastLine;
   private String regex;
   private Pattern pattern;
   private MessageDigest m;
   private RandomAccessFile file;
   private AlertLineProcessor lineProcessor;
-  private List<String> uniqueFields;
-  private String severityDeterminedField;
-  private Map<Integer, List<String>> severityMappings;
-  private Method severityFieldGetter;
 
   public FileOnramp() {
     try {
@@ -53,7 +44,7 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
       LOG.error("Couldn't find MD5 digester", e);
     }
   }
-  
+
   /**
    * @return the filename
    */
@@ -97,15 +88,17 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
     long startTime = System.currentTimeMillis();
 
     while (true) {
-      if (!isFileLocationValid()) {
-        LOG.debug("Truncated, starting over");
-        file = openFile();
-        currentLinePointer = -1;
+      if (!validateFile()) {
+        LOG.info("New file, starting over");
+        reopenFile();
+        lastLinePointer = -1;
       }
       long nextLinePointer = file.getFilePointer();
       String line = file.readLine();
-      if (line == null) {
-        file = openFile();
+      while (line != null && line.trim().length() == 0) {
+        line = file.readLine();
+      }
+      if (line == null || line.trim().length() == 0) {
         if (linesProcessed > 0) {
           long endTime = System.currentTimeMillis();
           long elapsed = endTime - startTime;
@@ -120,10 +113,11 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
         return linesProcessed;
       }
       String nextLineHash = hashLine(line);
-      currentLinePointer = nextLinePointer;
-      currentLineHash = nextLineHash;
-      state.put(LINE_POINTER, currentLinePointer);
-      state.put(LINE_HASH, currentLineHash);
+      lastLinePointer = nextLinePointer;
+      lastLineHash = nextLineHash;
+      lastLine = line;
+      state.put(LINE_POINTER, lastLinePointer);
+      state.put(LINE_HASH, lastLineHash);
       Matcher matcher = pattern.matcher(line);
       if (!matcher.matches()) {
         continue;
@@ -148,47 +142,68 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
     }
   }
 
-  private RandomAccessFile openFile() throws FileNotFoundException {
-    if(file != null) {
+  private void reopenFile() throws FileNotFoundException {
+    if (file != null) {
       try {
         file.close();
       } catch (IOException e) {
         LOG.error("Couldn't close file", e);
       }
     }
-    RandomAccessFile newFile = new RandomAccessFile(filename, "r");
-
-    return newFile;
+    file = new RandomAccessFile(filename, "r");
+    lastFileCheck = System.currentTimeMillis();
   }
 
-  private boolean isFileLocationValid() throws IOException {
+  private boolean validateFile() throws IOException {
+    long fileTime = System.currentTimeMillis() - lastFileCheck;
+
+    // Reopen the file if it's been open for more than the max time
+    if (fileTime > MAX_FILE_CHECK_TIME) {
+      reopenFile();
+    }
+
     if (file == null) {
+      LOG.info("File was null, opening");
       try {
-        file = openFile();
+        reopenFile();
       } catch (FileNotFoundException e) {
         LOG.error("Couldn't find the file to read in", e);
         return false;
       }
     }
 
-    if (currentLinePointer == -1) {
+    if (lastLinePointer == -1) {
       return true;
     }
 
     try {
-      if (file == null || file.length() < currentLinePointer) {
+      if (file.length() < lastLinePointer) {
+        LOG.info("File not valid: size was less than the current pointer");
         return false;
       }
 
-      file.seek(currentLinePointer);
+      file.seek(lastLinePointer);
 
       String line = file.readLine();
       if (line == null) {
+        LOG.info("File not valid: read a null line");
         return false;
       }
+
+      if (line.length() == 0) {
+        LOG.info("The line read is zero length, can't hash so returning valid");
+        return true;
+      }
+
       String lineHash = hashLine(line);
 
-      return lineHash.equals(currentLineHash);
+      boolean equals = lineHash.equals(lastLineHash);
+      if (!equals) {
+        LOG.info("File not valid: line hash for >" + line + "< (" + lineHash + ") does not equal current hash of >"
+            + lastLine + "< (" + lastLineHash + ")");
+      }
+
+      return equals;
     } catch (Exception e) {
       return false;
     }
@@ -200,31 +215,11 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
     return new BigInteger(1, m.digest()).toString(16);
   }
 
-  protected Severity determineSeverity(Alert a) {
-    Severity s = SeverityFactory.getInstance().getSeverity(0);
-
-    try {
-      Object sevFieldValue = severityFieldGetter.invoke(a, (Object[]) null);
-      for (Integer level : severityMappings.keySet()) {
-        List<String> values = severityMappings.get(level);
-        for (String value : values) {
-          if (value != null && sevFieldValue != null && value.equals(sevFieldValue.toString())) {
-            return SeverityFactory.getInstance().getSeverity(level);
-          }
-        }
-      }
-    } catch (Exception e) {
-      LOG.error("Couldn't get field from " + severityFieldGetter.getName() + " to determine severity", e);
-    }
-
-    return s;
-  }
-
-
   @Override
   protected void initState(Map<String, Object> state) {
-    currentLinePointer = (Long) state.get(LINE_POINTER);
-    currentLineHash = (String) state.get(LINE_HASH);
+    lastLinePointer = (Long) state.get(LINE_POINTER);
+    lastLineHash = (String) state.get(LINE_HASH);
+    LOG.info("Initialized file reading state to: pointer: " + lastLinePointer + ", hash: " + lastLineHash);
   }
 
   /**
@@ -240,71 +235,6 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
    */
   public void setLineProcessor(AlertLineProcessor lineProcessor) {
     this.lineProcessor = lineProcessor;
-  }
-
-  /**
-   * @return the uniqueFields
-   */
-  public List<String> getUniqueFields() {
-    return uniqueFields;
-  }
-
-  /**
-   * @param uniqueFields
-   *          the uniqueFields to set
-   */
-  public void setUniqueFields(List<String> uniqueFields) {
-    this.uniqueFields = uniqueFields;
-    if(uniqueFields == null) {
-      setEquator(null);
-    } else {
-      try {
-        setEquator(new AlertEquator(uniqueFields));
-      } catch (AlertscapeException e) {
-        LOG.error("Couldn't set eauator", e);
-      }
-    }
-  }
-
-  /**
-   * @return the severityDeterminedField
-   */
-  public String getSeverityDeterminedField() {
-    return severityDeterminedField;
-  }
-
-  /**
-   * @param severityDeterminedField
-   *          the severityDeterminedField to set
-   */
-  public void setSeverityDeterminedField(String severityDeterminedField) {
-    this.severityDeterminedField = severityDeterminedField;
-    if (severityDeterminedField == null) {
-      severityFieldGetter = null;
-      return;
-    }
-    try {
-      PropertyDescriptor d = new PropertyDescriptor(getSeverityDeterminedField(), Alert.class);
-      severityFieldGetter = d.getReadMethod();
-    } catch (IntrospectionException e) {
-      LOG.error("Couldn't make getter for " + getSeverityDeterminedField(), e);
-    }
-
-  }
-
-  /**
-   * @return the severityMappings
-   */
-  public Map<Integer, List<String>> getSeverityMappings() {
-    return severityMappings;
-  }
-
-  /**
-   * @param severityMappings
-   *          the severityMappings to set
-   */
-  public void setSeverityMappings(Map<Integer, List<String>> severityMappings) {
-    this.severityMappings = severityMappings;
   }
 
 }
