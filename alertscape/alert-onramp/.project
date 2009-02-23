@@ -2,9 +2,9 @@
   <name>alert-onramp</name>
   <comment/>
   <projects>
+    <project>as-dao</project>
     <project>alert-pump</project>
     <project>as-common</project>
-    <project>as-dao</project>
     <project>alert-offramp</project>
   </projects>
   <buildSpec>

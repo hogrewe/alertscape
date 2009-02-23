@@ -9,14 +9,18 @@ import com.alertscape.dao.AuthenticatedUserDao;
 
 /**
  * @author josh
- *
+ * 
  */
 public class DbAuthenticationService implements AuthenticationService {
   private AuthenticatedUserDao userDao;
 
   public AuthenticatedUser authenticate(String username, char[] password) throws AlertscapeException {
     AuthenticatedUser user = userDao.authenticate(username, password);
-    
+
+    if (user == null) {
+      throw new AlertscapeException("Couldn't authenticate " + username);
+    }
+
     return user;
   }
 
@@ -28,7 +32,8 @@ public class DbAuthenticationService implements AuthenticationService {
   }
 
   /**
-   * @param userDao the userDao to set
+   * @param userDao
+   *          the userDao to set
    */
   public void setUserDao(AuthenticatedUserDao userDao) {
     this.userDao = userDao;

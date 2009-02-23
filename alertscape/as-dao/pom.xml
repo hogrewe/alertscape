@@ -10,6 +10,36 @@
   <name>as-dao</name>
   <version>0.9-SNAPSHOT</version>
   <url>http://alertscape.com</url>
+  <!--
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.pyx4me</groupId>
+        <artifactId>proguard-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>proguard</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <inFilter>com/alertscape/**</inFilter>
+		  <includeDependencies>false</includeDependencies>
+          <options>
+            <option>-allowaccessmodification</option>
+		    <option>-keep public class * {public *;}</option>
+		    <option>-keep public interface * {public *;}</option>
+          </options>
+          <libs>
+		    <lib>${java.home}/bundle/Classes/classes.jar</lib>
+		  </libs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  -->
   <dependencies>
     <dependency>
       <groupId>com.alertscape</groupId>

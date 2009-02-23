@@ -501,7 +501,7 @@ public class AlertBrowser extends JFrame {
   public static void clear(List<Alert> alerts) {
     try {
       alertService.clear(Authentication.getUser("CEV"), alerts);
-    } catch (AlertscapeException e) {
+    } catch (Exception e) {
       LOG.error("Couldn't clear alerts", e);
     }
   }
@@ -509,7 +509,7 @@ public class AlertBrowser extends JFrame {
   public static void acknowledge(List<Alert> alerts) {
     try {
       alertService.acknowledge(Authentication.getUser("CEV"), alerts);
-    } catch (AlertscapeException e) {
+    } catch (Exception e) {
       LOG.error("Couldn't acknowledge alerts", e);
     }
   }
@@ -517,7 +517,7 @@ public class AlertBrowser extends JFrame {
   public static void unacknowledge(List<Alert> alerts) {
     try {
       alertService.unacknowledge(Authentication.getUser("CEV"), alerts);
-    } catch (AlertscapeException e) {
+    } catch (Exception e) {
       LOG.error("Couldn't acknowledge alerts", e);
     }
   }

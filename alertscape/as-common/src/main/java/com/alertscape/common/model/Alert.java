@@ -21,10 +21,6 @@ public class Alert implements Serializable {
   private static final long COMBINED_ID_MULTIPLIER = (long) Math.pow(10, 15);
   private static final long serialVersionUID = -1396527085374975232L;
 
-  public enum AlertStatus {
-    STANDING, CLEARED;
-  }
-
   private long alertId;
   private AlertStatus status = AlertStatus.STANDING;
   private String shortDescription;

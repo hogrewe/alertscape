@@ -9,12 +9,11 @@ import static com.alertscape.browser.model.criterion.ComparisonCriterion.Compari
 import static com.alertscape.browser.model.criterion.ComparisonCriterion.ComparisonType.LESS_THAN;
 import static com.alertscape.browser.model.criterion.ComparisonCriterion.ComparisonType.LESS_THAN_OR_EQUAL;
 import static com.alertscape.browser.model.criterion.ComparisonCriterion.ComparisonType.NOT_EQUAL;
-import static com.alertscape.common.model.Alert.AlertStatus.STANDING;
 import junit.framework.TestCase;
 
-import com.alertscape.browser.model.criterion.ComparisonCriterion;
-import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.Alert;
+import com.alertscape.common.model.AlertSource;
+import com.alertscape.common.model.AlertStatus;
 import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
@@ -46,7 +45,7 @@ public class ComparisonCriterionTest extends TestCase
     event.setSeverity(SeverityFactory.getInstance( ).getSeverity(1));
     event.setShortDescription("Short Description");
     event.setSource(new AlertSource(3, "AS 3"));
-    event.setStatus(STANDING);
+    event.setStatus(AlertStatus.STANDING);
     event.setType("Type");
   }
 

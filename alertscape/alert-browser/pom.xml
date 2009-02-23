@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<artifactId>alertscape</artifactId>
 		<groupId>com.alertscape</groupId>
@@ -15,14 +16,12 @@
 		<dependency>
 			<groupId>com.alertscape</groupId>
 			<artifactId>as-common</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.alertscape.service</groupId>
 			<artifactId>alert-service-interfaces</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.alertscape</groupId>
-			<artifactId>alert-tester</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.odell</groupId>
@@ -52,13 +51,17 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
 		</dependency>
+		<dependency> 
+		  <groupId>org.apache.xbean</groupId>
+	      <artifactId>xbean-spring</artifactId> 
+		</dependency>
 		<dependency>
-			<groupId>org.apache.xbean</groupId>
-			<artifactId>xbean-spring</artifactId>
+			<groupId>jfree</groupId>
+			<artifactId>jfreechart</artifactId>
 		</dependency>
         <dependency>
-          <groupId>jfree</groupId>
-          <artifactId>jfreechart</artifactId>
+	      <groupId>commons-lang</groupId>
+          <artifactId>commons-lang</artifactId>
         </dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -67,18 +70,66 @@
 	</dependencies>
 	<build>
 		<plugins>
-			<!--
-				<plugin> <groupId>com.pyx4me</groupId>
-				<artifactId>proguard-maven-plugin</artifactId> <executions>
-				<execution> <phase>package</phase>
-				<goals><goal>proguard</goal></goals> </execution> </executions>
-				<configuration> <options> <option>-allowaccessmodification</option>
-				<option>-keep public class
-				com.alertscape.browser.ui.swing.AlertBrowser { *; }</option>
-				</options> <libs> <lib>${java.home}/../Classes/classes.jar</lib>
-				</libs> </configuration> </plugin>
-			-->
-			<!--
+			<plugin>
+				<groupId>com.pyx4me</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>proguard</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<inFilter>com/alertscape/**,!**/AlertBrowser*</inFilter>
+					<includeDependencies>true</includeDependencies>
+					<assembly>
+						<inclusions>
+							<inclusion>
+								<groupId>com.alertscape</groupId>
+								<artifactId>as-common</artifactId>
+							</inclusion>
+							<inclusion>
+								<groupId>com.alertscape.service</groupId>
+								<artifactId>alert-service-interfaces</artifactId>
+							</inclusion>
+						</inclusions>
+					</assembly>
+					<options>
+						<option>-allowaccessmodification</option>
+						<option>-keep public class
+							com.alertscape.browser.ui.swing.AlertBrowser {public *;}</option>
+						<option>-keep public class
+							com.alertscape.browser.ui.swing.AlertBrowserMain {public *;}</option>
+						<option>-keep public interface
+							com.alertscape.service.AlertService {public *;}</option>
+						<option>-keep public interface
+							com.alertscape.service.AuthenticationService {public *;}</option>
+		                <option>-keep public class com.alertscape.common.model.Alert {public *; }</option>
+		                <option>-keep public class com.alertscape.common.model.AlertSource {public *; }</option>
+		                <option>-keep public class com.alertscape.common.model.equator.AlertEquator {public *; }</option>
+		                <option>-keep public class com.alertscape.common.model.AuthenticatedUser {public *; }</option>
+		    			<option>-keep public class com.alertscape.common.model.AlertAttributeDefinition {public *; }</option>
+		    			<option>-keep public class com.alertscape.common.model.severity.Severity {public *; }</option>
+		                <option>-keepnames class * implements java.io.Serializable</option>
+		                <option>-keepclassmembers class * implements java.io.Serializable {
+				                static final long serialVersionUID;
+					            static final java.io.ObjectStreamField[] serialPersistentFields;
+					            private void writeObject(java.io.ObjectOutputStream);
+					            private void readObject(java.io.ObjectInputStream);
+					            java.lang.Object writeReplace();
+					            java.lang.Object readResolve();
+			            }
+		                </option>
+		                <option>-keep public enum * {public *; }</option>
+						<option>-dontskipnonpubliclibraryclasses</option>
+					</options>
+					<libs>
+						<lib>${java.home}/bundle/Classes/classes.jar</lib>
+					</libs>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo.webstart</groupId>
 				<artifactId>webstart-maven-plugin</artifactId>
@@ -108,7 +159,6 @@
 					</sign>
 				</configuration>
 			</plugin>
-			-->
 		</plugins>
 	</build>
 </project>
