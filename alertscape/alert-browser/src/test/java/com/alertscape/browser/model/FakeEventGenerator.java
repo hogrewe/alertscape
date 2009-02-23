@@ -8,7 +8,7 @@ import java.util.Random;
 
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.Alert;
-import com.alertscape.common.model.Alert.AlertStatus;
+import com.alertscape.common.model.AlertStatus;
 import com.alertscape.common.model.severity.SeverityFactory;
 
 /**
@@ -39,7 +39,7 @@ public class FakeEventGenerator
     e.setSeverity(sevFactory.getSeverity(sevLevel));
     e.setShortDescription("Some short description");
     e.setSource(new AlertSource(1, "Source 1"));
-    e.setStatus(Alert.AlertStatus.STANDING);
+    e.setStatus(AlertStatus.STANDING);
     e.setType("Type " + rand.nextInt(10));
 
     return e;

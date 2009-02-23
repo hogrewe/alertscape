@@ -1,11 +1,14 @@
 <projectDescription>
-  <name>alert-onramp</name>
+  <name>as-webapp</name>
   <comment/>
   <projects>
-    <project>as-dao</project>
     <project>alert-offramp</project>
-    <project>alert-pump</project>
+    <project>as-dao</project>
+    <project>alert-service-interfaces</project>
     <project>as-common</project>
+    <project>alert-pump</project>
+    <project>alert-onramp</project>
+    <project>alertscape-app</project>
   </projects>
   <buildSpec>
     <buildCommand>

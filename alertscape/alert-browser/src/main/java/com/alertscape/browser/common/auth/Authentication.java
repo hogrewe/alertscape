@@ -33,7 +33,7 @@ public class Authentication {
 
     try {
       u = authenticationService.authenticate(user, password);
-    } catch (AlertscapeException e) {
+    } catch (Exception e) {
       LOG.error("Problem logging in", e);
     }
 
