@@ -16,7 +16,7 @@ import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.AlertSource;
-import com.alertscape.common.model.Alert.AlertStatus;
+import com.alertscape.common.model.AlertStatus;
 import com.alertscape.common.model.severity.SeverityFactory;
 
 public class GenerateEvents implements Runnable {
@@ -69,7 +69,7 @@ public class GenerateEvents implements Runnable {
     a.setLastOccurence(new Date());
     a.setSeverity(sevFactory.getSeverity(sevLevel));
     a.setSource(source);
-    a.setStatus(Alert.AlertStatus.STANDING);
+    a.setStatus(AlertStatus.STANDING);
 
     return a;
   }
@@ -89,7 +89,7 @@ public class GenerateEvents implements Runnable {
     e.setSeverity(sevFactory.getSeverity(sevLevel));
     e.setShortDescription(shortDescriptionLookup[rand.nextInt(shortDescriptionLookup.length)]);
     e.setSource(source);
-    e.setStatus(Alert.AlertStatus.STANDING);
+    e.setStatus(AlertStatus.STANDING);
     e.setType(typeLookup[rand.nextInt(typeLookup.length)]);
 
     return e;

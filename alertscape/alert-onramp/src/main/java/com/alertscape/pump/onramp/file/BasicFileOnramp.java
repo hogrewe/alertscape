@@ -11,7 +11,7 @@ import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.AlertSourceRepository;
-import com.alertscape.common.model.Alert.AlertStatus;
+import com.alertscape.common.model.AlertStatus;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
 

@@ -9,8 +9,8 @@ import com.alertscape.AlertscapeException;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertAttributeDefinition;
+import com.alertscape.common.model.AlertStatus;
 import com.alertscape.common.model.AuthenticatedUser;
-import com.alertscape.common.model.Alert.AlertStatus;
 import com.alertscape.pump.AlertPump;
 
 /**
