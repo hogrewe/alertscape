@@ -2,6 +2,12 @@
   <name>as-webapp</name>
   <comment/>
   <projects>
+    <project>alert-offramp</project>
+    <project>as-dao</project>
+    <project>alert-service-interfaces</project>
+    <project>as-common</project>
+    <project>alert-pump</project>
+    <project>alert-onramp</project>
     <project>alertscape-app</project>
   </projects>
   <buildSpec>

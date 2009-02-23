@@ -16,12 +16,10 @@
 		<dependency>
 			<groupId>com.alertscape</groupId>
 			<artifactId>as-common</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.alertscape.service</groupId>
 			<artifactId>alert-service-interfaces</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.odell</groupId>
@@ -68,6 +66,21 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
+	<profiles>
+	  <profile>
+	    <id>prodrelease</id>
+	<dependencies>
+		<dependency>
+			<groupId>com.alertscape</groupId>
+			<artifactId>as-common</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alertscape.service</groupId>
+			<artifactId>alert-service-interfaces</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		</dependencies>
 	<build>
 		<plugins>
 			<plugin>
@@ -161,4 +174,6 @@
 			</plugin>
 		</plugins>
 	</build>
+	  </profile>
+	</profiles>
 </project>

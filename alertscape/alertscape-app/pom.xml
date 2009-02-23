@@ -11,6 +11,36 @@
   <version>0.9-SNAPSHOT</version>
   <packaging>jar</packaging>
   <url>http://maven.apache.org</url>
+	<profiles>
+	  <profile>
+	    <id>prodrelease</id>
+  <dependencies>
+      <dependency>
+	    <groupId>com.alertscape</groupId>
+	    <artifactId>as-common</artifactId>
+		<scope>provided</scope>
+	  </dependency>
+      <dependency>
+        <groupId>com.alertscape.dao</groupId>
+        <artifactId>as-dao</artifactId>
+		<scope>provided</scope>
+      </dependency>
+      <dependency>
+	    <groupId>com.alertscape.service</groupId>
+	    <artifactId>alert-service-interfaces</artifactId>
+		<scope>provided</scope>
+	  </dependency>
+      <dependency>
+	    <groupId>com.alertscape.pump</groupId>
+	    <artifactId>alert-pump</artifactId>
+		<scope>provided</scope>
+	  </dependency>
+      <dependency>
+	    <groupId>com.alertscape.pump</groupId>
+	    <artifactId>alert-onramp</artifactId>
+		<scope>provided</scope>
+	  </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -104,31 +134,28 @@
       </plugin>
     </plugins>
   </build>
+  </profile>
+  </profiles>
   <dependencies>
       <dependency>
 	    <groupId>com.alertscape</groupId>
 	    <artifactId>as-common</artifactId>
-		<scope>provided</scope>
 	  </dependency>
       <dependency>
         <groupId>com.alertscape.dao</groupId>
         <artifactId>as-dao</artifactId>
-		<scope>provided</scope>
       </dependency>
       <dependency>
 	    <groupId>com.alertscape.service</groupId>
 	    <artifactId>alert-service-interfaces</artifactId>
-		<scope>provided</scope>
 	  </dependency>
       <dependency>
 	    <groupId>com.alertscape.pump</groupId>
 	    <artifactId>alert-pump</artifactId>
-		<scope>provided</scope>
 	  </dependency>
       <dependency>
 	    <groupId>com.alertscape.pump</groupId>
 	    <artifactId>alert-onramp</artifactId>
-		<scope>provided</scope>
 	  </dependency>
   </dependencies>
 </project>
