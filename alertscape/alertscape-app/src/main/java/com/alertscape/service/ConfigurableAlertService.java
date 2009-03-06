@@ -23,8 +23,8 @@ public class ConfigurableAlertService implements AlertService {
   private AlertPump pump;
   private TreeConfigurationDao treeConfigurationDao;
 
-  public List<Alert> getAllAlerts() throws AlertscapeException {
-    return pump.getAllAlerts();
+  public List<Alert> getAllAlerts(String filter) throws AlertscapeException {
+    return pump.getAllAlerts(filter);
   }
 
   public void acknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException {

@@ -50,6 +50,13 @@ public class JmsOfframp implements AlertOfframp {
   public void processAlert(Alert alert) throws AlertscapeException {
     try {
       ObjectMessage message = session.createObjectMessage(alert);
+      message.setStringProperty("item", alert.getItem());
+//      message.setStringProperty("item_manager", alert.getItemManager());
+//      message.setIntProperty("severity", alert.getSeverity().getLevel());
+//      message.setIntProperty("source_id", alert.getSource().getSourceId());
+//      message.setStringProperty("type", alert.getType());
+//      message.setObjectProperty("last_occurence", alert.getLastOccurence());
+//      message.setObjectProperty("first_occurence", alert.getFirstOccurence());
 
       producer.send(message);
     } catch (JMSException e) {

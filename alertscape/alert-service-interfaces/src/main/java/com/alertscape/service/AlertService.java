@@ -16,7 +16,7 @@ import com.alertscape.common.model.AuthenticatedUser;
  */
 public interface AlertService {
 
-  public List<Alert> getAllAlerts() throws AlertscapeException;
+  public List<Alert> getAllAlerts(String filter) throws AlertscapeException;
 
   public void clear(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
 

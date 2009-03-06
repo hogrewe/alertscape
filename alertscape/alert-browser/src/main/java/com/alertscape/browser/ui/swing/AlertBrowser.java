@@ -96,6 +96,7 @@ public class AlertBrowser extends JFrame {
   private static JTabbedPane tabbedPane;
   private static ImageIcon closeIcon;
   private static ImageIcon detailsIcon;
+  private String filter = "item like 'GET /pic.do%'";
 
   public AlertBrowser() {
   }
@@ -403,9 +404,9 @@ public class AlertBrowser extends JFrame {
 
   private void connect(JmsAlertListener listener) {
     try {
-      listener.startListening();
+      listener.startListening(filter);
       // GET ALL ALERTS
-      List<Alert> alerts = alertService.getAllAlerts();
+      List<Alert> alerts = alertService.getAllAlerts(filter);
       LOG.debug("Retrieved " + alerts.size() + " open alerts, processing");
       collection.processAlerts(alerts);
       LOG.info("Processed " + alerts.size() + " open alerts");
