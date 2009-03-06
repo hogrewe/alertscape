@@ -20,7 +20,7 @@ public interface AlertPump {
 
   long registerAlertSource(AlertSource source, AlertSourceCallback callback) throws AlertscapeException;
 
-  List<Alert> getAllAlerts() throws AlertscapeException;
+  List<Alert> getAllAlerts(String filter) throws AlertscapeException;
 
   AlertSource getAlertSource(String sourceName) throws AlertscapeException;
 

@@ -12,7 +12,7 @@ import com.alertscape.common.model.AlertCollection;
  */
 public interface AlertListener {
   void setCollection(AlertCollection collection);
-  void startListening() throws AlertscapeException;
+  void startListening(String selector) throws AlertscapeException;
   void startProcessing() throws AlertscapeException;  
   void stopProcessing() throws AlertscapeException;
   void setExceptionListener(AlertListenerExceptionListener listener);

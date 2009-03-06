@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.BevelBorder;
 
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.XMLContext;
+
 import com.alertscape.AlertscapeException;
 import com.alertscape.browser.common.auth.Authentication;
 import com.alertscape.browser.common.auth.AuthenticationEvent;
@@ -49,6 +54,7 @@ import com.alertscape.browser.localramp.firstparty.preferences.UserPreferencesPa
 import com.alertscape.browser.model.AlertListenerExceptionListener;
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.model.JmsAlertListener;
+import com.alertscape.browser.model.tree.AlertTreeNode;
 import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
 import com.alertscape.browser.ui.swing.panel.collection.chart.CreateChartPanelAction;
 import com.alertscape.browser.ui.swing.panel.collection.filter.TextFilterPanel;
@@ -90,7 +96,9 @@ public class AlertBrowser extends JFrame {
   private static JTabbedPane tabbedPane;
   private static ImageIcon closeIcon;
   private static ImageIcon detailsIcon;
-  
+  private String filter = "item like 'GET /pic.do%'";
+  private JmsAlertListener listener;
+
   public AlertBrowser() {
   }
 
@@ -114,14 +122,15 @@ public class AlertBrowser extends JFrame {
     setSize(800, 600);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     treePanel = new AlertTreePanel();
+    treePanel.setRootNode(getRootNode());
     treePanel.init();
 
-		URL imageUrl = getClass().getResource("/com/alertscape/images/mini/close_tab.png");
-		closeIcon = new ImageIcon(imageUrl);
- 		
-		URL imageUrl2 = getClass().getResource("/com/alertscape/images/mini/page_text.gif");
-		detailsIcon = new ImageIcon(imageUrl2);
-    
+    URL imageUrl = getClass().getResource("/com/alertscape/images/mini/close_tab.png");
+    closeIcon = new ImageIcon(imageUrl);
+
+    URL imageUrl2 = getClass().getResource("/com/alertscape/images/mini/page_text.gif");
+    detailsIcon = new ImageIcon(imageUrl2);
+
     collection = new BinarySortAlertCollection();
 
     AlertCollection treeCollection = treePanel.setMasterCollection(collection);
@@ -223,11 +232,11 @@ public class AlertBrowser extends JFrame {
     outerTablePanel.add(tablePanel, BorderLayout.CENTER);
 
     tabbedPane = new JTabbedPane();
-    
+
     addTabbedPanel("Details", detailsIcon, outerTablePanel, "Tabular view of alerts", false, false);
-    
-    //tabbedPane.addTab("Details", null, outerTablePanel, "Tabular view of alerts");
-    
+
+    // tabbedPane.addTab("Details", null, outerTablePanel, "Tabular view of alerts");
+
     // North
     JPanel northPanel = new JPanel();
     northPanel.setLayout(new GridLayout(1, 2));
@@ -242,7 +251,7 @@ public class AlertBrowser extends JFrame {
     overallPane.setLayout(new BorderLayout());
     overallPane.add(northPanel, BorderLayout.NORTH);
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treePanel, p);
-    splitPane.setBorder(BorderFactory.createMatteBorder(1,0,1,0,Color.lightGray));
+    splitPane.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.lightGray));
     overallPane.add(splitPane, BorderLayout.CENTER);
     overallPane.add(new AlertBrowserStatusPanel(), BorderLayout.SOUTH);
     setContentPane(overallPane);
@@ -281,8 +290,8 @@ public class AlertBrowser extends JFrame {
     // - Select All
     // - assign alerts (name is just a tag)
     // - move alerts (folder is just a tag)
-    // - add comment  
-    
+    // - add comment
+
     JMenu viewMenu = new JMenu("View");
     viewMenu.add(chartAction);
     // - Find (search for alert: in the tree, in the table, in the history)
@@ -291,10 +300,10 @@ public class AlertBrowser extends JFrame {
     // - view ticket
     // - view comments
     // filter configuration
-    
+
     JMenu preferencesMenu = new JMenu("Preferences");
     // build a list of all of the userpreferencepanels
-    List<UserPreferencesPanel> prefPanels = new ArrayList();
+    List<UserPreferencesPanel> prefPanels = new ArrayList<UserPreferencesPanel>();
     prefPanels.add(filterPanel);
     prefPanels.add(tablePanel);
     prefPanels.add(summaryPanel);
@@ -331,7 +340,7 @@ public class AlertBrowser extends JFrame {
     popup.addSeparator();
     popup.add(mailAction);
     popup.add(predefinedTagAction);
-    popup.add(customTagAction);    
+    popup.add(customTagAction);
     popup.addSeparator();
     popup.add(chartAction);
     tablePanel.setPopup(popup);
@@ -380,7 +389,11 @@ public class AlertBrowser extends JFrame {
   }
 
   private void initJms() {
-    final JmsAlertListener listener = new JmsAlertListener();
+    filter = JOptionPane.showInputDialog("Alert filter:", filter);
+    if(listener != null) {
+      listener.disconnect();
+    }
+    listener = new JmsAlertListener();
     listener.setCollection(collection);
     listener.setFactory(jmsFactory);
     listener.setExceptionListener(new AlertListenerExceptionListener() {
@@ -396,9 +409,9 @@ public class AlertBrowser extends JFrame {
 
   private void connect(JmsAlertListener listener) {
     try {
-      listener.startListening();
+      listener.startListening(filter);
       // GET ALL ALERTS
-      List<Alert> alerts = alertService.getAllAlerts();
+      List<Alert> alerts = alertService.getAllAlerts(filter);
       LOG.debug("Retrieved " + alerts.size() + " open alerts, processing");
       collection.processAlerts(alerts);
       LOG.info("Processed " + alerts.size() + " open alerts");
@@ -411,50 +424,46 @@ public class AlertBrowser extends JFrame {
   }
 
   // this method will create a new tab, with the given title, icon, and panel as contents, to the main browser.
-  public static void addTabbedPanel(String title, ImageIcon icon, final JPanel panel, String tooltip, boolean showCloseButton, boolean selectNow)
-  {
-  	tabbedPane.addTab(title, icon, panel, tooltip);
-  	int newindex = tabbedPane.getTabCount()-1;
-  	JPanel pnl = new JPanel(new BorderLayout());
-  	JLabel label = new JLabel(title, icon, JLabel.LEFT);
-  	label.setOpaque(false);
-  	JButton button = new JButton();
-  	button.setIcon(closeIcon);
-  	button.setOpaque(false);
-  	button.setPreferredSize(new Dimension(17,17));
-  	button.setBorder(BorderFactory.createEmptyBorder());
-  	button.setBorderPainted(false);
-  	button.setHorizontalAlignment(JButton.CENTER);
-  	button.setToolTipText("Close Tab");
-  	pnl.setOpaque(false);
-  	
-  	JToolBar closeBar = new JToolBar();
-  	closeBar.setOpaque(false);
-  	closeBar.setBorderPainted(false);
-  	closeBar.setFloatable(false);
-  	closeBar.add(button);
-  	
-  	pnl.add(label, BorderLayout.WEST);
-  	if (showCloseButton)
-  	{
-  		pnl.add(closeBar, BorderLayout.EAST);
-  	}
-  	tabbedPane.setTabComponentAt(newindex, pnl);
-  	
-  	button.addActionListener(new ActionListener()
-  	{
-			public void actionPerformed(ActionEvent arg0)
-			{
-				//tabbedPane.removeTabAt(newindex);
-				tabbedPane.remove(panel);
-			}	
-  	});  	
+  public static void addTabbedPanel(String title, ImageIcon icon, final JPanel panel, String tooltip,
+      boolean showCloseButton, boolean selectNow) {
+    tabbedPane.addTab(title, icon, panel, tooltip);
+    int newindex = tabbedPane.getTabCount() - 1;
+    JPanel pnl = new JPanel(new BorderLayout());
+    JLabel label = new JLabel(title, icon, JLabel.LEFT);
+    label.setOpaque(false);
+    JButton button = new JButton();
+    button.setIcon(closeIcon);
+    button.setOpaque(false);
+    button.setPreferredSize(new Dimension(17, 17));
+    button.setBorder(BorderFactory.createEmptyBorder());
+    button.setBorderPainted(false);
+    button.setHorizontalAlignment(JButton.CENTER);
+    button.setToolTipText("Close Tab");
+    pnl.setOpaque(false);
 
-  	if (selectNow)
-  	{
-  		tabbedPane.setSelectedIndex(newindex);
-  	}
-  	
+    JToolBar closeBar = new JToolBar();
+    closeBar.setOpaque(false);
+    closeBar.setBorderPainted(false);
+    closeBar.setFloatable(false);
+    closeBar.add(button);
+
+    pnl.add(label, BorderLayout.WEST);
+    if (showCloseButton) {
+      pnl.add(closeBar, BorderLayout.EAST);
+    }
+    tabbedPane.setTabComponentAt(newindex, pnl);
+
+    button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        // tabbedPane.removeTabAt(newindex);
+        tabbedPane.remove(panel);
+      }
+    });
+
+    if (selectNow) {
+      tabbedPane.setSelectedIndex(newindex);
+    }
+
   }
 
   /**
@@ -495,6 +504,25 @@ public class AlertBrowser extends JFrame {
     List<Alert> curAlerts = tablePanel.getSelectedAlerts();
     currentContext.setSelectedAlerts(curAlerts);
     return currentContext;
+  }
+
+  public AlertTreeNode getRootNode() {
+    AlertTreeNode root = null;
+    try {
+      String configuration = alertService.getTreeConfiguration();
+      XMLContext context = new XMLContext();
+      Mapping mapping = new Mapping();
+      URL mappingUrl = getClass().getResource("/treeConfigMapping.xml");
+      mapping.loadMapping(mappingUrl);
+      context.addMapping(mapping);
+      Unmarshaller unmarshaller = context.createUnmarshaller();
+      root = (AlertTreeNode) unmarshaller.unmarshal(new StringReader(configuration));
+    } catch (AlertscapeException e) {
+      LOG.error("Couldn't get tree configuration", e);
+    } catch (Exception e) {
+      LOG.error("Couldn't unmarshall tree configuration", e);
+    }
+    return root;
   }
 
   // TODO: We have to get rid of these static methods

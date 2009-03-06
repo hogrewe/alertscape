@@ -41,13 +41,13 @@ public class JmsAlertListener implements AlertListener {
   private AlertProcessor processor;
   private AlertListenerExceptionListener exceptionListener;
 
-  public void init() throws AlertscapeException {
+  public void init(String selector) throws AlertscapeException {
     processor = new AlertProcessor();
     listener = new AlertMessageListener();
-    connect();
+    connect(selector);
   }
 
-  private void connect() throws AlertscapeException {
+  private void connect(String selector) throws AlertscapeException {
     try {
       connection = factory.createConnection();
       connection.start();
@@ -57,7 +57,7 @@ public class JmsAlertListener implements AlertListener {
       // TODO: this should be injected
       topic = session.createTopic("com.alertscape.pump.Alerts");
 
-      consumer = session.createConsumer(topic);
+      consumer = session.createConsumer(topic, selector);
       consumer.setMessageListener(listener);
     } catch (JMSException e) {
       throw new AlertscapeException("Couldn't connect to JMS", e);
@@ -77,8 +77,8 @@ public class JmsAlertListener implements AlertListener {
     this.collection = collection;
   }
 
-  public void startListening() throws AlertscapeException {
-    init();
+  public void startListening(String selector) throws AlertscapeException {
+    init(selector);
   }
 
   public void startProcessing() throws AlertscapeException {

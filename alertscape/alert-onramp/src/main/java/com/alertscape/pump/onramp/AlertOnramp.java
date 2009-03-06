@@ -106,8 +106,8 @@ public abstract class AlertOnramp implements AlertSourceCallback {
       state = readState();
       if (state != null) {
         Object o = state.get(ALERT_ID_STATE);
-        if(o != null) {
-          nextAlertId = (Long)o;           
+        if (o != null) {
+          nextAlertId = (Long) o;
         }
         initState(state);
       }
@@ -123,7 +123,7 @@ public abstract class AlertOnramp implements AlertSourceCallback {
   }
 
   protected abstract void init() throws AlertscapeException;
-  
+
   public abstract void shutdown();
 
   public AlertTransport getTransport() {
@@ -205,14 +205,18 @@ public abstract class AlertOnramp implements AlertSourceCallback {
   public Map<String, Object> readState() {
     if (!stateFile.exists()) {
       LOG.info("No state found for " + getSourceName());
-      return null;
+      return new HashMap<String, Object>();
     }
     FileInputStream fis = null;
     try {
       fis = new FileInputStream(stateFile);
       BufferedInputStream bis = new BufferedInputStream(fis);
       ObjectInputStream ois = new ObjectInputStream(bis);
-      return (Map<String, Object>) ois.readObject();
+      Map<String, Object> state = (Map<String, Object>) ois.readObject();
+      if (state == null) {
+        state = new HashMap<String, Object>();
+      }
+      return state;
     } catch (Exception e) {
       LOG.error("Couldn't read state from file: " + stateFilename, e);
       return null;

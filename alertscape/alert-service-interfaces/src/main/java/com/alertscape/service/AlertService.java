@@ -16,7 +16,7 @@ import com.alertscape.common.model.AuthenticatedUser;
  */
 public interface AlertService {
 
-  public List<Alert> getAllAlerts() throws AlertscapeException;
+  public List<Alert> getAllAlerts(String filter) throws AlertscapeException;
 
   public void clear(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
 
@@ -25,4 +25,6 @@ public interface AlertService {
   public void acknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
 
   public List<AlertAttributeDefinition> getAttributeDefinitions() throws AlertscapeException;
+  
+  public String getTreeConfiguration() throws AlertscapeException;
 }

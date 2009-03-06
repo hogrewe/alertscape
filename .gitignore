@@ -3,3 +3,4 @@ target
 .DS_Store
 velocity.log
 amp_profile.obj
+amp_default_preferences.obj

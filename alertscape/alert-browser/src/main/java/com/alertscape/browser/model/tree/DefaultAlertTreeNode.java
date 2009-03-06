@@ -14,8 +14,6 @@ import java.util.Map;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-import ca.odell.glazedlists.matchers.Matcher;
-
 import com.alertscape.browser.model.criterion.AlertCriterion;
 import com.alertscape.browser.ui.swing.panel.collection.tree.TreeMatcherEditor;
 import com.alertscape.browser.ui.swing.tree.AlertTreeModel;
@@ -45,7 +43,7 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
   private String description;
   private boolean blink;
   private boolean exclusive;
-  private Matcher<Alert> matcher;
+  private AlertMatcher matcher;
   private TreeMatcherEditor matcherEditor;
   private AlertTreeModel treeModel;
 
@@ -151,6 +149,12 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
 
   public void addChild(AlertTreeNode child) {
     addChild(child, children.size());
+  }
+  
+  public void setChildren(List<AlertTreeNode> children) {
+    for (AlertTreeNode child : children) {
+      addChild(child);
+    }
   }
 
   public void addChild(AlertTreeNode child, int index) {
@@ -301,7 +305,7 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
   /**
    * @return the matcher
    */
-  public Matcher<Alert> getMatcher() {
+  public AlertMatcher getMatcher() {
     return matcher;
   }
 
@@ -309,7 +313,7 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
    * @param matcher
    *          the matcher to set
    */
-  public void setMatcher(Matcher<Alert> matcher) {
+  public void setMatcher(AlertMatcher matcher) {
     this.matcher = matcher;
   }
 

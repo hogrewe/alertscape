@@ -18,8 +18,6 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
@@ -138,8 +136,13 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   }
 
   @SuppressWarnings("unchecked")
-  public List<Alert> getAllAlerts() throws DaoException {
-    return getJdbcTemplate().query(GET_ALL_ALERTS_SQL, alertMapper);
+  public List<Alert> getAllAlerts(String filter) throws DaoException {
+    //XXX:Get rid of sql injection vulnerability!!!!!
+    String query = GET_ALL_ALERTS_SQL;
+    if(filter != null) {
+      query += " where " + filter;
+    }
+    return getJdbcTemplate().query(query, alertMapper);
   }
 
   @SuppressWarnings("unchecked")

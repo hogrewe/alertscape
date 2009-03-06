@@ -17,7 +17,7 @@ public interface AlertDao {
 	public void save(Alert alert) throws DaoException;
 	public Alert get(AlertSource source, long alertId) throws DaoException;
 	public void delete(AlertSource source, long alertId) throws DaoException;
-	public List<Alert> getAllAlerts() throws DaoException;
+	public List<Alert> getAllAlerts(String filter) throws DaoException;
 	public List<Alert> getAlertsForSource(AlertSource source) throws DaoException;
   /**
    * @param a

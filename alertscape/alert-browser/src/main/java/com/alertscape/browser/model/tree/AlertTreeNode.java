@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.swing.tree.MutableTreeNode;
 
-import ca.odell.glazedlists.matchers.Matcher;
-
 import com.alertscape.browser.ui.swing.tree.AlertTreeModel;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.severity.Severity;
@@ -44,6 +42,8 @@ public interface AlertTreeNode extends MutableTreeNode {
   void clearAlerts();
 
   void addChild(AlertTreeNode child);
+  
+  void setChildren(List<AlertTreeNode> children);
 
   /**
    * @return Returns the blink.
@@ -128,7 +128,7 @@ public interface AlertTreeNode extends MutableTreeNode {
    */
   void setExclusive(boolean exclusive);
 
-  void setMatcher(Matcher<Alert> matcher);
+  void setMatcher(AlertMatcher matcher);
 
   /**
    * @return
