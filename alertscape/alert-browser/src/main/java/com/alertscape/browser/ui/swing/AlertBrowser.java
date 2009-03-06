@@ -97,6 +97,7 @@ public class AlertBrowser extends JFrame {
   private static ImageIcon closeIcon;
   private static ImageIcon detailsIcon;
   private String filter = "item like 'GET /pic.do%'";
+  private JmsAlertListener listener;
 
   public AlertBrowser() {
   }
@@ -388,7 +389,11 @@ public class AlertBrowser extends JFrame {
   }
 
   private void initJms() {
-    final JmsAlertListener listener = new JmsAlertListener();
+    filter = JOptionPane.showInputDialog("Alert filter:", filter);
+    if(listener != null) {
+      listener.disconnect();
+    }
+    listener = new JmsAlertListener();
     listener.setCollection(collection);
     listener.setFactory(jmsFactory);
     listener.setExceptionListener(new AlertListenerExceptionListener() {
