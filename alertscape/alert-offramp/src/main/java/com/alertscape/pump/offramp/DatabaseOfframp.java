@@ -33,8 +33,8 @@ public class DatabaseOfframp implements AlertOfframp {
     return getAlertDao().getAlertsForSource(source);
   }
 
-  public List<Alert> getAllAlerts() throws AlertscapeException {
-    return getAlertDao().getAllAlerts();
+  public List<Alert> getAllAlerts(String filter) throws AlertscapeException {
+    return getAlertDao().getAllAlerts(filter);
   }
 
   /**

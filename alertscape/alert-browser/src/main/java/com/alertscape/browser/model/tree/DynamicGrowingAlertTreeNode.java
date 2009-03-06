@@ -8,8 +8,6 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ca.odell.glazedlists.matchers.Matchers;
-
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.util.GetterHelper;
@@ -73,13 +71,13 @@ public class DynamicGrowingAlertTreeNode extends DefaultAlertTreeNode {
       }
 
       final Object value;
-      ca.odell.glazedlists.matchers.Matcher<Alert> matcher;
+      AlertMatcher matcher;
       if (usesAttribute) {
         value = alert.getExtendedAttribute(childField);
         matcher = new AttributeAlertMatcher(childField, value);
       } else {
         value = childGetter.invoke(alert);
-        matcher = Matchers.beanPropertyMatcher(Alert.class, childField, value);
+        matcher = new FieldAlertMatcher(childField, value);
       }
       
       // Don't add empty values

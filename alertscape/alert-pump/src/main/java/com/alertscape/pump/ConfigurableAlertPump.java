@@ -60,8 +60,8 @@ public class ConfigurableAlertPump implements AlertPump {
     return getDbOfframp().getAlert(a, equator);
   }
 
-  public List<Alert> getAllAlerts() throws AlertscapeException {
-    return getDbOfframp().getAllAlerts();
+  public List<Alert> getAllAlerts(String filter) throws AlertscapeException {
+    return getDbOfframp().getAllAlerts(filter);
   }
 
   public AlertSource getAlertSource(String name) throws AlertscapeException {

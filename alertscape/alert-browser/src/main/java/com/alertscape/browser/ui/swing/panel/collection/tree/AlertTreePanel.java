@@ -30,8 +30,6 @@ import ca.odell.glazedlists.util.concurrent.Lock;
 import com.alertscape.browser.model.AlertFilter;
 import com.alertscape.browser.model.tree.AlertTreeNode;
 import com.alertscape.browser.model.tree.DefaultAlertTreeNode;
-import com.alertscape.browser.model.tree.DynamicGrowingAlertTreeNode;
-import com.alertscape.browser.model.tree.NonEmptyAttributeMatcher;
 import com.alertscape.browser.ui.swing.tree.AlertTreeModel;
 import com.alertscape.browser.ui.swing.tree.AlertTreeNodeRenderer;
 import com.alertscape.common.model.Alert;
@@ -44,29 +42,15 @@ import com.alertscape.common.model.BinarySortAlertCollection;
  */
 public class AlertTreePanel extends JPanel implements AlertFilter {
   private static final long serialVersionUID = 3210775898472971525L;
+  private static AlertTreeNode DEFAULT_ROOT = new DefaultAlertTreeNode("All Alerts");
   private AlertCollection subCollection;
   private JTree alertTree;
-  private AlertTreeNode root;
+  private AlertTreeNode root = DEFAULT_ROOT;
   private CompositeMatcherEditor<Alert> compositeEditor;
   private List<Alert> existingEvents = new ArrayList<Alert>();
   private AlertTreeModel treeModel;
 
   public void init() {
-    root = new DefaultAlertTreeNode();
-    root.setText("All Alerts");
-    root.setIcon("/com/alertscape/images/common/as_logo2_16.png");
-
-    DynamicGrowingAlertTreeNode sources = new DynamicGrowingAlertTreeNode();
-    sources.setText("Sources");
-    sources.setDynamicPath("source");
-    root.addChild(sources);
-
-    DynamicGrowingAlertTreeNode itemDyn = new DynamicGrowingAlertTreeNode();
-    itemDyn.setText("Items");
-    itemDyn.setMatcher(new NonEmptyAttributeMatcher("stateprovince"));
-    itemDyn.setDynamicPath("cat{stateprovince}:cat{city}:type");
-    root.addChild(itemDyn);
-
     treeModel = new AlertTreeModel(root);
     alertTree = new JTree(treeModel);
     alertTree.setCellRenderer(new AlertTreeNodeRenderer());
@@ -110,6 +94,13 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
     add(headerPanel, BorderLayout.NORTH);
     add(treePane, BorderLayout.CENTER);
     
+  }
+  
+  public void setRootNode(AlertTreeNode root) {
+    if(root == null) {
+      root = DEFAULT_ROOT;
+    }
+    this.root = root;
   }
 
   public AlertCollection setMasterCollection(AlertCollection master) {
