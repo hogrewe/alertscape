@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tree-node text="All Alerts"
+	icon="/com/alertscape/images/common/as_logo2_16.png">
+	<dynamic-tree-node text="Items"
+		dynamicPath="cat{stateprovince}:cat{city}:type">
+		<matcher>
+			<nonempty-attribute-matcher attributeName="stateProvince" />
+		</matcher>
+	</dynamic-tree-node>
+</tree-node>

@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+ "http://castor.org/mapping.dtd">
+
+<mapping>
+    <description>Mapping for the tree</description>
+
+    <class name="com.alertscape.browser.model.tree.DefaultAlertTreeNode">
+        <map-to xml="tree-node" />
+        <field name="text" type="string">
+            <bind-xml name="text" node="attribute"/>
+        </field>
+
+        <field name="icon" type="string">
+            <bind-xml name="icon" node="attribute" />
+        </field>
+        
+        <field name="matcher" type="com.alertscape.browser.model.tree.AlertMatcher">
+            <bind-xml auto-naming="deriveByClass" node="element"/>
+        </field>
+
+        <field name="children" collection="arraylist" type="com.alertscape.browser.model.tree.DefaultAlertTreeNode">
+            <bind-xml name="tree-node" node="element" />
+        </field>
+    </class>
+
+    <class name="com.alertscape.browser.model.tree.DynamicGrowingAlertTreeNode"
+        extends="com.alertscape.browser.model.tree.DefaultAlertTreeNode">
+        <map-to xml="dynamic-tree-node" />
+        <field name="dynamicPath" type="string">
+            <bind-xml name="dynamicPath" />
+        </field>
+    </class>
+
+    <class name="com.alertscape.browser.model.tree.AlertMatcher" verify-constructable="false">
+    </class>
+
+    <class name="com.alertscape.browser.model.tree.FieldAlertMatcher"
+        extends="com.alertscape.browser.model.tree.AlertMatcher">
+        <map-to xml="field-matcher" />
+        <field name="fieldName" type="string">
+            <bind-xml name="fieldName" node="attribute"/>
+        </field>
+        <field name="value" type="java.lang.Object">
+            <bind-xml name="value" node="attribute"/>
+        </field>
+    </class>
+
+    <class name="com.alertscape.browser.model.tree.AttributeAlertMatcher"
+        extends="com.alertscape.browser.model.tree.AlertMatcher">
+        <map-to xml="attribute-matcher" />
+        <field name="attributeName" type="string">
+            <bind-xml name="attributeName" node="attribute"/>
+        </field>
+        <field name="value" type="java.lang.Object">
+            <bind-xml name="value" node="attribute"/>
+        </field>
+    </class>
+
+    <class name="com.alertscape.browser.model.tree.NonEmptyAttributeMatcher"
+        extends="com.alertscape.browser.model.tree.AlertMatcher">
+        <map-to xml="non-empty-attribute-matcher" />
+        <field name="attributeName" type="string">
+            <bind-xml name="attributeName" node="attribute"/>
+        </field>
+    </class>
+</mapping>

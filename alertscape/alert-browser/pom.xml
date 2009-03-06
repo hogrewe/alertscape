@@ -65,6 +65,10 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+        <dependency>
+          <groupId>org.codehaus.castor</groupId>
+          <artifactId>castor</artifactId>
+        </dependency>
 	</dependencies>
 	<profiles>
 	  <profile>

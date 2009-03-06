@@ -25,4 +25,6 @@ public interface AlertService {
   public void acknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
 
   public List<AlertAttributeDefinition> getAttributeDefinitions() throws AlertscapeException;
+  
+  public String getTreeConfiguration() throws AlertscapeException;
 }

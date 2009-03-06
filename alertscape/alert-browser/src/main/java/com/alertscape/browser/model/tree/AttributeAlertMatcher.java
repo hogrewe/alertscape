@@ -1,14 +1,12 @@
 package com.alertscape.browser.model.tree;
 
-import ca.odell.glazedlists.matchers.Matcher;
-
 import com.alertscape.common.model.Alert;
 
 /**
  * @author josh
  * 
  */
-public class AttributeAlertMatcher implements Matcher<Alert> {
+public class AttributeAlertMatcher implements AlertMatcher {
   /**
    * 
    */
@@ -22,8 +20,40 @@ public class AttributeAlertMatcher implements Matcher<Alert> {
     this.attributeName = attributeName;
     this.value = value;
   }
+  
+  public AttributeAlertMatcher() {
+    
+  }
 
   public boolean matches(Alert alert) {
     return value != null && value.equals(alert.getExtendedAttribute(attributeName));
+  }
+
+  /**
+   * @return the value
+   */
+  public Object getValue() {
+    return value;
+  }
+
+  /**
+   * @param value the value to set
+   */
+  public void setValue(Object value) {
+    this.value = value;
+  }
+
+  /**
+   * @return the attributeName
+   */
+  public String getAttributeName() {
+    return attributeName;
+  }
+
+  /**
+   * @param attributeName the attributeName to set
+   */
+  public void setAttributeName(String attributeName) {
+    this.attributeName = attributeName;
   }
 }

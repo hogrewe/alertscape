@@ -11,6 +11,7 @@ import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertAttributeDefinition;
 import com.alertscape.common.model.AlertStatus;
 import com.alertscape.common.model.AuthenticatedUser;
+import com.alertscape.dao.TreeConfigurationDao;
 import com.alertscape.pump.AlertPump;
 
 /**
@@ -19,7 +20,8 @@ import com.alertscape.pump.AlertPump;
  */
 public class ConfigurableAlertService implements AlertService {
   private static final ASLogger LOG = ASLogger.getLogger(ConfigurableAlertService.class);
-  public AlertPump pump;
+  private AlertPump pump;
+  private TreeConfigurationDao treeConfigurationDao;
 
   public List<Alert> getAllAlerts() throws AlertscapeException {
     return pump.getAllAlerts();
@@ -53,6 +55,11 @@ public class ConfigurableAlertService implements AlertService {
     return pump.getAttributeDefinitions();
   }
 
+  @Override
+  public String getTreeConfiguration() throws AlertscapeException {
+    return getTreeConfigurationDao().getTreeConfiguration();
+  }
+
   /**
    * @return the pump
    */
@@ -67,4 +74,19 @@ public class ConfigurableAlertService implements AlertService {
   public void setPump(AlertPump pump) {
     this.pump = pump;
   }
+
+  /**
+   * @return the treeConfigurationDao
+   */
+  public TreeConfigurationDao getTreeConfigurationDao() {
+    return treeConfigurationDao;
+  }
+
+  /**
+   * @param treeConfigurationDao the treeConfigurationDao to set
+   */
+  public void setTreeConfigurationDao(TreeConfigurationDao treeConfigurationDao) {
+    this.treeConfigurationDao = treeConfigurationDao;
+  }
+
 }
