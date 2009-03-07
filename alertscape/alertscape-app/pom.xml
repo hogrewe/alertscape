@@ -157,5 +157,13 @@
 	    <groupId>com.alertscape.pump</groupId>
 	    <artifactId>alert-onramp</artifactId>
 	  </dependency>
+      <dependency>
+        <groupId>de.schlichtherle</groupId>
+        <artifactId>truelicense</artifactId>
+	  </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
   </dependencies>
 </project>

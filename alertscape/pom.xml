@@ -22,7 +22,6 @@
 		<module>as-dao</module>
     <module>as-webapp</module>
     <module>as-license-gen</module>
-    <module>as-license-check</module>
   </modules>
 	<build>
 	    <plugins>
