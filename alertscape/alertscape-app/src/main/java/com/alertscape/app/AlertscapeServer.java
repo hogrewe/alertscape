@@ -4,6 +4,7 @@
 package com.alertscape.app;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
@@ -18,6 +19,8 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.exolab.castor.xml.XMLContext;
 
+import com.alertscape.app.license.AlertscapeLicense;
+import com.alertscape.app.license.LicenseHelper;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.dao.AlertSourceDao;
@@ -37,18 +40,33 @@ public class AlertscapeServer {
   private String asHome;
   private AlertSourceDao sourceDao;
   private Set<AlertOnramp> onramps = new HashSet<AlertOnramp>();
-  
+
   public void init() {
-    initOnramps();
+    LicenseHelper helper = new LicenseHelper();
+    try {
+      helper.install(asHome + File.separator + "alertscape.license");
+      AlertscapeLicense license = helper.getLicense();
+      initOnramps(license.getOnramps());
+    } catch (Exception e) {
+      StringBuilder b = new StringBuilder();
+      b.append("Inv");
+      b.append("alid li");
+      b.append("cen");
+      b.append("se f");
+      b.append("ile");
+      b.append(": ");
+      b.append(e.getLocalizedMessage());
+      LOG.error(b);
+    }
   }
-  
+
   public void shutdown() {
     for (AlertOnramp onramp : onramps) {
       onramp.shutdown();
     }
   }
 
-  public void initOnramps() {
+  public void initOnramps(int allowed) {
     LocalAlertTransport t = new LocalAlertTransport();
     t.setPump(pump);
 
@@ -57,8 +75,28 @@ public class AlertscapeServer {
     List<AlertSource> sources;
     try {
       sources = sourceDao.getAllSources();
+      int onrampsConfigured = 0;
       for (AlertSource alertSource : sources) {
         if (alertSource.isActive()) {
+          onrampsConfigured++;
+          if (onrampsConfigured > allowed) {
+            StringBuilder b = new StringBuilder();
+            b.append("Lic");
+            b.append("ense all");
+            b.append("ows o");
+            b.append("nly " + allowed);
+            b.append(" onr");
+            b.append("amps b");
+            b.append("ut mor");
+            b.append("e are con");
+            b.append("figured. ");
+            b.append(" Not sta");
+            b.append("rting rem");
+            b.append("aining o");
+            b.append("nramps");
+            LOG.error(b);
+            return;
+          }
           try {
             AlertOnramp onramp = createOnramp(alertSource);
             onramp.onrampInit();
