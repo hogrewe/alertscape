@@ -139,7 +139,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   public List<Alert> getAllAlerts(String filter) throws DaoException {
     //XXX:Get rid of sql injection vulnerability!!!!!
     String query = GET_ALL_ALERTS_SQL;
-    if(filter != null) {
+    if(filter != null && !filter.isEmpty()) {
       query += " where " + filter;
     }
     return getJdbcTemplate().query(query, alertMapper);

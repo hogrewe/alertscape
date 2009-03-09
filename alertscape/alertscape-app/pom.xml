@@ -1,169 +1,239 @@
-<?xml version="1.0"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <artifactId>alertscape</artifactId>
-    <groupId>com.alertscape</groupId>
-    <version>0.9-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.alertscape</groupId>
-  <artifactId>alertscape-app</artifactId>
-  <name>alertscape-app</name>
-  <version>0.9-SNAPSHOT</version>
-  <packaging>jar</packaging>
-  <url>http://maven.apache.org</url>
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>alertscape</artifactId>
+		<groupId>com.alertscape</groupId>
+		<version>0.9-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.alertscape</groupId>
+	<artifactId>alertscape-app</artifactId>
+	<name>alertscape-app</name>
+	<version>0.9-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<url>http://maven.apache.org</url>
 	<profiles>
-	  <profile>
-	    <id>prodrelease</id>
-  <dependencies>
-      <dependency>
-	    <groupId>com.alertscape</groupId>
-	    <artifactId>as-common</artifactId>
-		<scope>provided</scope>
-	  </dependency>
-      <dependency>
-        <groupId>com.alertscape.dao</groupId>
-        <artifactId>as-dao</artifactId>
-		<scope>provided</scope>
-      </dependency>
-      <dependency>
-	    <groupId>com.alertscape.service</groupId>
-	    <artifactId>alert-service-interfaces</artifactId>
-		<scope>provided</scope>
-	  </dependency>
-      <dependency>
-	    <groupId>com.alertscape.pump</groupId>
-	    <artifactId>alert-pump</artifactId>
-		<scope>provided</scope>
-	  </dependency>
-      <dependency>
-	    <groupId>com.alertscape.pump</groupId>
-	    <artifactId>alert-onramp</artifactId>
-		<scope>provided</scope>
-	  </dependency>
-  </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.pyx4me</groupId>
-        <artifactId>proguard-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>proguard</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <inFilter>com/alertscape/**</inFilter>
-		  <!--<includeDependencies>false</includeDependencies>-->
-		  <assembly>
-		  <inclusions>
-      <inclusion>
-	    <groupId>com.alertscape</groupId>
-	    <artifactId>as-common</artifactId>
-	  </inclusion>
-      <inclusion>
-        <groupId>com.alertscape.dao</groupId>
-        <artifactId>as-dao</artifactId>
-      </inclusion>
-      <inclusion>
-	    <groupId>com.alertscape.service</groupId>
-	    <artifactId>alert-service-interfaces</artifactId>
-	  </inclusion>
-      <inclusion>
-	    <groupId>com.alertscape.pump</groupId>
-	    <artifactId>alert-pump</artifactId>
-	  </inclusion>
-      <inclusion>
-	    <groupId>com.alertscape.pump</groupId>
-	    <artifactId>alert-onramp</artifactId>
-	  </inclusion>
-      <inclusion>
-	    <groupId>com.alertscape.pump</groupId>
-	    <artifactId>alert-offramp</artifactId>
-	  </inclusion>
-		  </inclusions>
-		  </assembly>
-          <options>
-            <option>-allowaccessmodification</option>
-		    <option>-keep public class com.alertscape.pump.onramp.sender.LocalAlertTransport {void set*(***); *** get*();}</option>
-		    <option>-keep public class com.alertscape.pump.ConfigurableAlertPump {void set*(***); *** get*();void init(); void shutdown();}</option>
-		    <option>-keep public class com.alertscape.app.AlertscapeServer {public void set*(***); *** get*();public void init(); public void shutdown();}</option>
-		    <option>-keep public class com.alertscape.common.model.DefaultAlertSourceRepository {public void set*(***); *** get*();void init();}</option>
-		    <option>-keep public class com.alertscape.pump.offramp.DatabaseOfframp {public void set*(***);*** get*();}</option>
-		    <option>-keep public class com.alertscape.dao.jdbc.AlertJdbcDao {public *; }</option>
-		    <option>-keep public class com.alertscape.dao.jdbc.AlertSourceJdbcDao {public *; }</option>
-		    <option>-keep public class com.alertscape.dao.jdbc.AuthenticatedUserJdbcDao {public *; }</option>
-		    <option>-keep public class com.alertscape.dao.jdbc.AlertAttributeDefinitionJdbcDao {public *; }</option>
-		    <option>-keep public class com.alertscape.pump.offramp.JmsOfframp {public *;}</option>
-		    <option>-keep public class com.alertscape.service.ConfigurableAlertService {public *;}</option>
-		    <option>-keep public interface com.alertscape.service.AlertService {public *; }</option>
-		    <option>-keep public class com.alertscape.service.DbAuthenticationService {public *;}</option>
-		    <option>-keep public interface com.alertscape.service.AuthenticationService {public *; }</option>
-		    <option>-keep public class com.alertscape.common.model.Alert {public *; }</option>
-		    <option>-keep public class com.alertscape.common.model.AlertSource* {public *; }</option>
-   			<option>-keep public class com.alertscape.common.model.severity.Severity {public *; }</option>
-		    <option>-keep public class com.alertscape.common.model.AuthenticatedUser {public *; }</option>
-		    <option>-keep public class com.alertscape.common.model.AlertAttributeDefinition {public *; }</option>
-		    <option>-keep public class com.alertscape.common.model.equator.AlertEquator {public *; }</option>
-		    <option>-keep public enum * {public *; }</option>
-		    <option>-keep public class com.alertscape.dao.AlertDao {public *; }</option>
-		    <option>-keep public class com.alertscape.pump.onramp.file.FileOnramp {public void set*(***); *** get*();}</option>
-		    <option>-keep public class com.alertscape.pump.onramp.db.ConfigurableDatabaseOnramp {public void set*(***); *** get*();}</option>
-		    <option>-keep public class com.alertscape.pump.onramp.db.DatabaseOnramp {public void set*(***); *** get*();}</option>
-		    <option>-keep public class com.alertscape.pump.onramp.AbstractPollingAlertOnramp* {public *;}</option>
-		    <option>-keep public class com.alertscape.pump.onramp.file.SimpleRegexLineProcessor {public void set*(***); *** get*();}</option>
-		    <option>-keep public class com.alertscape.pump.onramp.file.AlertLineProcessor {public void set*(***); *** get*();}</option>
-		    <option>-keep public class com.alertscape.pump.onramp.AlertCache* {public *;}</option>
-		    <option>-keepnames class * implements java.io.Serializable</option>
-		    <option>-keepclassmembers class * implements java.io.Serializable {
-				    static final long serialVersionUID;
-					static final java.io.ObjectStreamField[] serialPersistentFields;
-					private void writeObject(java.io.ObjectOutputStream);
-					private void readObject(java.io.ObjectInputStream);
-					java.lang.Object writeReplace();
-					java.lang.Object readResolve();
-			}
+		<profile>
+			<id>prodrelease</id>
+			<dependencies>
+				<dependency>
+					<groupId>com.alertscape</groupId>
+					<artifactId>as-common</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.alertscape.dao</groupId>
+					<artifactId>as-dao</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.alertscape.service</groupId>
+					<artifactId>alert-service-interfaces</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.alertscape.pump</groupId>
+					<artifactId>alert-pump</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.alertscape</groupId>
+					<artifactId>alertscape-security</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.alertscape.pump</groupId>
+					<artifactId>alert-onramp</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.pyx4me</groupId>
+						<artifactId>proguard-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>proguard</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<inFilter>com/alertscape/**</inFilter>
+							<!--<includeDependencies>false</includeDependencies>-->
+							<assembly>
+								<inclusions>
+									<inclusion>
+										<groupId>com.alertscape</groupId>
+										<artifactId>as-common</artifactId>
+									</inclusion>
+									<inclusion>
+										<groupId>com.alertscape.dao</groupId>
+										<artifactId>as-dao</artifactId>
+									</inclusion>
+									<inclusion>
+										<groupId>com.alertscape.service</groupId>
+										<artifactId>alert-service-interfaces</artifactId>
+									</inclusion>
+									<inclusion>
+										<groupId>com.alertscape.pump</groupId>
+										<artifactId>alert-pump</artifactId>
+									</inclusion>
+									<inclusion>
+										<groupId>com.alertscape.pump</groupId>
+										<artifactId>alert-onramp</artifactId>
+									</inclusion>
+									<inclusion>
+										<groupId>com.alertscape.pump</groupId>
+										<artifactId>alert-offramp</artifactId>
+									</inclusion>
+									<inclusion>
+										<groupId>com.alertscape</groupId>
+										<artifactId>alertscape-security</artifactId>
+									</inclusion>
+								</inclusions>
+							</assembly>
+							<options>
+								<option>-adaptresourcefilenames **.xml</option>
+								<option>-allowaccessmodification</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.sender.LocalAlertTransport {void
+									set*(***); *** get*();}</option>
+								<option>-keep public class
+									com.alertscape.pump.ConfigurableAlertPump {void set*(***); ***
+									get*();void init(); void shutdown();}</option>
+								<option>-keep public class
+									com.alertscape.app.AlertscapeServer {public void set*(***); ***
+									get*();public void init(); public void shutdown();}</option>
+								<option>-keep public class
+									com.alertscape.common.model.DefaultAlertSourceRepository
+									{public void set*(***); *** get*();void init();}</option>
+								<option>-keep public class
+									com.alertscape.pump.offramp.DatabaseOfframp {public void
+									set*(***);*** get*();}</option>
+								<option>-keep public class
+									com.alertscape.dao.jdbc.AlertJdbcDao {public *; }</option>
+								<option>-keep public class
+									com.alertscape.dao.jdbc.AlertSourceJdbcDao {public *; }</option>
+								<option>-keep public class
+									com.alertscape.dao.jdbc.AuthenticatedUserJdbcDao {public *; }</option>
+								<option>-keep public class
+									com.alertscape.dao.jdbc.TreeConfigurationJdbcDao {public *; }</option>
+								<option>-keep public class
+									com.alertscape.dao.jdbc.AlertAttributeDefinitionJdbcDao {public
+									*; }</option>
+								<option>-keep public class
+									com.alertscape.pump.offramp.JmsOfframp {public *;}</option>
+								<option>-keep public class
+									com.alertscape.service.ConfigurableAlertService {public *;}</option>
+								<option>-keep public interface
+									com.alertscape.service.AlertService {public *; }</option>
+								<option>-keep public class
+									com.alertscape.service.DbAuthenticationService {public *;}</option>
+								<option>-keep public interface
+									com.alertscape.service.AuthenticationService {public *; }</option>
+								<option>-keep public class
+									com.alertscape.common.model.Alert {public *; }</option>
+								<option>-keep public class
+									com.alertscape.common.model.AlertSource* {public *; }</option>
+								<option>-keep public class
+									com.alertscape.common.model.severity.Severity {public *; }</option>
+								<option>-keep public class
+									com.alertscape.common.model.AuthenticatedUser {public *; }</option>
+								<option>-keep public class
+									com.alertscape.common.model.AlertAttributeDefinition {public *;
+									}</option>
+                                <option>-keep public class
+                                    com.alertscape.app.license.AlertscapeLicense {public *;
+                                    }</option>
+								<option>-keep public class
+									com.alertscape.common.model.equator.AlertEquator {public *; }</option>
+								<option>-keep public enum * {public *; }</option>
+								<option>-keep public class com.alertscape.dao.AlertDao
+									{public *; }</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.file.FileOnramp {public void
+									set*(***); *** get*();}</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.db.ConfigurableDatabaseOnramp
+									{public void set*(***); *** get*();}</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.db.DatabaseOnramp {public void
+									set*(***); *** get*();}</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.AbstractPollingAlertOnramp* {public
+									*;}</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.file.SimpleRegexLineProcessor
+									{public void set*(***); *** get*();}</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.file.AlertLineProcessor {public void
+									set*(***); *** get*();}</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.AlertCache* {public *;}</option>
+								<option>-keepnames class * implements
+									java.io.Serializable</option>
+								<option>-keepclassmembers class * implements
+									java.io.Serializable {
+									static final long serialVersionUID;
+									static final java.io.ObjectStreamField[]
+									serialPersistentFields;
+									private void
+									writeObject(java.io.ObjectOutputStream);
+									private void
+									readObject(java.io.ObjectInputStream);
+									java.lang.Object
+									writeReplace();
+									java.lang.Object readResolve();
+									}
 		    </option>
-          </options>
-          <libs>
-		    <lib>${java.home}/bundle/Classes/classes.jar</lib>
-		  </libs>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  </profile>
-  </profiles>
-  <dependencies>
-      <dependency>
-	    <groupId>com.alertscape</groupId>
-	    <artifactId>as-common</artifactId>
-	  </dependency>
-      <dependency>
-        <groupId>com.alertscape.dao</groupId>
-        <artifactId>as-dao</artifactId>
-      </dependency>
-      <dependency>
-	    <groupId>com.alertscape.service</groupId>
-	    <artifactId>alert-service-interfaces</artifactId>
-	  </dependency>
-      <dependency>
-	    <groupId>com.alertscape.pump</groupId>
-	    <artifactId>alert-pump</artifactId>
-	  </dependency>
-      <dependency>
-	    <groupId>com.alertscape.pump</groupId>
-	    <artifactId>alert-onramp</artifactId>
-	  </dependency>
-      <dependency>
-        <groupId>de.schlichtherle</groupId>
-        <artifactId>truelicense</artifactId>
-	  </dependency>
+								<option><![CDATA[-keep public class de.schlichtherle.license.LicenseContent { <init>(); public void set*(***); *** get*(); }]]></option>
+								<option><![CDATA[-keep public class de.schlichtherle.xml.GenericCertificate { <init>(); public void set*(***); *** get*(); }]]></option>
+							</options>
+							<libs>
+								<lib>${java.home}/bundle/Classes/classes.jar</lib>
+							</libs>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>com.alertscape</groupId>
+			<artifactId>as-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alertscape.dao</groupId>
+			<artifactId>as-dao</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alertscape.service</groupId>
+			<artifactId>alert-service-interfaces</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alertscape.pump</groupId>
+			<artifactId>alert-pump</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alertscape.pump</groupId>
+			<artifactId>alert-onramp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.schlichtherle</groupId>
+			<artifactId>truelicense</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alertscape</groupId>
+			<artifactId>alertscape-security</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-  </dependencies>
+	</dependencies>
 </project>

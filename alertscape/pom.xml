@@ -18,6 +18,7 @@
 		<module>alert-tester</module>
 		<module>alert-service-interfaces</module>
 		<module>alert-browser</module>
+		<module>alertscape-security</module>
 		<module>alertscape-app</module>
 		<module>as-dao</module>
     <module>as-webapp</module>
@@ -81,6 +82,11 @@
 			<dependency>
 				<groupId>com.alertscape.dao</groupId>
 				<artifactId>as-dao</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alertscape</groupId>
+				<artifactId>alertscape-security</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

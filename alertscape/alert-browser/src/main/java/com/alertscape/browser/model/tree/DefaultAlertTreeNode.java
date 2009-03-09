@@ -387,6 +387,7 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
     this.treeModel = treeModel;
     for (AlertTreeNode child : children) {
       child.setTreeModel(treeModel);
+      child.setParent(this);
     }
   }
 }
