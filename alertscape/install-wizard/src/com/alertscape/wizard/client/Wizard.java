@@ -40,6 +40,10 @@ public class Wizard extends Composite implements WizardStateListener {
 
     nextButton = new Button("Next", new ClickListener() {
       public void onClick(Widget sender) {
+        if(currentStep == Wizard.this.steps.size()-1) {
+          // Finish
+          return; 
+        }
         currentStep++;
         TreeItem item = stepsTree.getItem(currentStep);
         stepsTree.setSelectedItem(item);
