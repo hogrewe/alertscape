@@ -7,7 +7,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -19,7 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author josh
  *
  */
-public class HomeDirWidget extends Composite {
+public class HomeDirWidget extends WizardContent {
   private VerticalPanel contentPanel = new VerticalPanel();
   private FlowPanel homeDirPanel = new FlowPanel();
   private TextBox homeDirTextBox = new TextBox();
@@ -35,9 +34,6 @@ public class HomeDirWidget extends Composite {
     super();
     initWidget(contentPanel);
     wizardService = GWT.create(InstallWizardService.class);
-  }
-
-  public void onLoad() {
     homeDirPromptLabel.setWordWrap(true);
     homeDirPanel.add(homeDirTextBox);
     homeDirPanel.add(setButton);
@@ -51,9 +47,11 @@ public class HomeDirWidget extends Composite {
 
           public void onSuccess(Boolean result) {
             if(result) {
-              errorLabel.setText("SUCCESS!");          
+              errorLabel.setText("SUCCESS!");     
+              fireProceedable();
             } else {
               errorLabel.setText("Couldn't find that directory.");
+              fireNotProceedable();
             }
           }
         };
@@ -65,7 +63,9 @@ public class HomeDirWidget extends Composite {
     contentPanel.add(homeDirPromptLabel);
     contentPanel.add(errorLabel);
     contentPanel.add(homeDirPanel);
+  }
 
+  public void onShow() {
     homeDirTextBox.setFocus(true);
     
     AsyncCallback<String> callback = new AsyncCallback<String>() {

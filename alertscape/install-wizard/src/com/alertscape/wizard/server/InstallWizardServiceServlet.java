@@ -22,10 +22,8 @@ public class InstallWizardServiceServlet extends RemoteServiceServlet implements
   public Boolean checkDirectory(String directory) {
     File f = new File(directory);
     if(f.exists() && f.isDirectory() && f.canWrite()) {
-      
       return true;
     }
     return false;
-  }
-
+  }  
 }
