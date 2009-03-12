@@ -2,13 +2,14 @@
   <name>as-license-gen</name>
   <comment/>
   <projects>
-    <project>alert-service-interfaces</project>
-    <project>as-dao</project>
-    <project>alert-onramp</project>
-    <project>alertscape-app</project>
-    <project>alert-pump</project>
     <project>alert-offramp</project>
+    <project>alert-onramp</project>
+    <project>alert-pump</project>
+    <project>alert-service-interfaces</project>
+    <project>alertscape-app</project>
+    <project>alertscape-security</project>
     <project>as-common</project>
+    <project>as-dao</project>
   </projects>
   <buildSpec>
     <buildCommand>

@@ -2,8 +2,8 @@
   <name>alert-offramp</name>
   <comment/>
   <projects>
-    <project>as-dao</project>
     <project>as-common</project>
+    <project>as-dao</project>
   </projects>
   <buildSpec>
     <buildCommand>

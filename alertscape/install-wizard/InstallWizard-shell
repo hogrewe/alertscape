@@ -1,3 +1,0 @@
-#!/bin/sh
-APPDIR=`dirname $0`;
-java -XstartOnFirstThread -Xmx256M -cp "$APPDIR/src:$APPDIR/bin:/Users/josh/apps/gwt-mac-1.5.3/gwt-user.jar:/Users/josh/apps/gwt-mac-1.5.3/gwt-dev-mac.jar" com.google.gwt.dev.GWTShell -out "$APPDIR/www" "$@" com.alertscape.wizard.InstallWizard/InstallWizard.html;

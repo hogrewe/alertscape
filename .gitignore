@@ -5,5 +5,5 @@ velocity.log
 amp_profile.obj
 amp_default_preferences.obj
 bin
-**/install-wizard/tomcat
-**/install-wizard/www
+**/as-webapp/tomcat
+**/as-webapp/www
