@@ -6,7 +6,10 @@
     <project>alert-onramp</project>
     <project>alert-pump</project>
     <project>alert-service-interfaces</project>
+    <project>alertscape-security</project>
+    <project>as-common</project>
     <project>as-dao</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
