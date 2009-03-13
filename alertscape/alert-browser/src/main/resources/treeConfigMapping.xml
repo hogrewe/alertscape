@@ -29,7 +29,7 @@
         extends="com.alertscape.browser.model.tree.DefaultAlertTreeNode">
         <map-to xml="dynamic-tree-node" />
         <field name="dynamicPath" type="string">
-            <bind-xml name="dynamicPath" />
+            <bind-xml name="dynamicPath" node="attribute"/>
         </field>
     </class>
 

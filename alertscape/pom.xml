@@ -18,6 +18,7 @@
 		<module>alert-tester</module>
 		<module>alert-service-interfaces</module>
 		<module>alert-browser</module>
+		<module>alertscape-security</module>
 		<module>alertscape-app</module>
 		<module>as-dao</module>
     <module>as-webapp</module>
@@ -85,7 +86,17 @@
 			</dependency>
 			<dependency>
 				<groupId>com.alertscape</groupId>
+				<artifactId>alertscape-security</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alertscape</groupId>
 				<artifactId>alertscape-app</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alertscape.admin</groupId>
+				<artifactId>as-web-admin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -168,6 +179,20 @@
 			  <artifactId>trueswing</artifactId>
 			  <version>1.29</version>
 			</dependency>
+			<!--
+            <dependency>
+              <groupId>com.google.gwt</groupId>
+              <artifactId>gwt-servlet</artifactId>
+			  <version>1.5.3</version>
+              <scope>runtime</scope>
+            </dependency>
+            <dependency>
+              <groupId>com.google.gwt</groupId>
+              <artifactId>gwt-user</artifactId>
+			  <version>1.5.3</version>
+              <scope>provided</scope>
+            </dependency>        
+			-->
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -189,4 +214,28 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>internal</id>
+			<name>Archiva Managed Internal Repository</name>
+			<url>http://hogrewe.com:8585/archiva/repository/internal/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+          <id>snapshots</id>
+          <name>Archiva Managed Snapshot Repository</name>
+          <url>http://hogrewe.com:8585/archiva/repository/snapshots/</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

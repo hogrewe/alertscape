@@ -4,11 +4,9 @@
   <projects>
     <project>alert-offramp</project>
     <project>alert-onramp</project>
+    <project>alert-pump</project>
     <project>alert-service-interfaces</project>
     <project>as-dao</project>
-    <project>as-common</project>
-    <project>alert-pump</project>
-  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

@@ -4,6 +4,7 @@
 package com.alertscape.browser.ui.swing.panel.collection.table.renderer;
 
 import java.awt.Component;
+import java.util.Date;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -12,6 +13,7 @@ import ca.odell.glazedlists.swing.EventTableModel;
 
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.severity.Severity;
+import com.alertscape.util.FormatHelper;
 
 /**
  * @author josh
@@ -23,6 +25,10 @@ public class DefaultAlertCellRenderer extends DefaultTableCellRenderer {
   @Override
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
       int row, int column) {
+    if(value instanceof Date) {
+      Date date = (Date) value;
+      value = FormatHelper.formatDate(date);
+    }
     Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
     @SuppressWarnings("unchecked")

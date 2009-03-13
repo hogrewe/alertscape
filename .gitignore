@@ -4,3 +4,6 @@ target
 velocity.log
 amp_profile.obj
 amp_default_preferences.obj
+bin
+**/as-webapp/tomcat
+**/as-webapp/www

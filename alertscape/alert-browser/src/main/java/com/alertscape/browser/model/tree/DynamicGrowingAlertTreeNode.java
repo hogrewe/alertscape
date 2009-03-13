@@ -32,6 +32,20 @@ public class DynamicGrowingAlertTreeNode extends DefaultAlertTreeNode {
   private boolean usesAttribute;
 
   /**
+   * 
+   */
+  public DynamicGrowingAlertTreeNode() {
+    super();
+  }
+
+  /**
+   * @param text
+   */
+  public DynamicGrowingAlertTreeNode(String text) {
+    super(text);
+  }
+
+  /**
    * @return the dynamicPath
    */
   public String getDynamicPath() {

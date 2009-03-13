@@ -5,10 +5,18 @@
 		<param-value>/WEB-INF/alertscape-beans.xml
 		</param-value>
 	</context-param>
+	<!--
+>>>>>>> master:alertscape/as-webapp/src/main/webapp/WEB-INF/web.xml
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener
 		</listener-class>
 	</listener>
+	-->
+	<servlet>
+	   <servlet-name>asBootstrapper</servlet-name>
+	   <servlet-class>com.alertscape.web.ui.AlertscapeContextLoaderServlet</servlet-class>
+	   <load-on-startup>1</load-on-startup>
+	</servlet>
 	<servlet>
 		<servlet-name>alertExporter</servlet-name>
 		<servlet-class>
@@ -29,4 +37,11 @@
         <servlet-name>authenticationExporter</servlet-name>
         <url-pattern>/r/AuthenticationService</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>asBootstrapper</servlet-name>
+        <url-pattern>/bootstrap</url-pattern>
+    </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>bootstrap</welcome-file>
+    </welcome-file-list>
 </web-app>
