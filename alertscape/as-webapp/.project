@@ -2,14 +2,29 @@
   <name>as-webapp</name>
   <comment/>
   <projects>
+<<<<<<< HEAD:alertscape/as-webapp/.project
+=======
     <project>alert-offramp</project>
     <project>alert-onramp</project>
     <project>alert-pump</project>
+>>>>>>> master:alertscape/as-webapp/.project
     <project>alert-service-interfaces</project>
     <project>alertscape-app</project>
+<<<<<<< HEAD:alertscape/as-webapp/.project
+    <project>alert-offramp</project>
+=======
     <project>alertscape-security</project>
+>>>>>>> master:alertscape/as-webapp/.project
     <project>as-common</project>
+<<<<<<< HEAD:alertscape/as-webapp/.project
+    <project>alert-pump</project>
+=======
+>>>>>>> master:alertscape/as-webapp/.project
     <project>as-dao</project>
+<<<<<<< HEAD:alertscape/as-webapp/.project
+    <project>alert-onramp</project>
+=======
+>>>>>>> master:alertscape/as-webapp/.project
   </projects>
   <buildSpec>
     <buildCommand>

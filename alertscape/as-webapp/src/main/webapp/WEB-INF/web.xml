@@ -6,6 +6,7 @@
 		</param-value>
 	</context-param>
 	<!--
+>>>>>>> master:alertscape/as-webapp/src/main/webapp/WEB-INF/web.xml
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener
 		</listener-class>
