@@ -14,31 +14,31 @@ import org.springframework.web.context.ContextLoaderServlet;
 
 /**
  * @author josh
- *
+ * 
  */
 public class AlertscapeContextLoaderServlet extends ContextLoaderServlet {
 
   private static final long serialVersionUID = 1L;
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    if(alreadyInstalled()) {
-      return;
-    } else {
-      resp.sendRedirect("com.alertscape.wizard.InstallWizard/InstallWizard.html");
-    }
-  }
-
-  @Override
   public void init() throws ServletException {
-    if(alreadyInstalled()) {
+    if (alreadyInstalled()) {
       super.init();
     }
   }
-  
+
   protected boolean alreadyInstalled() {
     URL installed = getClass().getResource("/alertscape.installed");
 
     return installed != null;
+  }
+
+  @Override
+  public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    if (alreadyInstalled()) {
+      return;
+    } else {
+      response.sendRedirect("com.alertscape.wizard.InstallWizard/InstallWizard.html");
+    }
   }
 }

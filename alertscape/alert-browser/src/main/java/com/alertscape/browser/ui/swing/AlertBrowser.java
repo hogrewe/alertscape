@@ -96,7 +96,7 @@ public class AlertBrowser extends JFrame {
   private static JTabbedPane tabbedPane;
   private static ImageIcon closeIcon;
   private static ImageIcon detailsIcon;
-  private String filter = "item like 'GET /pic.do%'";
+  private String filter = null; //"item like 'GET /pic.do%'";
   private JmsAlertListener listener;
 
   public AlertBrowser() {
@@ -389,7 +389,7 @@ public class AlertBrowser extends JFrame {
   }
 
   private void initJms() {
-    filter = JOptionPane.showInputDialog("Alert filter:", filter);
+//    filter = JOptionPane.showInputDialog("Alert filter:", filter);
     if(listener != null) {
       listener.disconnect();
     }
