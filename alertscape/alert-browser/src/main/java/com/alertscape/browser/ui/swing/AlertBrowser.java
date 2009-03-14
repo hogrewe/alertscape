@@ -14,7 +14,9 @@ import java.awt.event.KeyEvent;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jms.ConnectionFactory;
 import javax.swing.BorderFactory;
@@ -549,7 +551,64 @@ public class AlertBrowser extends JFrame {
       LOG.error("Couldn't acknowledge alerts", e);
     }
   }
-
+ 
+  public static Map getLabels()
+  {
+  	Map val = null;
+  	try 
+  	{
+      val = alertService.getLabels(Authentication.getUser("CEV"));
+  	} 
+  	catch (Exception e) 
+  	{
+      LOG.error("Couldn't initialize labels", e);
+      val = new HashMap();
+    }
+  	
+  	return val;  	
+  }  
+  
+  
+  public static void label(List<Alert> alerts, String tagName, String tagValue)
+  {
+  	try 
+  	{
+      alertService.label(Authentication.getUser("CEV"), alerts, tagName, tagValue);
+  	} 
+  	catch (Exception e) 
+  	{
+      LOG.error("Couldn't label alerts", e);
+    }
+  }
+  
+  public static Map getCategories()
+  {
+  	Map val = null;
+  	try 
+  	{
+      val = alertService.getCategories(Authentication.getUser("CEV"));
+  	} 
+  	catch (Exception e) 
+  	{
+      LOG.error("Couldn't initialize categories", e);
+      val = new HashMap();
+    }
+  	
+  	return val;  	
+  }
+  
+  public static void categorize(List<Alert> alerts, String tagName, String tagValue)
+  {
+  	try 
+  	{
+      alertService.categorize(Authentication.getUser("CEV"), alerts, tagName, tagValue);
+  	} 
+  	catch (Exception e) 
+  	{
+      LOG.error("Couldn't categorize alerts", e);
+    }
+  }
+  
   /**
    * @return the authenticationService
    */
