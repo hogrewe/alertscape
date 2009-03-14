@@ -3,7 +3,6 @@
  */
 package com.alertscape.wizard.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -16,49 +15,27 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author josh
- *
+ * 
  */
-public class HomeDirWidget extends WizardContent {
+public class HomeDirWidget extends AbstractInstallWizardWidget {
   private VerticalPanel contentPanel = new VerticalPanel();
   private FlowPanel homeDirPanel = new FlowPanel();
   private TextBox homeDirTextBox = new TextBox();
-  private Button setButton = new Button("Set");
+  private Button checkButton = new Button("Check");
   private HTML homeDirPromptLabel = new HTML("Loading...");
   private Label errorLabel = new Label();
-  private InstallWizardServiceAsync wizardService;
-  
+
   /**
    * 
    */
-  public HomeDirWidget() {
-    super();
+  public HomeDirWidget(InstallWizardServiceAsync wizardService, InstallWizardInfo info) {
+    super(wizardService, info);
     initWidget(contentPanel);
-    wizardService = GWT.create(InstallWizardService.class);
     homeDirPromptLabel.setWordWrap(true);
     homeDirPanel.add(homeDirTextBox);
-    homeDirPanel.add(setButton);
-    
-    setButton.addClickListener(new ClickListener() {
-      public void onClick(Widget sender) {
-        AsyncCallback<Boolean> callback = new AsyncCallback<Boolean>() {
-          public void onFailure(Throwable caught) {
-            errorLabel.setText("EXCEPTION!!! " + caught);
-          }
+    homeDirPanel.add(checkButton);
 
-          public void onSuccess(Boolean result) {
-            if(result) {
-              errorLabel.setText("SUCCESS!");     
-              fireProceedable();
-            } else {
-              errorLabel.setText("Couldn't find that directory.");
-              fireNotProceedable();
-            }
-          }
-        };
-        wizardService.checkDirectory(homeDirTextBox.getText(), callback);
-        
-      }
-    });
+    checkButton.addClickListener(new DirectoryCheckClickListener());
 
     contentPanel.add(homeDirPromptLabel);
     contentPanel.add(errorLabel);
@@ -67,7 +44,7 @@ public class HomeDirWidget extends WizardContent {
 
   public void onShow() {
     homeDirTextBox.setFocus(true);
-    
+
     AsyncCallback<String> callback = new AsyncCallback<String>() {
       public void onFailure(Throwable caught) {
         homeDirPromptLabel.setText("Could not get user name from the server");
@@ -81,6 +58,33 @@ public class HomeDirWidget extends WizardContent {
             + "(e.g. /home/alertscape)");
       }
     };
-    wizardService.getServerUser(callback);
+    getWizardService().getServerUser(callback);
   }
+
+  /**
+   * @author josh
+   * 
+   */
+  private final class DirectoryCheckClickListener implements ClickListener {
+    public void onClick(Widget sender) {
+      AsyncCallback<Boolean> callback = new AsyncCallback<Boolean>() {
+        public void onFailure(Throwable caught) {
+          errorLabel.setText("EXCEPTION!!! " + caught);
+        }
+
+        public void onSuccess(Boolean result) {
+          if (result) {
+            errorLabel.setText("SUCCESS!");
+            getInfo().setAsHome(homeDirTextBox.getText());
+            fireProceedable();
+          } else {
+            errorLabel.setText("Couldn't find that directory.");
+            fireNotProceedable();
+          }
+        }
+      };
+      getWizardService().checkDirectory(homeDirTextBox.getText(), callback);
+    }
+  }
+
 }

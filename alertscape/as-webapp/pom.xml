@@ -41,6 +41,9 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>1.1-SNAPSHOT</version>
+				<configuration>
+				  <runTarget>com.alertscape.wizard.InstallWizard/InstallWizard.html</runTarget>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -76,6 +79,15 @@
 			<version>1.5.3</version>
 			<scope>provided</scope>
 		</dependency>
+		<!--
+        <dependency>
+          <groupId>com.google.gwt</groupId>
+          <artifactId>gwt-dev</artifactId>
+          <version>1.5.3</version>
+          <classifier>${gwt.platform}</classifier>
+          <scope>provided</scope>
+        </dependency>
+		-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
@@ -117,4 +129,40 @@
 			<artifactId>log4j</artifactId>
 		</dependency>
 	</dependencies>
+  <!--  profiles (with activation per platform) -->
+  <profiles>
+    <profile>
+        <id>windows</id>
+        <properties>
+            <gwt.platform>windows</gwt.platform>
+        </properties>
+        <activation>
+            <os>
+                <family>windows</family>
+            </os>
+        </activation>
+    </profile>
+    <profile>
+        <id>mac</id>
+        <properties>
+            <gwt.platform>mac</gwt.platform>
+        </properties>
+        <activation>
+            <os>
+                <family>mac</family>
+            </os>
+        </activation>
+    </profile>
+    <profile>
+        <id>linux</id>
+        <properties>
+            <gwt.platform>linux</gwt.platform>
+        </properties>
+        <activation>
+            <os>
+                <name>linux</name>
+            </os>
+        </activation>
+    </profile>
+  </profiles>
 </project>

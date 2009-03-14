@@ -183,7 +183,7 @@ public class Wizard extends Composite implements WizardStateListener {
     nextButton.setEnabled(false);
     stepContentPanel.setWidget(step.getContent());
     step.getContent().onShow();
-    stepsTree.setSelectedItem(treeItems[stepIndex], false);
+    stepsTree.setSelectedItem(treeItems[stepIndex], false);    
   }
 
   /**
@@ -198,6 +198,10 @@ public class Wizard extends Composite implements WizardStateListener {
           return;
         }
         int stepIndex = steps.indexOf(step);
+        if(stepIndex > currentStep + 1) {
+          TreeItem old = treeItems[currentStep];
+          stepsTree.setSelectedItem(old);
+        }
         History.newItem(Integer.toString(stepIndex));
         movetoStep(stepIndex);
       } else {

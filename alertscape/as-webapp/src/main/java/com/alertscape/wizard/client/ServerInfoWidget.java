@@ -3,7 +3,6 @@
  */
 package com.alertscape.wizard.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.Grid;
@@ -16,40 +15,45 @@ import com.google.gwt.user.client.ui.Widget;
  * @author josh
  * 
  */
-public class ServerInfoWidget extends WizardContent {
+public class ServerInfoWidget extends AbstractInstallWizardWidget {
   private VerticalPanel contentPanel = new VerticalPanel();
   private Label errorLabel = new Label();
   private Grid g;
-  private TextBox serverContext;
-  private InstallWizardServiceAsync wizardService;
+  private TextBox serverContextTextBox;
+  private TextBox jmsPortTextBox;
 
-  public ServerInfoWidget() {
-    super();
+  public ServerInfoWidget(InstallWizardServiceAsync wizardService, InstallWizardInfo info) {
+    super(wizardService, info);
     initWidget(contentPanel);
-    wizardService = GWT.create(InstallWizardService.class);
-    
+
     contentPanel.add(errorLabel);
 
-    g = new Grid(1, 2);
-    serverContext = new TextBox();
-    setRow(0, "Server Context:", serverContext);
+    g = new Grid(2, 2);
+    serverContextTextBox = new TextBox();
+    jmsPortTextBox = new TextBox();
+    jmsPortTextBox.setText("7777");
+
+    int row = 0;
+    setRow(row++, "Server Context:", serverContextTextBox);
+    setRow(row++, "JMS Port:", jmsPortTextBox);
 
     ChangeListener listener = new ValidChangeListener();
-    serverContext.addChangeListener(listener);
-    
+    serverContextTextBox.addChangeListener(listener);
+    jmsPortTextBox.addChangeListener(listener);
+
     contentPanel.add(g);
 
-    wizardService.getContext(new AsyncCallback<String>() {
+    getWizardService().getContext(new AsyncCallback<String>() {
       public void onFailure(Throwable caught) {
         errorLabel.setText("Couldn't talk to server to get context");
       }
 
       public void onSuccess(String result) {
-        serverContext.setText(result);
+        serverContextTextBox.setText(result);
       }
-      
+
     });
-    
+
   }
 
   @Override
@@ -61,9 +65,15 @@ public class ServerInfoWidget extends WizardContent {
     g.setText(row, 0, label);
     g.setWidget(row, 1, w);
   }
-  
+
   protected void validate() {
-    if (notEmpty(serverContext)) {
+    if (notEmpty(serverContextTextBox) && notEmpty(jmsPortTextBox)) {
+      try {
+        Integer.parseInt(jmsPortTextBox.getText());
+      } catch (NumberFormatException e) {
+      }
+      getInfo().setContext(serverContextTextBox.getText());
+      getInfo().setJmsPort(jmsPortTextBox.getText());
       fireProceedable();
     } else {
       fireNotProceedable();

@@ -13,7 +13,14 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("installWizard")
 public interface InstallWizardService extends RemoteService {
   String getServerUser();
-  Boolean checkDirectory(String directory);
+
+  boolean checkDirectory(String directory);
+
   String getContext();
-  void writeInstallFiles();
+
+  boolean doesAlertscapeSchemaExist(String driverName, String url, String username, String password)
+      throws WizardException;
+
+  void install(InstallWizardInfo info) throws WizardException;
+  
 }

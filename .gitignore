@@ -7,3 +7,5 @@ amp_default_preferences.obj
 bin
 **/as-webapp/tomcat
 **/as-webapp/www
+**/as-webapp/src/main/webapp/com.alertscape.**
+**/as-webapp/src/main/webapp/.gwt**
