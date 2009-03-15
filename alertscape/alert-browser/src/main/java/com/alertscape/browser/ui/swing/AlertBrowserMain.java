@@ -15,6 +15,11 @@ public class AlertBrowserMain {
    */
   public static void main(String[] args) {
     // new AlertBrowser();
+    
+    
+    System.setProperty("jms.url", args[0]);
+    System.setProperty("remote.service.url", args[1]);
+    
 
     String[] contextPaths = new String[] { "browser-beans.xml" };
     new ClassPathXmlApplicationContext(contextPaths);

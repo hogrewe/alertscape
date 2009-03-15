@@ -17,6 +17,8 @@ public interface InstallWizardService extends RemoteService {
   boolean checkDirectory(String directory);
 
   String getContext();
+  
+  String getServerName();
 
   boolean doesAlertscapeSchemaExist(String driverName, String url, String username, String password)
       throws WizardException;

@@ -43,7 +43,7 @@ public class InstallWizardInfo implements Serializable {
   /**
    * @return the url
    */
-  public String getUrl() {
+  public String getDbUrl() {
     return url;
   }
 
@@ -103,7 +103,7 @@ public class InstallWizardInfo implements Serializable {
   /**
    * @return the jmsPort
    */
-  public String getJmsPort() {
+  public String getJmsUrl() {
     return jmsPort;
   }
 

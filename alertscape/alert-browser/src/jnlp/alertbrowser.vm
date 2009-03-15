@@ -1,9 +1,10 @@
-<jnlp spec="$jnlpspec" codebase="$project.Url" href="$outputFile">
+<jnlp spec="$jnlpspec" codebase="$$codebase" href="$outputFile">
   <information>
     <title>Alertscape Management Portal</title>
     <vendor>Alertscape Technologies</vendor>
     <homepage href="alertscape.com"/>
     <description>Alertscape Browser</description>
+    <icon href="as_logo2_64.png" />
   </information>
 
   <security>
@@ -16,5 +17,7 @@
      $dependencies
   
   </resources>
-  <application-desc main-class="$mainClass"/>
+  <application-desc main-class="$mainClass" >
+    $params
+  </application>
 </jnlp>

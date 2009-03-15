@@ -20,7 +20,7 @@ public class ServerInfoWidget extends AbstractInstallWizardWidget {
   private Label errorLabel = new Label();
   private Grid g;
   private TextBox serverContextTextBox;
-  private TextBox jmsPortTextBox;
+  private TextBox jmsTextBox;
 
   public ServerInfoWidget(InstallWizardServiceAsync wizardService, InstallWizardInfo info) {
     super(wizardService, info);
@@ -30,16 +30,15 @@ public class ServerInfoWidget extends AbstractInstallWizardWidget {
 
     g = new Grid(2, 2);
     serverContextTextBox = new TextBox();
-    jmsPortTextBox = new TextBox();
-    jmsPortTextBox.setText("7777");
+    jmsTextBox = new TextBox();
 
     int row = 0;
     setRow(row++, "Server Context:", serverContextTextBox);
-    setRow(row++, "JMS Port:", jmsPortTextBox);
+    setRow(row++, "JMS URL:", jmsTextBox);
 
     ChangeListener listener = new ValidChangeListener();
     serverContextTextBox.addChangeListener(listener);
-    jmsPortTextBox.addChangeListener(listener);
+    jmsTextBox.addChangeListener(listener);
 
     contentPanel.add(g);
 
@@ -52,6 +51,16 @@ public class ServerInfoWidget extends AbstractInstallWizardWidget {
         serverContextTextBox.setText(result);
       }
 
+    });
+    
+    getWizardService().getServerName(new AsyncCallback<String>() {
+      public void onFailure(Throwable t) {
+        errorLabel.setText("Couldn't talk to server to get server name");
+      }
+
+      public void onSuccess(String value) {
+        jmsTextBox.setText("tcp://" + value + ":7777");
+      }
     });
 
   }
@@ -67,13 +76,13 @@ public class ServerInfoWidget extends AbstractInstallWizardWidget {
   }
 
   protected void validate() {
-    if (notEmpty(serverContextTextBox) && notEmpty(jmsPortTextBox)) {
+    if (notEmpty(serverContextTextBox) && notEmpty(jmsTextBox)) {
       try {
-        Integer.parseInt(jmsPortTextBox.getText());
+        Integer.parseInt(jmsTextBox.getText());
       } catch (NumberFormatException e) {
       }
       getInfo().setContext(serverContextTextBox.getText());
-      getInfo().setJmsPort(jmsPortTextBox.getText());
+      getInfo().setJmsPort(jmsTextBox.getText());
       fireProceedable();
     } else {
       fireNotProceedable();
