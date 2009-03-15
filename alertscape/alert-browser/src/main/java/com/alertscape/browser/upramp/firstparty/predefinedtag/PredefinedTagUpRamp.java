@@ -10,6 +10,7 @@ import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.ui.swing.AlertBrowser;
 import com.alertscape.browser.upramp.model.UpRamp;
 import com.alertscape.common.model.Alert;
+import com.alertscape.service.tags.PredefinedTagConstants;
 
 public class PredefinedTagUpRamp implements UpRamp
 {

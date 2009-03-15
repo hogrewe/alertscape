@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.upramp.model.AbstractUpRampPanel;
 import com.alertscape.browser.upramp.model.UpRamp;
+import com.alertscape.service.tags.CustomTagConstants;
 
 public class CustomTagPanel extends AbstractUpRampPanel
 {

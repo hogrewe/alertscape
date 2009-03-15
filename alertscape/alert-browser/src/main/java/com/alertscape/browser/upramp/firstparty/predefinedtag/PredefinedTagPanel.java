@@ -19,6 +19,8 @@ import javax.swing.JSeparator;
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.upramp.model.AbstractUpRampPanel;
 import com.alertscape.browser.upramp.model.UpRamp;
+import com.alertscape.service.tags.PredefinedTagConstants;
+import com.alertscape.service.tags.PredefinedTagProfile;
 
 public class PredefinedTagPanel  extends AbstractUpRampPanel
 {
