@@ -41,14 +41,14 @@ public class FinalInstallWidget extends AbstractInstallWizardWidget {
 
     SummarySection db = new SummarySection(4, "Database");
     db.addRow("Driver class:", getInfo().getDriverName());
-    db.addRow("URL:", getInfo().getUrl());
+    db.addRow("URL:", getInfo().getDbUrl());
     db.addRow("Username:", getInfo().getUsername());
     db.addRow("Password", "*********");
     layout.add(db);
 
     SummarySection server = new SummarySection(3, "Server Info");
     server.addRow("Server context:", getInfo().getContext());
-    server.addRow("JMS Port:", getInfo().getJmsPort());
+    server.addRow("JMS Port:", getInfo().getJmsUrl());
     server.addRow("Home directory:", getInfo().getAsHome());
     layout.add(server);
 

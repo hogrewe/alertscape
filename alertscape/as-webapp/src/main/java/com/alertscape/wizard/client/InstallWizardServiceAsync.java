@@ -8,6 +8,8 @@ public interface InstallWizardServiceAsync {
   void checkDirectory(String directory, AsyncCallback<Boolean> callback);
 
   void getContext(AsyncCallback<String> callback);
+  
+  void getServerName(AsyncCallback<String> callback);
 
   void doesAlertscapeSchemaExist(String driverName, String url, String username, String password,
       AsyncCallback<Boolean> callback);

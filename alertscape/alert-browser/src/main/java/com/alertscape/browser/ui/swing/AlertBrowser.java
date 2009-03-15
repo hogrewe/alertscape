@@ -49,6 +49,7 @@ import com.alertscape.AlertscapeException;
 import com.alertscape.browser.common.auth.Authentication;
 import com.alertscape.browser.common.auth.AuthenticationEvent;
 import com.alertscape.browser.common.auth.AuthenticationListener;
+import com.alertscape.browser.common.auth.AuthenticationEvent.AuthEventType;
 import com.alertscape.browser.localramp.firstparty.preferences.BackgroundPreferenceLoader;
 import com.alertscape.browser.localramp.firstparty.preferences.LoadPreferencesAction;
 import com.alertscape.browser.localramp.firstparty.preferences.SavePreferencesAction;
@@ -98,7 +99,7 @@ public class AlertBrowser extends JFrame {
   private static JTabbedPane tabbedPane;
   private static ImageIcon closeIcon;
   private static ImageIcon detailsIcon;
-  private String filter = null; //"item like 'GET /pic.do%'";
+  private String filter = null; // "item like 'GET /pic.do%'";
   private JmsAlertListener listener;
 
   public AlertBrowser() {
@@ -360,16 +361,17 @@ public class AlertBrowser extends JFrame {
 
     Authentication.addAuthenticationListener(new AuthenticationListener() {
       public void handleAuthEvent(AuthenticationEvent e) {
-        // TODO: there is probably a better way to do this than throwing it into a thread, but this is at least an
-        // improvement over locking the ui for 2 minutes while it DLs alerts...
-        Thread t = new Thread() {
-          public void run() {
-            initJms();
-          }
-        };
+        if (e.getType() == AuthEventType.LOGIN) {
+          // TODO: there is probably a better way to do this than throwing it into a thread, but this is at least an
+          // improvement over locking the ui for 2 minutes while it DLs alerts...
+          Thread t = new Thread() {
+            public void run() {
+              initJms();
+            }
+          };
 
-        t.start();
-
+          t.start();
+        }
       }
     });
 
@@ -391,8 +393,8 @@ public class AlertBrowser extends JFrame {
   }
 
   private void initJms() {
-//    filter = JOptionPane.showInputDialog("Alert filter:", filter);
-    if(listener != null) {
+    // filter = JOptionPane.showInputDialog("Alert filter:", filter);
+    if (listener != null) {
       listener.disconnect();
     }
     listener = new JmsAlertListener();
@@ -551,64 +553,47 @@ public class AlertBrowser extends JFrame {
       LOG.error("Couldn't acknowledge alerts", e);
     }
   }
- 
-  public static Map getLabels()
-  {
-  	Map val = null;
-  	try 
-  	{
+
+  public static Map getLabels() {
+    Map val = null;
+    try {
       val = alertService.getLabels(Authentication.getUser("CEV"));
-  	} 
-  	catch (Exception e) 
-  	{
+    } catch (Exception e) {
       LOG.error("Couldn't initialize labels", e);
       val = new HashMap();
     }
-  	
-  	return val;  	
-  }  
-  
-  
-  public static void label(List<Alert> alerts, String tagName, String tagValue)
-  {
-  	try 
-  	{
+
+    return val;
+  }
+
+  public static void label(List<Alert> alerts, String tagName, String tagValue) {
+    try {
       alertService.label(Authentication.getUser("CEV"), alerts, tagName, tagValue);
-  	} 
-  	catch (Exception e) 
-  	{
+    } catch (Exception e) {
       LOG.error("Couldn't label alerts", e);
     }
   }
-  
-  public static Map getCategories()
-  {
-  	Map val = null;
-  	try 
-  	{
+
+  public static Map getCategories() {
+    Map val = null;
+    try {
       val = alertService.getCategories(Authentication.getUser("CEV"));
-  	} 
-  	catch (Exception e) 
-  	{
+    } catch (Exception e) {
       LOG.error("Couldn't initialize categories", e);
       val = new HashMap();
     }
-  	
-  	return val;  	
+
+    return val;
   }
-  
-  public static void categorize(List<Alert> alerts, String tagName, String tagValue)
-  {
-  	try 
-  	{
+
+  public static void categorize(List<Alert> alerts, String tagName, String tagValue) {
+    try {
       alertService.categorize(Authentication.getUser("CEV"), alerts, tagName, tagValue);
-  	} 
-  	catch (Exception e) 
-  	{
+    } catch (Exception e) {
       LOG.error("Couldn't categorize alerts", e);
     }
   }
-  
+
   /**
    * @return the authenticationService
    */
