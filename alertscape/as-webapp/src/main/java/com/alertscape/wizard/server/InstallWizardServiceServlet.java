@@ -78,6 +78,7 @@ public class InstallWizardServiceServlet extends RemoteServiceServlet implements
       propsWriter.write("jdbc.username=" + info.getUsername() + "\n");
       propsWriter.write("jdbc.password=" + info.getPassword() + "\n");
       propsWriter.write("jms.url=" + info.getJmsUrl() + "\n");
+      propsWriter.write("as.home=" + info.getAsHome() + "\n");
       propsWriter.write("ui.hostname=" + info.getContext() + "\n");
     } catch (IOException e) {
       e.printStackTrace();
