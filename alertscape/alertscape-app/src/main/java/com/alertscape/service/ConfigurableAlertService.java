@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.alertscape.AlertscapeException;
-import com.alertscape.browser.upramp.firstparty.customtag.CustomTagConstants;
-import com.alertscape.browser.upramp.firstparty.predefinedtag.PredefinedTagConstants;
-import com.alertscape.browser.upramp.firstparty.predefinedtag.PredefinedTagProfile;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertAttributeDefinition;
@@ -19,6 +16,9 @@ import com.alertscape.common.model.AlertStatus;
 import com.alertscape.common.model.AuthenticatedUser;
 import com.alertscape.dao.TreeConfigurationDao;
 import com.alertscape.pump.AlertPump;
+import com.alertscape.service.tags.CustomTagConstants;
+import com.alertscape.service.tags.PredefinedTagConstants;
+import com.alertscape.service.tags.PredefinedTagProfile;
 
 /**
  * @author josh
@@ -118,7 +118,7 @@ public class ConfigurableAlertService implements AlertService {
 	}
 
 	@Override
-	public Map getCategories(AuthenticatedUser user) throws AlertscapeException
+	public Map<String, ?> getCategories(AuthenticatedUser user) throws AlertscapeException
 	{
 		LOG.info("getting category definitions");
 		
@@ -126,14 +126,14 @@ public class ConfigurableAlertService implements AlertService {
 		// remember that major tags / categories need to be predefined, and cannot have custom names, but they can have custom values
 		// may want to select * from the predefined values table, and join it with all of the values for the given tags in the database
 		// alphabetize, and provde the results back....
-		Map myMap = new HashMap();
-		List fakeTagList = new ArrayList();
+		Map<String, Object> myMap = new HashMap<String, Object>();
+		List<String> fakeTagList = new ArrayList<String>();
 		fakeTagList.add("Status");
 		fakeTagList.add("Folder");
 		fakeTagList.add("Responsible Dept");
 		myMap.put(PredefinedTagConstants.DEFINED_TAGNAMES, fakeTagList);
 		
-		List<String> validStatuses = new ArrayList();
+		List<String> validStatuses = new ArrayList<String>();
 		validStatuses.add("Assigned");
 		validStatuses.add("Work in Progress");
 		validStatuses.add("Waiting for Customer");
@@ -144,7 +144,7 @@ public class ConfigurableAlertService implements AlertService {
 		statusProfile.setDefaultValue("Assigned");
 		myMap.put("Status" + PredefinedTagConstants.TAGPROFILE_SUFFIX, statusProfile);
 	
-		List<String> validFolders = new ArrayList();
+		List<String> validFolders = new ArrayList<String>();
 		validFolders.add("(None)");
 		validFolders.add("Resolved");
 		validFolders.add("Known Issue");
@@ -155,7 +155,7 @@ public class ConfigurableAlertService implements AlertService {
 		folderProfile.setDefaultValue("(None)");
 		myMap.put("Folder" + PredefinedTagConstants.TAGPROFILE_SUFFIX, folderProfile);
 	
-		List<String> validDepts = new ArrayList();		
+		List<String> validDepts = new ArrayList<String>();		
 		validDepts.add("Tier 1 NOC");
 		validDepts.add("Tier 2 Customer Care");
 		validDepts.add("Tier 3 Engineering");
@@ -169,7 +169,7 @@ public class ConfigurableAlertService implements AlertService {
 	}
 
 	@Override
-	public Map getLabels(AuthenticatedUser user) throws AlertscapeException
+	public Map<String, List<String>> getLabels(AuthenticatedUser user) throws AlertscapeException
 	{
 		LOG.info("getting label definitions");
 
@@ -177,8 +177,8 @@ public class ConfigurableAlertService implements AlertService {
 		// remember that minor tags / labels do NOT need to be predefined, and so they CAN have custom names, AND they can have custom values
 		// may want to select * from the predefined values table, and join it with all of the names/values for the in the database
 		// alphabetize, and provde the results back....
-		Map myMap = new HashMap();
-		List fakeTagList = new ArrayList();
+		Map<String, List<String>> myMap = new HashMap<String, List<String>>();
+		List<String> fakeTagList = new ArrayList<String>();
 		fakeTagList.add("Location");
 		fakeTagList.add("Known Event Name");
 		fakeTagList.add("Ticket Number");

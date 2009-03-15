@@ -1,4 +1,4 @@
-package com.alertscape.browser.upramp.firstparty.predefinedtag;
+package com.alertscape.service.tags;
 
 import java.util.List;
 

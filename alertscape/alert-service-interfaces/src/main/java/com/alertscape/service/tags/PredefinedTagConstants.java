@@ -1,4 +1,4 @@
-package com.alertscape.browser.upramp.firstparty.predefinedtag;
+package com.alertscape.service.tags;
 
 public class PredefinedTagConstants
 {
