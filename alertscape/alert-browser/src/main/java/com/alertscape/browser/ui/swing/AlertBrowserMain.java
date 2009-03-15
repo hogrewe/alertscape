@@ -14,9 +14,10 @@ public class AlertBrowserMain {
    * @param args
    */
   public static void main(String[] args) {
-    // new AlertBrowser();
-    
-    
+    if(args.length < 2) {
+      System.err.println("Usage: AlertBrowserMain jmsurl remoteserviceurl");
+    }
+
     System.setProperty("jms.url", args[0]);
     System.setProperty("remote.service.url", args[1]);
     

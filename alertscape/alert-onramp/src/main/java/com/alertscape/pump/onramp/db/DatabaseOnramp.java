@@ -65,7 +65,7 @@ public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
       }
       Severity defaultSev = SeverityFactory.getInstance().getSeverity(0);
       for (Alert alert : nextAlerts) {
-        if(alert.getSeverity() == null || alert.getSeverity() == defaultSev) {
+        if (alert.getSeverity() == null || alert.getSeverity() == defaultSev) {
           Severity severity = determineSeverity(alert);
           alert.setSeverity(severity);
         }
@@ -105,7 +105,9 @@ public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
   @SuppressWarnings("unchecked")
   @Override
   protected void initState(Map<String, Object> state) {
-    lastId = (ID) state.get(LAST_ID);
+    if (state != null) {
+      lastId = (ID) state.get(LAST_ID);
+    }
   }
 
 }

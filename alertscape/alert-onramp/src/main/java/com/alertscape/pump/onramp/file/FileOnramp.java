@@ -217,8 +217,15 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
 
   @Override
   protected void initState(Map<String, Object> state) {
-    lastLinePointer = (Long) state.get(LINE_POINTER);
-    lastLineHash = (String) state.get(LINE_HASH);
+    if (state != null) {
+      try {
+        lastLinePointer = (Long) state.get(LINE_POINTER);
+      } catch (Exception e) {
+        lastLinePointer=0;
+        LOG.error("Couldn't intialize line pointer for file, starting at 0");
+      }
+      lastLineHash = (String) state.get(LINE_HASH);
+    }
     LOG.info("Initialized file reading state to: pointer: " + lastLinePointer + ", hash: " + lastLineHash);
   }
 
