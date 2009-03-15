@@ -1,5 +1,6 @@
 package com.alertscape.common.util;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,120 @@ public class AlertUtility {
 	private static final String singleLineDelimiter = ", ";
 	private static final String newline = "\n";
 	private static final String divider = "------------------------------------------";
+	
+	public static Map<String,Integer> countAlertFields(List<Alert> alerts, String field)
+	{
+		// create a map of field value to counted occurances
+  	Map<String,Integer> fieldVals = new HashMap();
+  	
+  	// iterate through the alets, counting those fields
+  	for (int i = 0; i < alerts.size(); i++)
+  	{
+  		// get the next alert
+  		Alert alert = alerts.get(i);
+  		
+  		// get the next field value
+  		String val = getAlertFieldValueFromAttributeName(alert, field);
+  		
+  		// get the current count, and increment it in the map
+  		Integer itemCount = fieldVals.get(val);
+  		if (itemCount == null)
+  		{
+  			itemCount = new Integer(0);
+  		}
+  		int newCount = itemCount.intValue() + 1;
+  		fieldVals.put(val, new Integer(newCount));
+  	}
+  	
+  	return fieldVals;
+	}
+	
+	public static String getAlertFieldValueFromAttributeName(Alert alert, String name)
+	{
+		String value = null;
+		// TODO - add all of the static fields here
+		if (name.equals(labelItem)) 
+		{
+			value = alert.getItem();
+		}		
+		else if (name.equals(labelItemType)) 
+		{
+			value = alert.getItemType();
+		}
+		else if (name.equals(labelManager)) 
+		{
+			value = alert.getItemManager();
+		}
+		else if (name.equals(labelManagerType)) 
+		{
+			value = alert.getItemManagerType();
+		}		
+		else if (name.equals(labelSeverity)) 
+		{
+			value = alert.getSeverity().getName();
+		}		
+		else if (name.equals(labelType)) 
+		{
+			value = alert.getType();
+		}
+		else if (name.equals(labelCount)) 
+		{
+			value = alert.getCount() + "";
+		}
+		else if (name.equals(labelSource)) 
+		{
+			value = alert.getSource().getSourceName();
+		}
+		else if (name.equals(labelShortDescription)) 
+		{
+			value = alert.getShortDescription();
+		}
+		else if (name.equals(labelLongDescription)) 
+		{
+			value = alert.getLongDescription();
+		}
+		else if (name.equals(labelFirstOccurrence)) 
+		{
+			value = alert.getFirstOccurence().toString();
+		}
+		else if (name.equals(labelLastOccurrence)) 
+		{
+			value = alert.getLastOccurence().toString();
+		}
+		else if (name.equals(labelAlertId)) 
+		{
+			value = alert.getAlertId() + "";
+		}		
+		else // did not find a static field with this name, so try a major or minor tag (category/label)
+		{
+			// check if this field is a major tag...
+			Object majorval = alert.getMajorTag(name);
+			if (majorval != null)
+			{
+				value = majorval.toString();
+			}
+			else // it was not a major tag, so check if it is a minor tag
+			{
+				Object minorval = alert.getMinorTag(name);
+				if (minorval != null)
+				{
+					value = minorval.toString();
+				}
+				else // if was not a static, major, or minor attribute...
+				{
+					value = "n/a";
+				}
+			}
+		}
+		
+		// one last check, if the attribute was right, but the value was null, then reset the value to n/a
+		if (value == null)
+		{
+			value = "n/a"; 
+		}
+		
+		return value;
+	}
 	
 	public static String toMultiLineKeyValString(Alert alert)
 	{

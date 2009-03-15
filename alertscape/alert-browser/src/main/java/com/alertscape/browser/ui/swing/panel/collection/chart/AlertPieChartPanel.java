@@ -23,6 +23,7 @@ import com.alertscape.browser.localramp.firstparty.preferences.UserPreferencesPa
 import com.alertscape.browser.ui.swing.panel.collection.AlertCollectionPanel;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertCollection;
+import com.alertscape.common.util.AlertUtility;
 
 public class AlertPieChartPanel extends JPanel implements AlertCollectionPanel, UserPreferencesPanel
 {
@@ -45,26 +46,29 @@ public class AlertPieChartPanel extends JPanel implements AlertCollectionPanel, 
   private void init()
   {
   	// set up the ui
-  	// TODO: for now, I am just going to assume that the field is Item....
+
+// this code has been generalized for any alert field, not just item, and moved to alertutility   	
+//  	// TODO: for now, I am just going to assume that the field is Item....
+//  	// 	 sum up the total count for each of the field values
+//  	Map<String,Integer> fieldVals = new HashMap();
+//  	for (int i = 0; i < chartedAlerts.size(); i++)
+//  	{
+//  		Alert alert = chartedAlerts.get(i);
+//  		String item = alert.getItem();
+//  		
+//  		Integer itemCount = fieldVals.get(item);
+//  		if (itemCount == null)
+//  		{
+//  			itemCount = new Integer(0);
+//  		}
+//  		int newCount = itemCount.intValue() + 1;
+//  		fieldVals.put(item, new Integer(newCount));
+//  	}
   	
-  	// sum up the total count for each of the field values
-  	Map<String,Integer> fieldVals = new HashMap();
-  	for (int i = 0; i < chartedAlerts.size(); i++)
-  	{
-  		Alert alert = chartedAlerts.get(i);
-  		String item = alert.getItem();
-  		
-  		Integer itemCount = fieldVals.get(item);
-  		if (itemCount == null)
-  		{
-  			itemCount = new Integer(0);
-  		}
-  		int newCount = itemCount.intValue() + 1;
-  		fieldVals.put(item, new Integer(newCount));
-  	}
+  	Map<String,Integer> fieldVals = AlertUtility.countAlertFields(chartedAlerts, chartedField);
   	
   	// determine percentages
-  	Map<String, Double> fieldPcts = new HashMap(fieldVals.size());
+  	Map<String, Double> fieldPcts = new HashMap<String, Double>(fieldVals.size());
   	Iterator<String> it = fieldVals.keySet().iterator();
   	while (it.hasNext())
   	{
