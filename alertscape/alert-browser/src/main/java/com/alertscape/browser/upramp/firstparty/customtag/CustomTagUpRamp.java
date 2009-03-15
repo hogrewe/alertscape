@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alertscape.browser.model.BrowserContext;
+import com.alertscape.browser.ui.swing.AlertBrowser;
 import com.alertscape.browser.upramp.model.UpRamp;
 import com.alertscape.common.model.Alert;
 
@@ -14,16 +15,8 @@ public class CustomTagUpRamp implements UpRamp
 {
 
 	public Map initialize(BrowserContext context)
-	{
-		// TODO Auto-generated method stub
-		Map myMap = new HashMap();
-		List fakeTagList = new ArrayList();
-		fakeTagList.add("Location");
-		fakeTagList.add("Known Event Name");
-		fakeTagList.add("Ticket Number");
-		fakeTagList.add("Workflow Status");
-		myMap.put(CustomTagConstants.EXISTING_TAGNAMES, fakeTagList);
-		return myMap;
+	{	
+		return AlertBrowser.getLabels();
 	}
 
 	public boolean isAuthorized(BrowserContext context)
@@ -43,11 +36,7 @@ public class CustomTagUpRamp implements UpRamp
 		String tagName = (String)keyvals.get(CustomTagConstants.TAG_NAME);
 		String tagValue = (String)keyvals.get(CustomTagConstants.TAG_VALUE);
 		
-		while (it.hasNext())
-		{
-			Alert alert = it.next();
-			alert.addMinorTag(tagName, tagValue);
-		}
+    AlertBrowser.label(alerts, tagName, tagValue);
 		
 		return true;
 	}
