@@ -1,23 +1,3 @@
-CREATE TABLE `alert_major_tags` (
-  `major_tag_id` bigint(20) unsigned NOT NULL auto_increment,
-  `major_tag_name` varchar(100) NOT NULL,
-  PRIMARY KEY  (`major_tag_id`),
-  UNIQUE KEY `major_tag_name_unq` USING BTREE (`major_tag_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE TABLE `alert_minor_tags` (
-  `minor_tag_id` bigint(20) unsigned NOT NULL auto_increment,
-  `alertid` bigint(20) unsigned zerofill NOT NULL,
-  `minor_tag_name` varchar(100) NOT NULL,
-  `minor_tag_value` int(11) default NULL,
-  PRIMARY KEY  (`minor_tag_id`),
-  UNIQUE KEY `minor_tag_name_unq` (`alertid`,`minor_tag_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE TABLE `alert_source_props` (
-  `name` varchar(50) NOT NULL,
-  `value` varchar(2000) default NULL,
-  `source_id` int(11) NOT NULL default '0',
-  KEY `as_props_as_id_idx` (`source_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TABLE `alert_source_types` (
   `sid` int(10) unsigned NOT NULL auto_increment,
   `type` varchar(50) NOT NULL,
@@ -27,7 +7,10 @@ CREATE TABLE `alert_source_types` (
   UNIQUE KEY `as_type_type_idx` (`type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 INSERT INTO `alert_source_types` VALUES  (1,'File','','fileOnrampMapping.xml'),
- (2,'DB','','dbOnrampMapping.xml');
+ (2,'DB','','dbOnrampMapping.xml'),
+ (3,'Custom','',NULL),
+ (4,'WebAccessFile','',NULL),
+ (5,'IntermapperFile','',NULL);
 CREATE TABLE `alert_sources` (
   `alert_source_id` int(11) NOT NULL,
   `alert_source_name` varchar(50) NOT NULL,
@@ -37,9 +20,17 @@ CREATE TABLE `alert_sources` (
   `active` tinyint(1) NOT NULL default '1',
   `configuration` longtext,
   PRIMARY KEY  (`alert_source_id`),
-  KEY `as_type_fk` (`alert_source_type_sid`)
+  KEY `as_type_fk` (`alert_source_type_sid`),
+  CONSTRAINT `as_type_fk` FOREIGN KEY (`alert_source_type_sid`) REFERENCES `alert_source_types` (`sid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-INSERT INTO `alert_sources` VALUES  (1,'UNKNOWN','The unknown source',1,1,0,null);
+INSERT INTO `alert_sources` VALUES  (1,'UNKNOWN','The unknown source',1,1,0,NULL);
+CREATE TABLE `alert_source_props` (
+  `name` varchar(50) NOT NULL,
+  `value` varchar(2000) default NULL,
+  `source_id` int(11) NOT NULL default '0',
+  KEY `as_props_as_id_idx` (`source_id`),
+  CONSTRAINT `as_props_as_fk` FOREIGN KEY (`source_id`) REFERENCES `alert_sources` (`alert_source_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 CREATE TABLE `alerts` (
   `alertid` bigint(20) unsigned zerofill NOT NULL default '00000000000000000000',
   `short_description` varchar(200) default NULL,
@@ -61,7 +52,62 @@ CREATE TABLE `alerts` (
   KEY `item_idx` (`item`),
   KEY `type_idx` (`type`),
   KEY `long_desc_idx` (`long_description`(255)),
-  KEY `item_mgr_idx` (`item_manager`)
+  KEY `item_mgr_idx` (`item_manager`),
+  CONSTRAINT `alert_alert_source_fk` FOREIGN KEY (`source_id`) REFERENCES `alert_sources` (`alert_source_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+CREATE TABLE `alertscape_properties` (
+  `sid` int(10) unsigned NOT NULL auto_increment,
+  `name` varchar(200) NOT NULL,
+  `value` int(11) default NULL,
+  PRIMARY KEY  (`sid`),
+  KEY `as_prop_name_idx` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `as_user` (
+  `user_id` int(10) unsigned NOT NULL auto_increment,
+  `username` varchar(200) NOT NULL,
+  `password` varchar(200) default NULL,
+  `fullname` varchar(400) default NULL,
+  `email` varchar(200) NOT NULL,
+  PRIMARY KEY  (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+CREATE TABLE `attribute_definitions` (
+  `attribute_definition_id` int(11) NOT NULL auto_increment,
+  `attribute_name` varchar(100) NOT NULL,
+  `active` tinyint(1) NOT NULL default '1',
+  `attribute_display_name` varchar(100) default NULL,
+  PRIMARY KEY  (`attribute_definition_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 ;
+INSERT INTO `attribute_definitions` VALUES  (1,'customer',1,NULL),
+ (2,'ticket',1,NULL),
+ (3,'region',1,NULL),
+ (4,'stateprovince',1,NULL),
+ (5,'city',1,NULL),
+ (6,'folder',1,NULL);
+CREATE TABLE `equators` (
+  `sid` int(10) unsigned NOT NULL auto_increment,
+  `name` varchar(200) NOT NULL,
+  `deleted` tinyint(1) default '1',
+  PRIMARY KEY  (`sid`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+CREATE TABLE `equator_attributes` (
+  `sid` int(10) unsigned NOT NULL auto_increment,
+  `attribute_name` varchar(100) NOT NULL,
+  `equator_sid` int(10) unsigned NOT NULL,
+  PRIMARY KEY  (`sid`),
+  KEY `eq_attr_eq_fk` (`equator_sid`),
+  CONSTRAINT `eq_attr_eq_fk` FOREIGN KEY (`equator_sid`) REFERENCES `equators` (`sid`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+CREATE TABLE `ext_alert_attributes` (
+  `alertid` bigint(20) unsigned zerofill NOT NULL default '00000000000000000000',
+  `customer` varchar(200) default NULL,
+  `ticket` varchar(100) default NULL,
+  `region` varchar(50) default NULL,
+  `stateprovince` varchar(50) default NULL,
+  `city` varchar(100) default NULL,
+  `folder` varchar(200) default NULL,
+  `source_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  USING BTREE (`alertid`,`source_id`),
+  CONSTRAINT `ext_attr_alert_fk` FOREIGN KEY (`alertid`, `source_id`) REFERENCES `alerts` (`alertid`, `source_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TABLE `tree_configurations` (
   `sid` int(10) unsigned NOT NULL auto_increment,
