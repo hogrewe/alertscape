@@ -12,8 +12,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -39,8 +37,6 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
   private String query;
   private Map<String, Method> cachedSetters;
   private AlertLineProcessor lineProcessor;
-  private String regex;
-  private Pattern pattern;
   private String regexColumn;
 
   @SuppressWarnings("unchecked")
@@ -86,19 +82,20 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
 
           alert.getExtendedAttributes().put(attrName, value);
         }
-        
-        if(pattern != null) {
-          Matcher matcher = pattern.matcher(rs.getString(regexColumn));
-          if(matcher.matches()) {
-            alert = getLineProcessor().populateAlert(alert, matcher);
-          }
-        }
 
         lastIdHolder[0] = (ID) rs.getObject(idColumn);
+        if (lineProcessor != null) {
+          alert = getLineProcessor().populateAlert(alert, rs.getString(regexColumn));
+        }
+
         return alert;
       }
     });
-    nextAlerts.addAll(alerts);
+    for (Alert alert : alerts) {
+      if (alert != null) {
+        nextAlerts.add(alert);
+      }
+    }
     return lastIdHolder[0];
   }
 
@@ -240,27 +237,6 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
    */
   public void setLineProcessor(AlertLineProcessor lineProcessor) {
     this.lineProcessor = lineProcessor;
-  }
-
-  /**
-   * @return the regex
-   */
-  public String getRegex() {
-    return regex;
-  }
-
-  /**
-   * @param regex
-   *          the regex to set
-   */
-  public void setRegex(String regex) {
-    if (regex == null) {
-      this.regex = null;
-      pattern = null;
-    } else {
-      this.regex = regex.trim();
-      pattern = Pattern.compile(this.regex);
-    }
   }
 
   /**

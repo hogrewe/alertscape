@@ -5,8 +5,6 @@ package com.alertscape.pump.onramp.file;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -29,7 +27,7 @@ public class SimpleRegexLineProcessorTest extends TestCase {
     Map<String, String> categoryMappings = new HashMap<String, String>();
     categoryMappings.put("customer", "$3 ~~ Test");
     categoryMappings.put("region", "$4");
-    processor.setCategoryMappings(categoryMappings );
+    processor.setCategoryMappings(categoryMappings);
     // processor.setSeverityDeterminedField("type");
     //    
     // Map<Integer, List<String>> severityMappings = new HashMap<Integer, List<String>>();
@@ -52,29 +50,25 @@ public class SimpleRegexLineProcessorTest extends TestCase {
   }
 
   /**
-   * Test method for {@link com.alertscape.pump.onramp.file.SimpleRegexLineProcessor#createAlert(java.util.regex.Matcher)}.
+   * Test method for
+   * {@link com.alertscape.pump.onramp.file.SimpleRegexLineProcessor#createAlert(java.util.regex.Matcher)}.
    */
   public void testCreateAlert() {
-    Pattern p = Pattern.compile("(\\w*) (\\w*) (\\w*) (.*)");
-    
-    Matcher matcher = p.matcher("ItemTest ItemType1 CustomerTest Some more stuff at the end region");
-    Alert alert = processor.createAlert(matcher);
+    processor.setRegex("(\\w*) (\\w*) (\\w*) (.*)");
+
+    Alert alert = processor.createAlert("ItemTest ItemType1 CustomerTest Some more stuff at the end region");
     System.out.println("Alert: " + alert);
-    
-    matcher = p.matcher("ItemTest WarningType2 CustomerTest Some more stuff at the end region");
-    alert = processor.createAlert(matcher);
+
+    alert = processor.createAlert("ItemTest WarningType2 CustomerTest Some more stuff at the end region");
     System.out.println("Alert: " + alert);
-    
-    matcher = p.matcher("ItemTest NormalType CustomerTest Some more stuff at the end region");
-    alert = processor.createAlert(matcher);
+
+    alert = processor.createAlert("ItemTest NormalType CustomerTest Some more stuff at the end region");
     System.out.println("Alert: " + alert);
-    
-    matcher = p.matcher("ItemTest CriticalType CustomerTest Some more stuff at the end region");
-    alert = processor.createAlert(matcher);
+
+    alert = processor.createAlert("ItemTest CriticalType CustomerTest Some more stuff at the end region");
     System.out.println("Alert: " + alert);
-    
-    matcher = p.matcher("ItemTest CriticalType3 CustomerTest Some more stuff at the end region");
-    alert = processor.createAlert(matcher);
+
+    alert = processor.createAlert("ItemTest CriticalType3 CustomerTest Some more stuff at the end region");
     System.out.println("Alert: " + alert);
   }
 

@@ -3,6 +3,8 @@
  */
 package com.alertscape.pump.onramp;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -11,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +24,7 @@ import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.equator.AlertEquator;
 import com.alertscape.pump.AlertSourceCallback;
+import com.alertscape.pump.onramp.file.AlertLineProcessor;
 import com.alertscape.pump.onramp.sender.AlertTransport;
 import com.alertscape.pump.onramp.sender.AlertTransportException;
 
@@ -42,8 +46,22 @@ public abstract class AlertOnramp implements AlertSourceCallback {
   private String stateFilename;
   protected Map<String, Object> state = new HashMap<String, Object>();
   private File stateFile;
+  private String postProcessField;
+  private Method postProcessGetter;
+  private AlertLineProcessor postProcessor;
 
   public void sendAlert(Alert alert) {
+    if (postProcessGetter != null && postProcessor != null) {
+      try {
+        Object value = postProcessGetter.invoke(alert, (Object[]) null);
+        if (value != null) {
+          postProcessor.populateAlert(alert, value.toString());
+        }
+      } catch (Exception e) {
+        LOG.error("Couldn't get " + postProcessField + " from alert", e);
+      }
+    }
+
     alert.setSource(source);
     Date now = new Date();
 
@@ -246,4 +264,45 @@ public abstract class AlertOnramp implements AlertSourceCallback {
   }
 
   protected abstract void initState(Map<String, Object> state);
+
+  /**
+   * @return the postProcessField
+   */
+  public String getPostProcessField() {
+    return postProcessField;
+  }
+
+  /**
+   * @param postProcessField
+   *          the postProcessField to set
+   */
+  public void setPostProcessField(String postProcessField) {
+    this.postProcessField = postProcessField;
+    if (postProcessField != null) {
+      try {
+        PropertyDescriptor d = new PropertyDescriptor(postProcessField, Alert.class);
+        postProcessGetter = d.getReadMethod();
+      } catch (IntrospectionException e) {
+        LOG.error("Couldn't create getter for " + postProcessField, e);
+        postProcessGetter = null;
+      }
+    } else {
+      postProcessGetter = null;
+    }
+  }
+
+  /**
+   * @return the postProcessor
+   */
+  public AlertLineProcessor getPostProcessor() {
+    return postProcessor;
+  }
+
+  /**
+   * @param postProcessor
+   *          the postProcessor to set
+   */
+  public void setPostProcessor(AlertLineProcessor postProcessor) {
+    this.postProcessor = postProcessor;
+  }
 }
