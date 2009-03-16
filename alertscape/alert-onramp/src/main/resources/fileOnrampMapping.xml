@@ -12,10 +12,6 @@
 			<bind-xml name="filename" />
 		</field>
 
-		<field name="regex" type="string">
-			<bind-xml name="regex" />
-		</field>
-
 		<field name="uniqueFields" type="string" collection="arraylist">
 			<bind-xml name="field" location="uniqueFields" />
 		</field>
@@ -41,10 +37,23 @@
 			type="com.alertscape.pump.onramp.file.SimpleRegexLineProcessor">
 			<bind-xml name="lineProcessor" node="element" />
 		</field>
+
+        <field name="postProcessField" type="string">
+            <bind-xml name="postProcessField"/>
+        </field>
+        
+        <field name="postProcessor"
+            type="com.alertscape.pump.onramp.file.SimpleRegexLineProcessor">
+            <bind-xml name="postProcessor" node="element" />
+        </field>
 	</class>
 
 	<class name="com.alertscape.pump.onramp.file.SimpleRegexLineProcessor"
 		extends="com.alertscape.pump.onramp.file.AlertLineProcessor">
+        <field name="regex" type="string">
+            <bind-xml name="regex" />
+        </field>
+
 		<field name="fieldMappings" collection="map">
 			<bind-xml name="field" location="fieldMappings">
 				<class name="org.exolab.castor.mapping.MapItem">

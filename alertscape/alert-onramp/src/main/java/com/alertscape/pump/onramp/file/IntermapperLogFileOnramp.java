@@ -22,7 +22,7 @@ import com.alertscape.common.model.severity.SeverityFactory;
  */
 public class IntermapperLogFileOnramp extends FileOnramp {
   private static final ASLogger LOG = ASLogger.getLogger(IntermapperLogFileOnramp.class);
-  private static final String PRIMARY_REGEX = "^([\\w\\/:]*)[\\W]*([\\w\\/:]*)[\\W]*(\\w*)[\\W]*(.*)";
+//  private static final String PRIMARY_REGEX = "^([\\w\\/:]*)[\\W]*([\\w\\/:]*)[\\W]*(\\w*)[\\W]*(.*)";
   private static final String TRAP_KNOWN_REGEX = "^([\\w- ]*):([\\w]*)\\W*([\\w-]*\\W*[:]{1,2})*\\W*([\\w]*)";
   private static final String TRAP_UNKNOWN_REGEX = "^([\\w\\. \\(\\)]*)\\W*:{0,2}\\W*(\\w*).*";
   private static final String LINK_UTIL_REGEX = "^(util)\\W*(>=|<)\\W*(\\d*)\\W*\\([\\W\\d\\.%]*\\)\\W*:\\W*\\[[0-9]*\\]\\W*(.*)";
@@ -44,7 +44,7 @@ public class IntermapperLogFileOnramp extends FileOnramp {
   private Pattern itemPattern;
 
   public IntermapperLogFileOnramp() {
-    setRegex(PRIMARY_REGEX);
+//    setRegex(PRIMARY_REGEX);
     trapKnownPattern = Pattern.compile(TRAP_KNOWN_REGEX);
     trapUnknownPattern = Pattern.compile(TRAP_UNKNOWN_REGEX);
     linkUtilPattern = Pattern.compile(LINK_UTIL_REGEX);

@@ -12,7 +12,7 @@ INSERT INTO `alert_source_types` VALUES  (1,'File','','fileOnrampMapping.xml'),
  (4,'WebAccessFile','',NULL),
  (5,'IntermapperFile','',NULL);
 CREATE TABLE `alert_sources` (
-  `alert_source_id` int(11) NOT NULL,
+  `alert_source_id` int(10) unsigned NOT NULL auto_increment,
   `alert_source_name` varchar(50) NOT NULL,
   `short_description` varchar(200) default NULL,
   `alert_id_seq` int(11) NOT NULL default '1',

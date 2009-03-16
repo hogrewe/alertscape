@@ -83,7 +83,6 @@ public class ConfigurableDatabaseOnramp<ID> extends DatabaseOnramp<ID> {
     dao.setTableName(tableName);
     dao.setWhereClause(whereClause);
     dao.setLineProcessor(lineProcessor);
-    dao.setRegex(regex);
     dao.setRegexColumn(regexColumn);
     dao.setDataSource(dataSource);
     

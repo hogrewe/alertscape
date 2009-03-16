@@ -60,6 +60,7 @@ public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
           LOG.info(getSourceName() + " processed " + linesProcessed + " lines in " + (endTime - startTime) + "ms at "
               + perSecond + "/s");
         }
+        state.put(LAST_ID, lastId);
         saveState();
         return linesProcessed;
       }
@@ -84,6 +85,8 @@ public class DatabaseOnramp<ID> extends AbstractPollingAlertOnramp {
         }
       }
     }
+    state.put(LAST_ID, lastId);
+    saveState();
     return linesProcessed;
   }
 

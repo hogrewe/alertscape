@@ -10,8 +10,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
@@ -31,8 +29,6 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
   private long lastLinePointer;
   private String lastLineHash;
   private String lastLine;
-  private String regex;
-  private Pattern pattern;
   private MessageDigest m;
   private RandomAccessFile file;
   private AlertLineProcessor lineProcessor;
@@ -59,27 +55,6 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
    */
   public void setFilename(String filename) {
     this.filename = filename;
-  }
-
-  /**
-   * @return the regex
-   */
-  public String getRegex() {
-    return regex;
-  }
-
-  /**
-   * @param regex
-   *          the regex to set
-   */
-  public void setRegex(String regex) {
-    if (regex == null) {
-      this.regex = null;
-      pattern = null;
-    } else {
-      this.regex = regex.trim();
-      pattern = Pattern.compile(this.regex);
-    }
   }
 
   @Override
@@ -118,11 +93,10 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
       lastLine = line;
       state.put(LINE_POINTER, lastLinePointer);
       state.put(LINE_HASH, lastLineHash);
-      Matcher matcher = pattern.matcher(line);
-      if (!matcher.matches()) {
+      Alert a = getLineProcessor().createAlert(line);
+      if (a == null) {
         continue;
       }
-      Alert a = getLineProcessor().createAlert(matcher);
       a.setSeverity(determineSeverity(a));
       if (a != null) {
         // LOG.debug(a.getShortDescription());
@@ -221,7 +195,7 @@ public class FileOnramp extends AbstractPollingAlertOnramp {
       try {
         lastLinePointer = (Long) state.get(LINE_POINTER);
       } catch (Exception e) {
-        lastLinePointer=0;
+        lastLinePointer = 0;
         LOG.error("Couldn't intialize line pointer for file, starting at 0");
       }
       lastLineHash = (String) state.get(LINE_HASH);
