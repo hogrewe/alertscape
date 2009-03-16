@@ -24,7 +24,7 @@
 	</bean>
     <bean id="authenticationService"
         class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-        <property name="serviceUrl" value="${remote.service.url}/r/AuthorizationService" />
+        <property name="serviceUrl" value="${remote.service.url}/r/AuthenticationService" />
         <property name="serviceInterface" value="com.alertscape.service.AuthenticationService" />
     </bean>
 	<bean id="browser" class="com.alertscape.browser.ui.swing.AlertBrowser"
