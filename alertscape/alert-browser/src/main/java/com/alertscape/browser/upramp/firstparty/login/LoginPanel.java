@@ -103,8 +103,8 @@ public class LoginPanel extends AbstractUpRampPanel {
      userLabel = new JLabel("Username");
      userLabel.setToolTipText("The username you would like to login with");
      userLabel.setFocusable(false);
-     userLabel.setPreferredSize(new Dimension(50, 20));
-     userLabel.setMinimumSize(new Dimension(50, 20));
+     userLabel.setPreferredSize(new Dimension(75, 20));
+     userLabel.setMinimumSize(new Dimension(75, 20));
      useridPanel.add(userLabel);
      useridPanel.add(Box.createRigidArea(new Dimension(5,0)));
      userField = new JTextField();
@@ -121,8 +121,8 @@ public class LoginPanel extends AbstractUpRampPanel {
      passwordLabel = new JLabel("Password");
      passwordLabel.setToolTipText("The password for the userid you would like to login with");
      passwordLabel.setFocusable(false);
-     passwordLabel.setPreferredSize(new Dimension(50, 20));
-     passwordLabel.setMinimumSize(new Dimension(50, 20));
+     passwordLabel.setPreferredSize(new Dimension(75, 20));
+     passwordLabel.setMinimumSize(new Dimension(75, 20));
      passwordPanel.add(passwordLabel);
      passwordPanel.add(Box.createRigidArea(new Dimension(5,0)));
      passwordField = new JPasswordField();

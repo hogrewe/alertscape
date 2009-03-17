@@ -23,9 +23,6 @@ public class CreateChartConfigurationPanel extends JPanel
 	public static final String KEY_CHARTTYPE_PIE = "Pie Chart";
 	public static final String KEY_CHARTTYPE_BAR = "Bar Chart";
 		
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JSeparator buttonSeparator;
 	private JComboBox chartTypeField;
@@ -47,7 +44,6 @@ public class CreateChartConfigurationPanel extends JPanel
 		chartButton.addActionListener(listener);
 		cancelButton.addActionListener(listener);
 	}
-
 
 	public Dimension getBaseSize()
 	{
@@ -97,7 +93,6 @@ public class CreateChartConfigurationPanel extends JPanel
 		attributePanel.add(chartAlertAttributeLabel);
 		attributePanel.add(Box.createRigidArea(new Dimension(5,0)));
 	
-		
 	  // Create the list of all of the alert attributes that are supported by the system for chart creation
 		List<String> chartAttrs = new ArrayList();
   	// add all of the static alert fields
@@ -186,4 +181,3 @@ public class CreateChartConfigurationPanel extends JPanel
 		return chartAlertAttributeField.getSelectedItem().toString();
 	}
 }
-

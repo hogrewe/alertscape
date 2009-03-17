@@ -44,7 +44,7 @@ public class CreateChartPanelAction extends AbstractAction
 		this.parentFrame = parentFrame;
 	}
 
-	public void actionPerformed(ActionEvent arg0)
+	public void actionPerformed(final ActionEvent arg1)
 	{	
 		Thread t = new Thread() {
 			public void run()
@@ -54,7 +54,7 @@ public class CreateChartPanelAction extends AbstractAction
 					dlg.setModal(true);
 					dlg.toFront();
 					dlg.setLayout(new BorderLayout());
-
+					
 					// create the panel with the latest browsercontext
 					final CreateChartConfigurationPanel panel = new CreateChartConfigurationPanel();
 
@@ -77,18 +77,33 @@ public class CreateChartPanelAction extends AbstractAction
 
 									// check if the panel needs to be submit
 									if (panel.needsSubmit())
-									{										
-									  // create a new chart panel with the alerts that are selected currently in the table
+									{	
+										// create a new chart panel with the alerts that are selected currently in the table
 									  List<Alert> alerts = AlertBrowser.getCurrentContext().getSelectedAlerts();
+										
+									  // check if a set of alerts were passed in, otherwise get the currently selected alerts from the table
+										if (arg1 != null)
+										{
+											Object source = arg1.getSource();
+											if (source != null)
+											{
+												if (source instanceof List)
+												{
+													alerts = (List<Alert>)source;
+												}
+											}
+										}
+										
 									  if (alerts.size() > 0)
 									  {	
 									  	String type = panel.getChartType();
 									  	String attribute = panel.getChartAttribute();
 									  	
  									    // create the chart based on their responses
-										  String title = "Chart";
+										  //String title = "Chart";
 										  String tooltip = type + " by " + attribute + ", " + alerts.size() + " alerts";
-										  										  
+										  String title = tooltip; 
+										  	
 										  JPanel chart = null;
 										  
 										  if (type.equals(panel.KEY_CHARTTYPE_PIE))
@@ -103,7 +118,7 @@ public class CreateChartPanelAction extends AbstractAction
 										  if (chart != null)
 										  {
 										  	// add the chart to a tab, adjacent to the tabular view
-										  	AlertBrowser.addTabbedPanel(title, chartIcon, chart, tooltip, true, true);
+										  	AlertBrowser.addTabbedPanel("Chart", chartIcon, chart, tooltip, true, true);
 										  }
 									  }
 									}
