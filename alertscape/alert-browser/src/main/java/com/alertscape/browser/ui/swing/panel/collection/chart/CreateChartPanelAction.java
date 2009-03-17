@@ -45,30 +45,7 @@ public class CreateChartPanelAction extends AbstractAction
 	}
 
 	public void actionPerformed(ActionEvent arg0)
-	{
-//		Thread t = new Thread() 
-//		{
-//			public void run()
-//			{
-//				// create a new pie chart panel with the alerts that are selected currently in the table
-//				List<Alert> alerts = AlertBrowser.getCurrentContext().getSelectedAlerts();
-//				if (alerts.size() > 0)
-//				{
-//					// TODO - prompt the user for the type of chart they want to create
-//					JDialog
-//					
-//					
-//					// create the chart based on their responses
-//					String title = "Chart";
-//					String tooltip = "Pie Chart (item, " + alerts.size() + ")";
-//					AlertPieChartPanel piechart = new AlertPieChartPanel(alerts, "item", title, tooltip);
-//											
-//					// add the chart to a tab, adjacent to the tabular view
-//					AlertBrowser.addTabbedPanel(title, chartIcon, piechart, tooltip, true, true);
-//				}
-//			}
-//		};
-		
+	{	
 		Thread t = new Thread() {
 			public void run()
 			{

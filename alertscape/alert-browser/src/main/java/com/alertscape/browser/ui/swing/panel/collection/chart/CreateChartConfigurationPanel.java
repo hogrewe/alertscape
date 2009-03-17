@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
+import com.alertscape.browser.ui.swing.AlertBrowser;
 import com.alertscape.common.util.AlertUtility;
 
 public class CreateChartConfigurationPanel extends JPanel
@@ -74,7 +75,7 @@ public class CreateChartConfigurationPanel extends JPanel
 		// Create the list of all of the types of charts that are supported by the system for creation
 		List chartTypes = new ArrayList();
 		chartTypes.add(KEY_CHARTTYPE_PIE);
-		chartTypes.add(KEY_CHARTTYPE_BAR);
+//		chartTypes.add(KEY_CHARTTYPE_BAR);
 		chartTypeField = new JComboBox(chartTypes.toArray());
 		chartTypeField.setEditable(false);
 		
@@ -110,10 +111,8 @@ public class CreateChartConfigurationPanel extends JPanel
 		chartAttrs.add(AlertUtility.labelShortDescription);
 		chartAttrs.add(AlertUtility.labelLongDescription);
 		chartAttrs.add(AlertUtility.labelSource);		
-		// TODO - need to add all of the major tag names that are available in the system
-		// TODO - need to add all of the minor tag names that are available in the system
-		chartAttrs.add("Categories (TBD)");
-		chartAttrs.add("Labels (TBD)");
+		chartAttrs.addAll(AlertUtility.getAllDynamicKeys(AlertBrowser.getCurrentContext().getSelectedAlerts()));
+
 		chartAlertAttributeField = new JComboBox(chartAttrs.toArray());
 		chartAlertAttributeField.setEditable(false);
 		
