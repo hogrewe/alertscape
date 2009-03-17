@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * </li>
  * <li>Choose home directory</li>
  * <li>Set server info</li>
+ * <li>Setup users</li>
  * <li>Setup onramps</li>
  * <li>Setup tree</li>
  * <li>Fin</li>
@@ -45,6 +46,8 @@ public class InstallWizard implements EntryPoint {
     steps.add(new WizardStep("Choose Home Directory", new HomeDirWidget(wizardService, info)));
     steps.add(new WizardStep("Set Server Info", new ServerInfoWidget(wizardService, info)));
     steps.add(new WizardStep("Install", new FinalInstallWidget(wizardService, info)));
+    steps.add(new WizardStep("Add Users", new UserAddWidget(wizardService, info)));
+    steps.add(new WizardStep("Add Onramps", new OnrampAddWidget(wizardService, info)));
 
     Wizard wiz = new Wizard(steps, new WizardFinishHandler() {
       public void handleFinish() {

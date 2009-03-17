@@ -54,7 +54,7 @@ public class JarDiffHandler {
     private static final String JARDIFF_MIMETYPE    = "application/x-java-archive-diff";
     
     /** List of all generated JARDiffs */
-    private HashMap _jarDiffEntries = null;
+    private HashMap<JarDiffKey, JarDiffEntry> _jarDiffEntries = null;
     
     /** Reference to ServletContext and logger object */    
     private static Logger _log = null;
@@ -123,7 +123,7 @@ public class JarDiffHandler {
     
     /** Initialize JarDiff handler */
     public JarDiffHandler(ServletContext servletContext, Logger log) {	
-	_jarDiffEntries = new HashMap();
+	_jarDiffEntries = new HashMap<JarDiffKey, JarDiffEntry>();
 	_servletContext = servletContext;
 	_log = log;
 	
@@ -146,7 +146,7 @@ public class JarDiffHandler {
 					!doJarDiffWorkAround);		
 	
 
-	JarDiffEntry entry = (JarDiffEntry)_jarDiffEntries.get(key);
+	JarDiffEntry entry = _jarDiffEntries.get(key);
 	// If entry is not found, then the querty has not been made. 	
 	if (entry == null) {	    	    	
 	    if (_log.isInformationalLevel()) {

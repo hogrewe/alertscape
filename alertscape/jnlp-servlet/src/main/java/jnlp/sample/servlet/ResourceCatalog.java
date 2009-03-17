@@ -53,20 +53,20 @@ public class ResourceCatalog {
     private Logger _log = null;
     private ServletContext _servletContext = null;
     
-    private HashMap _entries;
+    private HashMap<String, PathEntries> _entries;
     
     /** Class to contain the information we know
      *  about a specific directory
      */
     static private class PathEntries {
 	/* Version-based entries at this particular path */
-	private List _versionXmlList;
-	private List _directoryList;
-	private List _platformList;
+	private List<JnlpResource> _versionXmlList;
+	private List<JnlpResource> _directoryList;
+	private List<JnlpResource> _platformList;
 	/* Last time this entry was updated */
 	private long _lastModified; // Last modified time of entry;
 	
-	public PathEntries(List versionXmlList, List directoryList, List platformList, long lastModified) {
+	public PathEntries(List<JnlpResource> versionXmlList, List<JnlpResource> directoryList, List<JnlpResource> platformList, long lastModified) {
 	    _versionXmlList = versionXmlList;
 	    _directoryList = directoryList;
 	    _platformList = platformList;
@@ -74,19 +74,19 @@ public class ResourceCatalog {
 	}
 	
 	
-	public void setDirectoryList(List dirList) {
+	public void setDirectoryList(List<JnlpResource> dirList) {
 	    _directoryList = dirList;
 	}
 
-	public List getVersionXmlList() { return _versionXmlList; }
-	public List getDirectoryList()  { return _directoryList; }
-	public List getPlatformList()   { return _platformList; }
+	public List<JnlpResource> getVersionXmlList() { return _versionXmlList; }
+	public List<JnlpResource> getDirectoryList()  { return _directoryList; }
+	public List<JnlpResource> getPlatformList()   { return _platformList; }
 	
 	public long getLastModified() { return _lastModified; }
     }
     
     public ResourceCatalog(ServletContext servletContext, Logger log) {
-	_entries = new HashMap();
+	_entries = new HashMap<String, PathEntries>();
 	_servletContext = servletContext;
 	_log = log;
     }
@@ -106,14 +106,14 @@ public class ResourceCatalog {
 	}
 	
 	// Lookup up already parsed entries, and san directory for entries if neccesary
-	PathEntries pentries =  (PathEntries)_entries.get(dir);
+	PathEntries pentries =  _entries.get(dir);
 	JnlpResource xmlVersionResPath = new JnlpResource(_servletContext, dir + VERSION_XML_FILENAME);
 	if (pentries == null || (xmlVersionResPath.exists() && xmlVersionResPath.getLastModified() > pentries.getLastModified())) {
 	    _log.addInformational("servlet.log.scandir", dir);
-	    List dirList = scanDirectory(dir, dreq);
+	    List<JnlpResource> dirList = scanDirectory(dir, dreq);
 	    // Scan XML file
-	    List versionList = new ArrayList();
-	    List platformList = new ArrayList();
+	    List<JnlpResource> versionList = new ArrayList<JnlpResource>();
+	    List<JnlpResource> platformList = new ArrayList<JnlpResource>();
 	    parseVersionXML(versionList, platformList, dir, xmlVersionResPath);
 	    pentries = new PathEntries(versionList, dirList, platformList, xmlVersionResPath.getLastModified());
 	    _entries.put(dir, pentries);
@@ -162,7 +162,7 @@ public class ResourceCatalog {
      *  ERR_23_UNSUP_JRE.
      *
      */
-    public int findMatch(List list, String name, DownloadRequest dreq, JnlpResource[] result) {
+    public int findMatch(List<JnlpResource> list, String name, DownloadRequest dreq, JnlpResource[] result) {
 	if (list == null) return DownloadResponse.ERR_10_NO_RESOURCE;
 	// Setup return values
 	VersionID bestVersionId = null;
@@ -170,7 +170,7 @@ public class ResourceCatalog {
 	VersionString vs = new VersionString(dreq.getVersion());
 	// Iterate through entries
 	for(int i = 0; i < list.size(); i++) {
-	    JnlpResource respath = (JnlpResource)list.get(i);
+	    JnlpResource respath = list.get(i);
 	    VersionID vid = new VersionID(respath.getVersionId());	
 	    int sts = matchEntry(name, vs, dreq, respath, vid);
 	    if (sts == DownloadResponse.STS_00_OK) {
@@ -302,8 +302,8 @@ public class ResourceCatalog {
 	return path;
     }
 
-    public List scanDirectory(String dirPath, DownloadRequest dreq) {
-	ArrayList list = new ArrayList();
+    public List<JnlpResource> scanDirectory(String dirPath, DownloadRequest dreq) {
+	ArrayList<JnlpResource> list = new ArrayList<JnlpResource>();
 
 	// fix for 4474021
 	if (_servletContext.getRealPath(dirPath) == null) {
@@ -354,9 +354,9 @@ public class ResourceCatalog {
 	
 	// Parse options
 	String versionId = null;
-	ArrayList osList = new ArrayList();
-	ArrayList archList = new ArrayList();
-	ArrayList localeList = new ArrayList();
+	ArrayList<String> osList = new ArrayList<String>();
+	ArrayList<String> archList = new ArrayList<String>();
+	ArrayList<String> localeList = new ArrayList<String>();
 	while(rest.length() > 0) {
 	    /* Must start with __ at this point */
 	    if (!rest.startsWith("__")) return null;
@@ -391,13 +391,13 @@ public class ResourceCatalog {
 				versionId);
     }
     
-    private String[] listToStrings(List list) {
+    private String[] listToStrings(List<String> list) {
 	if (list.size() == 0) return null;
-	return (String[])list.toArray(new String[list.size()]);
+	return list.toArray(new String[list.size()]);
     }
     
     // Returns false if parsing failed
-    private void parseVersionXML(final List versionList, final List platformList,
+    private void parseVersionXML(final List<JnlpResource> versionList, final List<JnlpResource> platformList,
 				 final String dir, final JnlpResource versionRes) {
 	if (!versionRes.exists()) return;
 				

@@ -141,7 +141,7 @@ public class DownloadRequest {
      /** Converts a space delimitered string to a list of strings */
     static private String[] getStringList(String str) {
         if (str == null) return null;
-        ArrayList list = new ArrayList();
+        ArrayList<String> list = new ArrayList<String>();
         int i = 0;
         int length = str.length();
         StringBuffer sb = null;
@@ -172,7 +172,7 @@ public class DownloadRequest {
         }	
 	if (list.size() == 0) return null;        
         String[] results = new String[list.size()];
-        return (String[])list.toArray(results);
+        return list.toArray(results);
     }
     
     /* Split parameter at spaces. Convert '\ ' insto a space */

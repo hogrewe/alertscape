@@ -35,7 +35,7 @@ public class AlertUtility {
 	public static Map<String,Integer> countAlertFields(List<Alert> alerts, String field)
 	{
 		// create a map of field value to counted occurances
-  	Map<String,Integer> fieldVals = new HashMap();
+  	Map<String,Integer> fieldVals = new HashMap<String, Integer>();
   	
   	// iterate through the alets, counting those fields
   	for (int i = 0; i < alerts.size(); i++)

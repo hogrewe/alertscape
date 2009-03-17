@@ -100,10 +100,6 @@ public class DBInfoWidget extends AbstractInstallWizardWidget {
         && passwordTextBox1.getText().equals(passwordTextBox2.getText());
   }
 
-  protected boolean notEmpty(TextBox b) {
-    return b.getText().length() > 0;
-  }
-
 
   private void doDbSuccess() {
     errorLabel.setText("Schema found, press Next to continue");

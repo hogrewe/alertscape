@@ -104,7 +104,7 @@ public class XMLParsing {
     
     /** Like getElementContents(...) but with a defaultValue of null */
     static public String[] getMultiElementContent(XMLNode root, String path) {
-        final List list = new ArrayList();
+        final List<String> list = new ArrayList<String>();
 	visitElements(root, path, new ElementVisitor() {
 		    public void visitElement(XMLNode n) {
 			String value = getElementContent(n, "");
@@ -112,7 +112,7 @@ public class XMLParsing {
 		    }
 		});
 	if (list.size() == 0) return null;
-	return (String[])list.toArray(new String[list.size()]);
+	return list.toArray(new String[list.size()]);
     }
     
     /** Returns the value of the last element tag in the path, e.g.,  <..><tag>value</tag>. The DOM is assumes
