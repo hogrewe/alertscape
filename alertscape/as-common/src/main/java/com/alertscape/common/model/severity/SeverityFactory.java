@@ -49,7 +49,7 @@ public class SeverityFactory
     severities[sevNum].setBackgroundColor(new Color(236, 233, 0));
     severities[sevNum].setForegroundColor(Color.BLACK);
     severities[sevNum].setName("Minor");
-//    severities[sevNum].setSmallIcon("/com/alertscape/images/mini/flag_white.gif");
+    severities[sevNum].setSmallIcon("/com/alertscape/images/function/circle_yellow.png");
     sevNum++;
 
     severities[sevNum] = new Severity( );
