@@ -72,12 +72,13 @@ public class OnrampAddWidget extends AbstractInstallWizardWidget {
     type.addItem("File");
     configuration = new TextArea();
     configuration.setVisibleLines(25);
+    configuration.setCharacterWidth(100);
 
     ValidInputChangeListener validInputChangeListener = new ValidInputChangeListener();
     name.addChangeListener(validInputChangeListener);
     configuration.addChangeListener(validInputChangeListener);
 
-    addRow("Username:", name);
+    addRow("Name:", name);
     addRow("Type:", type);
     addRow("Configuration:", configuration);
 
@@ -101,6 +102,8 @@ public class OnrampAddWidget extends AbstractInstallWizardWidget {
 
     });
 
+    addButton.setEnabled(false);
+
     errorLabel = new HTML("");
     inputLayout.add(inputTable);
     inputLayout.add(addButton);
@@ -112,6 +115,9 @@ public class OnrampAddWidget extends AbstractInstallWizardWidget {
 
   @Override
   public void onShow() {
+    if (numOnramps > 0) {
+      fireProceedable();
+    }
   }
 
   protected void addRow(String label, Widget w) {
@@ -123,7 +129,8 @@ public class OnrampAddWidget extends AbstractInstallWizardWidget {
   protected void addOnrampToTable(OnrampDefinition onramp) {
     onrampsTable.setText(numOnramps, 0, onramp.getName());
     onrampsTable.setText(numOnramps, 1, onramp.getType());
-    onrampsTable.setText(numOnramps, 2, onramp.getConfiguration().substring(0, 30));
+    String config = onramp.getConfiguration();
+    onrampsTable.setText(numOnramps, 2, config.length() > 20 ? config.substring(0, 20) : config);
     numOnramps++;
 
     fireProceedable();

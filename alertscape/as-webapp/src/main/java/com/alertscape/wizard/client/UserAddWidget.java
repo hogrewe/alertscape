@@ -21,6 +21,21 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public class UserAddWidget extends AbstractInstallWizardWidget {
+  /**
+   * @author josh
+   *
+   */
+  private final class InputValidationChangeListener implements ChangeListener {
+    public void onChange(Widget w) {
+      if (notEmpty(username) && notEmpty(email) && notEmpty(password1) && notEmpty(password2)
+          && password1.getText().equals(password2.getText())) {
+        addButton.setEnabled(true);
+      } else {
+        addButton.setEnabled(false);
+      }
+    }
+  }
+
   private HorizontalPanel layout;
   private FlexTable usersTable;
   private int numUsers;
@@ -59,16 +74,12 @@ public class UserAddWidget extends AbstractInstallWizardWidget {
     password1 = new PasswordTextBox();
     password2 = new PasswordTextBox();
 
-    username.addChangeListener(new ChangeListener() {
-      public void onChange(Widget w) {
-        if (notEmpty(username) && notEmpty(email) && notEmpty(password1) && notEmpty(password2)
-            && password1.getText().equals(password2.getText())) {
-          addButton.setEnabled(true);
-        } else {
-          addButton.setEnabled(false);
-        }
-      }
-    });
+    InputValidationChangeListener listener = new InputValidationChangeListener();
+    username.addChangeListener(listener);
+    fullname.addChangeListener(listener);
+    email.addChangeListener(listener);
+    password1.addChangeListener(listener);
+    password2.addChangeListener(listener);
 
     addRow("Username:", username);
     addRow("Password:", password1);
@@ -96,6 +107,8 @@ public class UserAddWidget extends AbstractInstallWizardWidget {
       }
 
     });
+    
+    addButton.setEnabled(false);
 
     errorLabel = new HTML("");
     inputLayout.add(inputTable);
@@ -108,6 +121,9 @@ public class UserAddWidget extends AbstractInstallWizardWidget {
 
   @Override
   public void onShow() {
+    if(numUsers > 0) {
+      fireProceedable();
+    }
   }
 
   protected void addRow(String label, Widget w) {

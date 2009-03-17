@@ -231,8 +231,8 @@ public class InstallWizardServiceServlet extends RemoteServiceServlet implements
       stmt = connection.prepareStatement(sql);
       int i = 1;
       stmt.setString(i++, onramp.getName());
-      stmt.setString(i++, onramp.getType());
       stmt.setString(i++, onramp.getConfiguration());
+      stmt.setString(i++, onramp.getType());
 
       int update = stmt.executeUpdate();
       if (update < 1) {
