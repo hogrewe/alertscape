@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -124,6 +125,18 @@ public class AlertBrowser extends JFrame {
     }
     setSize(800, 600);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+    // Get the size of the screen
+    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    
+    // Determine the new location of the window
+    int w = this.getSize().width;
+    int h = this.getSize().height;
+    int x = (dim.width-w)/2;
+    int y = (dim.height-h)/2;    
+    // Move the window
+    this.setLocation(x, y);
+    
     treePanel = new AlertTreePanel();
     treePanel.setRootNode(getRootNode());
     treePanel.init();
