@@ -3,6 +3,8 @@
  */
 package com.alertscape.wizard.client;
 
+import com.alertscape.wizard.client.model.OnrampDefinition;
+import com.alertscape.wizard.client.model.User;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -24,5 +26,11 @@ public interface InstallWizardService extends RemoteService {
       throws WizardException;
 
   void install(InstallWizardInfo info) throws WizardException;
+  
+  User addUser(InstallWizardInfo info, User user) throws WizardException;
+  
+  void setTreeConfig(InstallWizardInfo info, String treeConfig) throws WizardException;
+  
+  OnrampDefinition addOnramp(InstallWizardInfo info, OnrampDefinition onramp) throws WizardException;
   
 }

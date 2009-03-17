@@ -10,10 +10,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import com.alertscape.wizard.client.InstallWizardInfo;
 import com.alertscape.wizard.client.InstallWizardService;
 import com.alertscape.wizard.client.WizardException;
+import com.alertscape.wizard.client.model.OnrampDefinition;
+import com.alertscape.wizard.client.model.User;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -136,6 +143,7 @@ public class InstallWizardServiceServlet extends RemoteServiceServlet implements
       installed.createNewFile();
     } catch (IOException e) {
       e.printStackTrace();
+      throw new WizardException("Couldn't mark alertscape as installed: " + e.getLocalizedMessage());
     }
   }
 
@@ -156,12 +164,7 @@ public class InstallWizardServiceServlet extends RemoteServiceServlet implements
       e.printStackTrace();
       throw new WizardException("Couldn't install schema: " + e.getLocalizedMessage());
     } finally {
-      if (conn != null) {
-        try {
-          conn.close();
-        } catch (SQLException e) {
-        }
-      }
+      closeAll(conn, null, null);
     }
   }
 
@@ -188,19 +191,144 @@ public class InstallWizardServiceServlet extends RemoteServiceServlet implements
       e.printStackTrace();
       throw new WizardException("Couldn't check for schema availability: " + e.getLocalizedMessage());
     } finally {
-      if (tables != null) {
-        try {
-          tables.close();
-        } catch (Exception e) {
+      closeAll(connection, null, tables);
+    }
+  }
+
+  public User addUser(InstallWizardInfo info, User user) throws WizardException {
+    Connection connection = null;
+    PreparedStatement stmt = null;
+
+    try {
+      String hashed = hashPassword(user.getPassword());
+
+      connection = getConnection(info);
+      stmt = connection.prepareStatement("insert into as_user (username, password, email, fullname) values (?,?,?,?)");
+      int i = 1;
+      stmt.setString(i++, user.getUsername());
+      stmt.setString(i++, hashed);
+      stmt.setString(i++, user.getEmail());
+      stmt.setString(i++, user.getFullname());
+
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new WizardException("Couldn't add user: " + e.getLocalizedMessage());
+    } finally {
+      closeAll(connection, stmt, null);
+    }
+
+    return user;
+  }
+
+  public OnrampDefinition addOnramp(InstallWizardInfo info, OnrampDefinition onramp) throws WizardException {
+    Connection connection = null;
+    PreparedStatement stmt = null;
+    String sql = "insert into alert_sources (alert_source_name, alert_source_type_sid, configuration)"
+        + "(select ?, sid, ? from alert_source_types where type=?)";
+    try {
+      connection = getConnection(info);
+      stmt = connection.prepareStatement(sql);
+      int i = 1;
+      stmt.setString(i++, onramp.getName());
+      stmt.setString(i++, onramp.getConfiguration());
+      stmt.setString(i++, onramp.getType());
+
+      int update = stmt.executeUpdate();
+      if (update < 1) {
+        throw new WizardException("Couldn't find onramp type of " + onramp.getType());
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new WizardException("Couldn't add onramp: " + e.getLocalizedMessage());
+    } finally {
+      closeAll(connection, stmt, null);
+    }
+
+    return onramp;
+  }
+
+  public void setTreeConfig(InstallWizardInfo info, String treeConfig) throws WizardException {
+    Connection connection = null;
+    PreparedStatement stmt = null;
+    PreparedStatement insertStmt = null;
+    String updateSql = "update tree_configurations set configuration=? where name='default'";
+    String insertSql = "insert into tree_configurations (name, configuration) values ('default', ?)";
+    try {
+      connection = getConnection(info);
+      stmt = connection.prepareStatement(updateSql);
+      int i = 1;
+      stmt.setString(i++, treeConfig);
+
+      int update = stmt.executeUpdate();
+      if (update < 1) {
+        insertStmt = connection.prepareStatement(insertSql);
+        i = 1;
+        insertStmt.setString(i++, treeConfig);
+
+        int insert = insertStmt.executeUpdate();
+        if (insert < 1) {
+          throw new WizardException("Couldn't set the tree configuration");
         }
       }
-      if (connection != null) {
-        try {
-          connection.close();
-        } catch (Exception e) {
-        }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new WizardException("Couldn't set tree configuration: " + e.getLocalizedMessage());
+    } finally {
+      closeAll(connection, stmt, null);
+    }
+  }
+
+  protected Connection getConnection(InstallWizardInfo info) throws WizardException, SQLException {
+    return getConnection(info.getDriverName(), info.getDbUrl(), info.getUsername(), info.getPassword());
+  }
+
+  protected Connection getConnection(String driver, String url, String username, String password)
+      throws WizardException, SQLException {
+    try {
+      Class.forName(driver);
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+      throw new WizardException("Couldn't find driver class: " + e.getLocalizedMessage());
+    }
+    return DriverManager.getConnection(url, username, password);
+  }
+
+  protected void closeAll(Connection conn, Statement stmt, ResultSet rs) {
+    if (rs != null) {
+      try {
+        rs.close();
+      } catch (SQLException e) {
       }
     }
+    if (stmt != null) {
+      try {
+        stmt.close();
+      } catch (SQLException e) {
+      }
+    }
+    if (conn != null) {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+      }
+    }
+  }
+
+  protected String hashPassword(String password) {
+    MessageDigest md;
+    try {
+      md = MessageDigest.getInstance("SHA");
+    } catch (NoSuchAlgorithmException e) {
+      return null;
+    }
+
+    byte[] b = String.valueOf(password).getBytes();
+    byte[] digest = md.digest(b);
+
+    BigInteger bi = new BigInteger(digest);
+
+    return bi.toString(16).toUpperCase();
   }
 
 }

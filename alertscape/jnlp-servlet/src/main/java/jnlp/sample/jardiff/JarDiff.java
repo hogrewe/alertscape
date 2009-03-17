@@ -79,12 +79,12 @@ public class JarDiff implements JarDiffConstants {
         JarFile2 newJar = new JarFile2(newPath);
       
         try {
-          Iterator entries;
-          HashMap moved = new HashMap();
+          Iterator<Object> entries;
+          HashMap<Object, String> moved = new HashMap<Object, String>();
           HashSet visited = new HashSet();
-          HashSet implicit = new HashSet();
-          HashSet moveSrc = new HashSet();
-          HashSet newEntries = new HashSet();
+          HashSet<Object> implicit = new HashSet<Object>();
+          HashSet<String> moveSrc = new HashSet<String>();
+          HashSet<Object> newEntries = new HashSet<Object>();
 
 
           // FIRST PASS
@@ -167,7 +167,7 @@ public class JarDiff implements JarDiffConstants {
 	
           // SECOND PASS: <deleted files> = <oldjarnames> - <implicitmoves> - 
           // <source of move commands> - <new or modified entries>
-          ArrayList deleted = new ArrayList();
+          ArrayList<String> deleted = new ArrayList<String>();
           entries = oldJar.getJarEntries();
           if (entries != null) {
               while (entries.hasNext()) {
@@ -191,7 +191,7 @@ public class JarDiff implements JarDiffConstants {
                   System.out.println("MOVED MAP!!!");
                   while (entries.hasNext()) {
                       String newName = (String)entries.next();
-                      String oldName = (String)moved.get(newName);	
+                      String oldName = moved.get(newName);	
                       System.out.println("key is " + newName + " value is " + oldName);
                       }
               }
@@ -250,8 +250,8 @@ public class JarDiff implements JarDiffConstants {
      * <code>oldEntries</code> gives the names of the files that were removed,
      * <code>movedMap</code> maps from the new name to the old name.
      */
-    private static void createIndex(JarOutputStream jos, List oldEntries,
-                             Map movedMap) throws
+    private static void createIndex(JarOutputStream jos, List<String> oldEntries,
+                             Map<Object, String> movedMap) throws
                        IOException {
         StringWriter writer = new StringWriter();
 
@@ -260,7 +260,7 @@ public class JarDiff implements JarDiffConstants {
 
         // Write out entries that have been removed
         for (int counter = 0; counter < oldEntries.size(); counter++) {
-            String name = (String)oldEntries.get(counter);
+            String name = oldEntries.get(counter);
 
             writer.write(REMOVE_COMMAND);
             writer.write(" ");
@@ -269,12 +269,12 @@ public class JarDiff implements JarDiffConstants {
         }
 
         // And those that have moved
-        Iterator names = movedMap.keySet().iterator();
+        Iterator<Object> names = movedMap.keySet().iterator();
 
         if (names != null) {
             while (names.hasNext()) {
                 String newName = (String)names.next();
-                String oldName = (String)movedMap.get(newName);
+                String oldName = movedMap.get(newName);
 
 		writer.write(MOVE_COMMAND);
 		writer.write(" ");
@@ -357,9 +357,9 @@ public class JarDiff implements JarDiffConstants {
      */
     private static class JarFile2 {
         private JarFile _jar;
-        private List _entries;
-        private HashMap _nameToEntryMap;
-	private HashMap _crcToEntryMap;
+        private List<Object> _entries;
+        private HashMap<String, JarEntry> _nameToEntryMap;
+	private HashMap<Long, LinkedList<JarEntry>> _crcToEntryMap;
             
         public JarFile2(String path) throws IOException {
             _jar = new JarFile(new File(path));
@@ -370,12 +370,12 @@ public class JarDiff implements JarDiffConstants {
             return _jar;
         }
 
-        public Iterator getJarEntries() {
+        public Iterator<Object> getJarEntries() {
             return _entries.iterator();
         }
 
         public JarEntry getEntryByName(String name) {
-            return (JarEntry)_nameToEntryMap.get(name);
+            return _nameToEntryMap.get(name);
         }
 
 	/**
@@ -477,7 +477,7 @@ public class JarDiff implements JarDiffConstants {
 	    // check if this jar contains files with the passed in entry's crc
 	    if (_crcToEntryMap.containsKey(crcL)) {
 	        // get the Linked List with files with the crc
-      		LinkedList ll = (LinkedList)_crcToEntryMap.get(crcL);
+      		LinkedList ll = _crcToEntryMap.get(crcL);
 	        // go through the list and check for content match
 	        ListIterator li = ll.listIterator(0);
 	        if (li != null) {
@@ -507,10 +507,10 @@ public class JarDiff implements JarDiffConstants {
         private void index() throws IOException {
             Enumeration entries = _jar.entries();
 
-            _nameToEntryMap = new HashMap();
-	    _crcToEntryMap = new HashMap();
+            _nameToEntryMap = new HashMap<String, JarEntry>();
+	    _crcToEntryMap = new HashMap<Long, LinkedList<JarEntry>>();
          
-            _entries = new ArrayList();
+            _entries = new ArrayList<Object>();
             if (_debug) {
                 System.out.println("indexing: " + _jar.getName());
             }
@@ -536,7 +536,7 @@ public class JarDiff implements JarDiffConstants {
 			// linked list
 
 			// get the linked list
-			LinkedList ll = (LinkedList)_crcToEntryMap.get(crcL);
+			LinkedList<JarEntry> ll = _crcToEntryMap.get(crcL);
 
 			// put in the new entry
 			ll.add(entry);
@@ -548,7 +548,7 @@ public class JarDiff implements JarDiffConstants {
 			
 			// first create the linked list and put in the new
 			// entry
-			LinkedList ll = new LinkedList();
+			LinkedList<JarEntry> ll = new LinkedList<JarEntry>();
 			ll.add(entry);
 
 			// create the new entry in the hashmap

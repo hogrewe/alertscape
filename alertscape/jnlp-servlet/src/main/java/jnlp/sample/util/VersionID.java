@@ -58,7 +58,7 @@ public class VersionID implements Comparable {
 	_usePrefixMatch  = false;
 	_useGreaterThan = false;
 	_isCompound = false;
-	if (str == null && str.length() == 0) {
+	if (str == null || str.length() == 0) {
 	    _tuple = new String[0];
 	    return;
 	}
@@ -82,7 +82,7 @@ public class VersionID implements Comparable {
 	        str = str.substring(0, str.length() - 1);
 	    }
 	
-	    ArrayList list = new ArrayList();
+	    ArrayList<String> list = new ArrayList<String>();
 	    int start = 0;
 	    for(int i = 0; i < str.length(); i++) {
 	        // Split at each separator character
@@ -98,7 +98,7 @@ public class VersionID implements Comparable {
 		list.add(str.substring(start, str.length()));
 	    }	
    	    _tuple = new String[list.size()];
-	    _tuple = (String[])list.toArray(_tuple);
+	    _tuple = list.toArray(_tuple);
 	}
     }
     

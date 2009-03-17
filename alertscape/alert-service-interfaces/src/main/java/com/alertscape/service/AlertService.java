@@ -27,11 +27,11 @@ public interface AlertService {
     
   public void categorize(AuthenticatedUser user, List<Alert> alerts, String tagName, String tagValue) throws AlertscapeException;
   
-  public Map getCategories(AuthenticatedUser user) throws AlertscapeException;
+  public Map<String,?> getCategories(AuthenticatedUser user) throws AlertscapeException;
   
   public void label(AuthenticatedUser user, List<Alert> alerts, String tagName, String tagValue) throws AlertscapeException;
   
-  public Map getLabels(AuthenticatedUser user) throws AlertscapeException;
+  public Map<String,List<String>> getLabels(AuthenticatedUser user) throws AlertscapeException;
   
   public List<AlertAttributeDefinition> getAttributeDefinitions() throws AlertscapeException;
   

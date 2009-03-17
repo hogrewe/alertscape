@@ -46,11 +46,11 @@ import java.util.StringTokenizer;
  *
  */
 public class VersionString {
-    private ArrayList _versionIds;
+    private ArrayList<VersionID> _versionIds;
     
     /** Constructs a VersionString object from string */
     public VersionString(String vs) {
-	_versionIds = new ArrayList();
+	_versionIds = new ArrayList<VersionID>();
 	if (vs != null) {
 	    StringTokenizer st = new StringTokenizer(vs, " ", false);
 	    while(st.hasMoreElements()) {
@@ -63,7 +63,7 @@ public class VersionString {
     /** Check if this VersionString object contains the VersionID m */
     public boolean contains(VersionID m) {
 	for(int i = 0; i < _versionIds.size(); i++) {
-	    VersionID vi = (VersionID)_versionIds.get(i);
+	    VersionID vi = _versionIds.get(i);
 	    boolean check = vi.match(m);
 	    if (check) return true;
 	}
@@ -78,7 +78,7 @@ public class VersionString {
     /** Check if this VersionString object contains anything greater than m */
     public boolean containsGreaterThan(VersionID m) {
         for(int i = 0; i < _versionIds.size(); i++) {
-            VersionID vi = (VersionID)_versionIds.get(i);
+            VersionID vi = _versionIds.get(i);
             boolean check = vi.isGreaterThan(m);
             if (check) return true;
         }

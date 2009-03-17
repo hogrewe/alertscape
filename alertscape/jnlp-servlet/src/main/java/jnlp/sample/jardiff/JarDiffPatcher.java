@@ -68,8 +68,8 @@ public class JarDiffPatcher implements JarDiffConstants, Patcher {
             JarOutputStream jos = new JarOutputStream(result);
             JarFile oldJar = new JarFile(oldFile);	    
             JarFile jarDiff = new JarFile(diffFile);
-            Set ignoreSet = new HashSet();
-            Map renameMap = new HashMap();
+            Set<String> ignoreSet = new HashSet<String>();
+            Map<String, String> renameMap = new HashMap<String, String>();
 	  
             
             determineNameMapping(jarDiff, ignoreSet, renameMap);
@@ -79,7 +79,7 @@ public class JarDiffPatcher implements JarDiffConstants, Patcher {
 	   
 	   
 	    // Files to implicit move
-	    Set oldjarNames  = new HashSet();
+	    Set<String> oldjarNames  = new HashSet<String>();
 	    
 	    Enumeration oldEntries = oldJar.entries();
 	    if (oldEntries != null) {
@@ -142,7 +142,7 @@ public class JarDiffPatcher implements JarDiffConstants, Patcher {
 
 		// Apply move <oldName> <newName> command
 		String newName = (String)keys[j];
-		String oldName = (String)renameMap.get(newName);
+		String oldName = renameMap.get(newName);
 
 		// Get source JarEntry
 		JarEntry oldEntry = oldJar.getJarEntry(oldName);
@@ -179,11 +179,11 @@ public class JarDiffPatcher implements JarDiffConstants, Patcher {
 	    }	    
 
 	    // implicit move
-	    Iterator iEntries = oldjarNames.iterator();
+	    Iterator<String> iEntries = oldjarNames.iterator();
             if (iEntries != null) {
                 while (iEntries.hasNext()) {
 		   
-                    String name = (String)iEntries.next();
+                    String name = iEntries.next();
 		    JarEntry entry = oldJar.getJarEntry(name);
 		   
 		    updateDelegate(delegate, currentEntry, size);
@@ -204,8 +204,8 @@ public class JarDiffPatcher implements JarDiffConstants, Patcher {
 	}
     }
 
-    private void determineNameMapping(JarFile jarDiff, Set ignoreSet,
-                                      Map renameMap) throws IOException {
+    private void determineNameMapping(JarFile jarDiff, Set<String> ignoreSet,
+                                      Map<String, String> renameMap) throws IOException {
         InputStream is = jarDiff.getInputStream(jarDiff.getEntry(INDEX_NAME));
         
         if (is == null) {
@@ -223,7 +223,7 @@ public class JarDiffPatcher implements JarDiffConstants, Patcher {
         
         while ((line = indexReader.readLine()) != null) {
             if (line.startsWith(REMOVE_COMMAND)) {
-                List sub = getSubpaths(line.substring(REMOVE_COMMAND.
+                List<String> sub = getSubpaths(line.substring(REMOVE_COMMAND.
                                                           length()));
                 
                 if (sub.size() != 1) {
@@ -233,7 +233,7 @@ public class JarDiffPatcher implements JarDiffConstants, Patcher {
                 ignoreSet.add(sub.get(0));
             }
             else if (line.startsWith(MOVE_COMMAND)) {
-                List sub = getSubpaths(line.substring(MOVE_COMMAND.length()));
+                List<String> sub = getSubpaths(line.substring(MOVE_COMMAND.length()));
                 
                 if (sub.size() != 2) {
 		    handleException("jardiff.error.badmove", line);
@@ -262,10 +262,10 @@ public class JarDiffPatcher implements JarDiffConstants, Patcher {
 	}
     }
 
-    private List getSubpaths(String path) {
+    private List<String> getSubpaths(String path) {
         int index = 0;
         int length = path.length();
-        ArrayList sub = new ArrayList();
+        ArrayList<String> sub = new ArrayList<String>();
         
         while (index < length) {
             while (index < length && Character.isWhitespace

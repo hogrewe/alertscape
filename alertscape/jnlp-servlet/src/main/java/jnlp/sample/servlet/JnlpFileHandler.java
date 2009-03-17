@@ -72,13 +72,13 @@ public class JnlpFileHandler {
 
   private ServletContext _servletContext;
   private Logger _log = null;
-  private HashMap _jnlpFiles = null;
+  private HashMap<String, JnlpFileEntry> _jnlpFiles = null;
 
   /** Initialize JnlpFileHandler for the specific ServletContext */
   public JnlpFileHandler(ServletContext servletContext, Logger log) {
     _servletContext = servletContext;
     _log = log;
-    _jnlpFiles = new HashMap();
+    _jnlpFiles = new HashMap<String, JnlpFileEntry>();
   }
 
   private static class JnlpFileEntry {
@@ -118,7 +118,7 @@ public class JnlpFileHandler {
     String reqUrl = HttpUtils.getRequestURL(dreq.getHttpRequest()).toString();
 
     // Check if entry already exist in HashMap
-    JnlpFileEntry jnlpFile = (JnlpFileEntry) _jnlpFiles.get(reqUrl);
+    JnlpFileEntry jnlpFile = _jnlpFiles.get(reqUrl);
 
     if (jnlpFile != null && jnlpFile.getLastModified() == lastModified) {
       // Entry found in cache, so return it
@@ -182,7 +182,7 @@ public class JnlpFileHandler {
       reqUrl += dreq.getQuery();
 
     // Check if entry already exist in HashMap
-    JnlpFileEntry jnlpFile = (JnlpFileEntry) _jnlpFiles.get(reqUrl);
+    JnlpFileEntry jnlpFile = _jnlpFiles.get(reqUrl);
 
     if (jnlpFile != null && jnlpFile.getLastModified() == lastModified) {
       // Entry found in cache, so return it
