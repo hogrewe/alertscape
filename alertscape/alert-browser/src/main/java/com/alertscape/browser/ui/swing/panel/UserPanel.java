@@ -55,7 +55,15 @@ public class UserPanel extends JPanel implements AuthenticationListener
 
   public void handleAuthEvent(AuthenticationEvent e)
   {
-    configureLabel( );
+    AuthenticatedUser u = e.getUser();
+    if (u == null)
+    {
+      userLabel.setText(NO_USER);
+    }
+    else
+    {
+      userLabel.setText(u.getUsername( ));
+    }
   }
 
   protected void configureLabel( )

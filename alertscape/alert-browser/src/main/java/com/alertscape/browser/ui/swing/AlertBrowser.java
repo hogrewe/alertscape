@@ -128,15 +128,15 @@ public class AlertBrowser extends JFrame {
 
     // Get the size of the screen
     Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-    
+
     // Determine the new location of the window
     int w = this.getSize().width;
     int h = this.getSize().height;
-    int x = (dim.width-w)/2;
-    int y = (dim.height-h)/2;    
+    int x = (dim.width - w) / 2;
+    int y = (dim.height - h) / 2;
     // Move the window
     this.setLocation(x, y);
-    
+
     treePanel = new AlertTreePanel();
     treePanel.setRootNode(getRootNode());
     treePanel.init();
@@ -384,6 +384,14 @@ public class AlertBrowser extends JFrame {
           };
 
           t.start();
+        } else if (e.getType() == AuthEventType.FAILED_LOGIN) {
+          JOptionPane.showMessageDialog(AlertBrowser.this, "Invalid username/password", "Login Failed",
+              JOptionPane.ERROR_MESSAGE);
+          collection.clearAlerts();
+          if (listener != null) {
+            listener.disconnect();
+          }
+
         }
       }
     });
