@@ -35,10 +35,16 @@ public class AlertUtility {
 	private static final String newline = "\n";
 	private static final String divider = "------------------------------------------";
 	
-	public static Map<String,Integer> countAlertFields(List<Alert> alerts, String field)
+	public static Map<String, Map> countAlertFields(List<Alert> alerts, String field)
 	{
+		Map<String, Map> retVal = new HashMap<String, Map>();
+		
 		// create a map of field value to counted occurances
-  	Map<String,Integer> fieldVals = new HashMap<String, Integer>();
+  	Map<String,Integer> fieldVals = new HashMap<String,Integer>();
+  	Map<String,List<Alert>> fieldAlerts = new HashMap<String,List<Alert>>();
+  	
+  	retVal.put("values", fieldVals);
+  	retVal.put("alerts", fieldAlerts);
   	
   	// iterate through the alets, counting those fields
   	for (int i = 0; i < alerts.size(); i++)
@@ -57,9 +63,19 @@ public class AlertUtility {
   		}
   		int newCount = itemCount.intValue() + 1;
   		fieldVals.put(val, new Integer(newCount));
+  		
+  		// get the list of alerts for the given field, and add this alert to it
+  		List<Alert> associatedAlerts = fieldAlerts.get(val);
+  		if (associatedAlerts == null)
+  		{
+  			associatedAlerts = new ArrayList<Alert>(0);
+  			fieldAlerts.put(val, associatedAlerts);
+  		}
+  		associatedAlerts.add(alert);
+  		
   	}
   	
-  	return fieldVals;
+  	return retVal;
 	}
 	
 	public static List<String> getAllDynamicKeys(List<Alert> alerts)
