@@ -1,6 +1,9 @@
 package com.alertscape.common.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +60,29 @@ public class AlertUtility {
   	}
   	
   	return fieldVals;
+	}
+	
+	public static List<String> getAllDynamicKeys(List<Alert> alerts)
+	{
+		Set mergeSet = new HashSet();		
+		
+		for (int i = 0; i < alerts.size(); i++)
+		{
+			Alert alert = alerts.get(i);
+			Set extattrs = alert.getExtendedAttributes().keySet();
+			Set majors   = alert.getMajorTags().keySet();
+			Set minors   = alert.getMinorTags().keySet();
+			
+			mergeSet.addAll(extattrs);
+			mergeSet.addAll(majors);
+			mergeSet.addAll(minors);
+		}
+		
+		ArrayList keyList = new ArrayList(mergeSet);
+		
+		Collections.sort(keyList);
+		
+		return keyList;		
 	}
 	
 	public static String getAlertFieldValueFromAttributeName(Alert alert, String name)
@@ -118,22 +144,30 @@ public class AlertUtility {
 		else // did not find a static field with this name, so try a major or minor tag (category/label)
 		{
 			// check if this field is a major tag...
-			Object majorval = alert.getMajorTag(name);
-			if (majorval != null)
+			Object extattrval = alert.getExtendedAttribute(name);
+			if (extattrval != null)
 			{
-				value = majorval.toString();
+				value = extattrval.toString();
 			}
-			else // it was not a major tag, so check if it is a minor tag
-			{
-				Object minorval = alert.getMinorTag(name);
-				if (minorval != null)
-				{
-					value = minorval.toString();
-				}
-				else // if was not a static, major, or minor attribute...
-				{
-					value = "n/a";
-				}
+			else // it was not an extended attribute, so check if it is a major tag
+			{			
+  			Object majorval = alert.getMajorTag(name);
+	  		if (majorval != null)
+		  	{
+			  	value = majorval.toString();
+  			}
+	  		else // it was not a major tag, so check if it is a minor tag
+		  	{
+			  	Object minorval = alert.getMinorTag(name);
+				  if (minorval != null)
+  				{
+	  				value = minorval.toString();
+		  		}
+			  	else // if was not a static, major, or minor attribute...
+				  {
+					  value = "n/a";
+  				}
+	  		}
 			}
 		}
 		
