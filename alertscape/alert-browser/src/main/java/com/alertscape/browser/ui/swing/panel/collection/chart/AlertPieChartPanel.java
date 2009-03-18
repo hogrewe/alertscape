@@ -3,6 +3,8 @@ package com.alertscape.browser.ui.swing.panel.collection.chart;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,8 +13,12 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.entity.ChartEntity;
+import org.jfree.chart.entity.PieSectionEntity;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
@@ -46,26 +52,13 @@ public class AlertPieChartPanel extends JPanel implements AlertCollectionPanel, 
   private void init()
   {
   	// set up the ui
-
-// this code has been generalized for any alert field, not just item, and moved to alertutility   	
-//  	// TODO: for now, I am just going to assume that the field is Item....
-//  	// 	 sum up the total count for each of the field values
-//  	Map<String,Integer> fieldVals = new HashMap();
-//  	for (int i = 0; i < chartedAlerts.size(); i++)
-//  	{
-//  		Alert alert = chartedAlerts.get(i);
-//  		String item = alert.getItem();
-//  		
-//  		Integer itemCount = fieldVals.get(item);
-//  		if (itemCount == null)
-//  		{
-//  			itemCount = new Integer(0);
-//  		}
-//  		int newCount = itemCount.intValue() + 1;
-//  		fieldVals.put(item, new Integer(newCount));
-//  	}
   	
-  	Map<String,Integer> fieldVals = AlertUtility.countAlertFields(chartedAlerts, chartedField);
+  	// roll up all of the counts for the given field
+  	Map<String, Map> data = AlertUtility.countAlertFields(chartedAlerts, chartedField);
+  	
+  	// strip out the counts vs the alerts that are in the counts
+  	Map<String,Integer> fieldVals = data.get("values");
+  	final Map<String,List<Alert>> fieldAlerts = data.get("alerts");
   	
   	// determine percentages
   	Map<String, Double> fieldPcts = new HashMap<String, Double>(fieldVals.size());
@@ -84,6 +77,7 @@ public class AlertPieChartPanel extends JPanel implements AlertCollectionPanel, 
   	
   	Iterator<String> it2 = fieldPcts.keySet().iterator();
   	double otherpct = 0.0;
+  	List<Alert> otherAlerts = new ArrayList<Alert>(0);  // a list to collect all of the alerts marked as other, for later drilling
   	while (it2.hasNext())
   	{
   		String nextkey = it2.next();
@@ -95,12 +89,14 @@ public class AlertPieChartPanel extends JPanel implements AlertCollectionPanel, 
   		else
   		{
   			otherpct = otherpct + nextval;
+  			otherAlerts.addAll((fieldAlerts.get(nextkey)));
   		}
   	}
   	
   	if (otherpct > 0.0)
   	{
   		dataset.setValue("Other", otherpct);
+  		fieldAlerts.put("Other", otherAlerts);
   	}
   	
   	JFreeChart chart3 = ChartFactory.createPieChart3D(title, dataset, false, false, false);
@@ -108,8 +104,48 @@ public class AlertPieChartPanel extends JPanel implements AlertCollectionPanel, 
 	  plot3.setForegroundAlpha(0.6f);
     plot3.setCircular(true);
     
-    this.add(new ChartPanel(chart3), BorderLayout.CENTER);
+    ChartPanel chartpanel = new ChartPanel(chart3);
+    
+    chartpanel.addChartMouseListener(new ChartMouseListener()
+    		{
+					@Override
+					public void chartMouseClicked(ChartMouseEvent arg0)
+					{
+						ChartEntity entity = arg0.getEntity();
+						if (entity instanceof PieSectionEntity)
+						{
+							PieSectionEntity piepiece = (PieSectionEntity)entity;
+							piepiece.getDataset();
+							String key = piepiece.getSectionKey().toString();
+							List<Alert> associatedAlerts = fieldAlerts.get(key);
+							if (associatedAlerts != null)
+							{							
+								// Now you can drill baby!
+								CreateChartPanelAction action = new CreateChartPanelAction();
+								action.actionPerformed(new ActionEvent(associatedAlerts, ActionEvent.ACTION_FIRST, key));
+							}
+							else
+							{
+								System.out.println("the associated alerts are null");
+							}
+						}
+					}
+
+					@Override
+					public void chartMouseMoved(ChartMouseEvent arg0)
+					{
+						// TODO Auto-generated method stub						
+					}
+    		});
+    
+    this.add(chartpanel, BorderLayout.CENTER);
     this.setPreferredSize(new Dimension(800, 600));
+    
+    
+    // set up listeners on the clicking of the chart
+//    chart3.handleClick(x, y, info);
+//    ChartRenderingInfo info;
+    
   }
   
 	public AlertCollection getCollection()
@@ -127,7 +163,6 @@ public class AlertPieChartPanel extends JPanel implements AlertCollectionPanel, 
 	public void setUserPreferences(Map preferences)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 
 	
