@@ -30,7 +30,9 @@ public class ServerInfoWidget extends AbstractInstallWizardWidget {
 
     g = new Grid(2, 2);
     serverContextTextBox = new TextBox();
+    serverContextTextBox.setStyleName("db-text");
     jmsTextBox = new TextBox();
+    jmsTextBox.setStyleName("db-text");
 
     int row = 0;
     setRow(row++, "Server Context:", serverContextTextBox);
