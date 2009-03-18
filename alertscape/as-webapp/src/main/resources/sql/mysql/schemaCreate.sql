@@ -7,10 +7,7 @@ CREATE TABLE `alert_source_types` (
   UNIQUE KEY `as_type_type_idx` (`type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 INSERT INTO `alert_source_types` VALUES  (1,'File','','fileOnrampMapping.xml'),
- (2,'DB','','dbOnrampMapping.xml'),
- (3,'Custom','',NULL),
- (4,'WebAccessFile','',NULL),
- (5,'IntermapperFile','',NULL);
+ (2,'DB','','dbOnrampMapping.xml');
 CREATE TABLE `alert_sources` (
   `alert_source_id` int(10) unsigned NOT NULL auto_increment,
   `alert_source_name` varchar(50) NOT NULL,
@@ -27,7 +24,7 @@ INSERT INTO `alert_sources` VALUES  (1,'UNKNOWN','The unknown source',1,1,0,NULL
 CREATE TABLE `alert_source_props` (
   `name` varchar(50) NOT NULL,
   `value` varchar(2000) default NULL,
-  `source_id` int(11) NOT NULL default '0',
+  `source_id` int(10) unsigned NOT NULL default '0',
   KEY `as_props_as_id_idx` (`source_id`),
   CONSTRAINT `as_props_as_fk` FOREIGN KEY (`source_id`) REFERENCES `alert_sources` (`alert_source_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -37,7 +34,7 @@ CREATE TABLE `alerts` (
   `long_description` varchar(2000) default NULL,
   `severity` varchar(20) NOT NULL,
   `count` int(11) NOT NULL,
-  `source_id` int(11) NOT NULL,
+  `source_id` int(10) unsigned NOT NULL,
   `first_occurence` datetime NOT NULL,
   `last_occurence` datetime NOT NULL,
   `create_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
@@ -105,7 +102,7 @@ CREATE TABLE `ext_alert_attributes` (
   `stateprovince` varchar(50) default NULL,
   `city` varchar(100) default NULL,
   `folder` varchar(200) default NULL,
-  `source_id` int(11) NOT NULL default '0',
+  `source_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  USING BTREE (`alertid`,`source_id`),
   CONSTRAINT `ext_attr_alert_fk` FOREIGN KEY (`alertid`, `source_id`) REFERENCES `alerts` (`alertid`, `source_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

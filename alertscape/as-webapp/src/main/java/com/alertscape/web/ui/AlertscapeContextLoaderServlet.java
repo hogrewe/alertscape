@@ -36,7 +36,7 @@ public class AlertscapeContextLoaderServlet extends ContextLoaderServlet {
   @Override
   public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
     if (alreadyInstalled()) {
-      return;
+      response.sendRedirect("launcher.html");
     } else {
       response.sendRedirect("com.alertscape.wizard.InstallWizard/InstallWizard.html");
     }
