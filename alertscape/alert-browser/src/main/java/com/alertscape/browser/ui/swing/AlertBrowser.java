@@ -197,16 +197,22 @@ public class AlertBrowser extends JFrame {
 
     AlertMailAction mailAction = new AlertMailAction();
     mailAction.setParentFrame(this);
+    // TODO: This is disabled until complete
+    mailAction.setEnabled(false);
     JButton mailButton = actionToolbar.add(mailAction);
     mailButton.setOpaque(false);
 
     PredefinedTagAction predefinedTagAction = new PredefinedTagAction();
     predefinedTagAction.setParentFrame(this);
+    // TODO: This is disabled until complete
+    predefinedTagAction.setEnabled(false);
     JButton predefinedTagButton = actionToolbar.add(predefinedTagAction);
     predefinedTagButton.setOpaque(false);
 
     CustomTagAction customTagAction = new CustomTagAction();
     customTagAction.setParentFrame(this);
+    // TODO: This is disabled until complete
+    customTagAction.setEnabled(false);
     JButton customTagButton = actionToolbar.add(customTagAction);
     customTagButton.setOpaque(false);
 

@@ -3,6 +3,8 @@
  */
 package com.alertscape.wizard.client;
 
+import java.util.List;
+
 import com.alertscape.wizard.client.model.OnrampDefinition;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -22,20 +24,6 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public class OnrampAddWidget extends AbstractInstallWizardWidget {
-  /**
-   * @author josh
-   * 
-   */
-  private final class ValidInputChangeListener implements ChangeListener {
-    public void onChange(Widget w) {
-      if (notEmpty(name) && notEmpty(configuration)) {
-        addButton.setEnabled(true);
-      } else {
-        addButton.setEnabled(false);
-      }
-    }
-  }
-
   private HorizontalPanel layout;
   private FlexTable onrampsTable;
   private int numOnramps;
@@ -95,6 +83,8 @@ public class OnrampAddWidget extends AbstractInstallWizardWidget {
           }
 
           public void onSuccess(OnrampDefinition ramp) {
+            name.setText("");
+            configuration.setText("");
             addOnrampToTable(ramp);
           }
         });
@@ -115,6 +105,23 @@ public class OnrampAddWidget extends AbstractInstallWizardWidget {
 
   @Override
   public void onShow() {
+    numOnramps = 0;
+    onrampsTable.clear();
+
+    getWizardService().getOnramps(getInfo(), new AsyncCallback<List<OnrampDefinition>>() {
+      public void onFailure(Throwable t) {
+        errorLabel.setText("Couldn't load onramps: " + t.getLocalizedMessage());
+      }
+
+      public void onSuccess(List<OnrampDefinition> definitions) {
+        numOnramps = 0;
+        onrampsTable.clear();
+        for (OnrampDefinition onramp : definitions) {
+          addOnrampToTable(onramp);
+        }
+      }
+    });
+
     if (numOnramps > 0) {
       fireProceedable();
     }
@@ -130,9 +137,24 @@ public class OnrampAddWidget extends AbstractInstallWizardWidget {
     onrampsTable.setText(numOnramps, 0, onramp.getName());
     onrampsTable.setText(numOnramps, 1, onramp.getType());
     String config = onramp.getConfiguration();
-    onrampsTable.setText(numOnramps, 2, config.length() > 20 ? config.substring(0, 20) : config);
+    onrampsTable.setText(numOnramps, 2, config != null && config.length() > 20 ? config.substring(0, 20) : config);
     numOnramps++;
 
     fireProceedable();
   }
+
+  /**
+   * @author josh
+   * 
+   */
+  private final class ValidInputChangeListener implements ChangeListener {
+    public void onChange(Widget w) {
+      if (notEmpty(name) && notEmpty(configuration)) {
+        addButton.setEnabled(true);
+      } else {
+        addButton.setEnabled(false);
+      }
+    }
+  }
+
 }

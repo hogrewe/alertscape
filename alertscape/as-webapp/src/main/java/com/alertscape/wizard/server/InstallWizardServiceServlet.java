@@ -19,6 +19,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -275,8 +277,96 @@ public class InstallWizardServiceServlet extends RemoteServiceServlet implements
       e.printStackTrace();
       throw new WizardException("Couldn't set tree configuration: " + e.getLocalizedMessage());
     } finally {
+      closeAll(null, insertStmt, null);
       closeAll(connection, stmt, null);
     }
+  }
+
+  public List<OnrampDefinition> getOnramps(InstallWizardInfo info) throws WizardException {
+    Connection connection = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+
+    List<OnrampDefinition> definitions = new ArrayList<OnrampDefinition>();
+    try {
+      connection = getConnection(info);
+
+      stmt = connection.prepareStatement("select sources.alert_source_name as name, "
+          + "sources.configuration as configuration, t.type as source_type from alert_sources sources "
+          + "join alert_source_types t on t.sid=sources.alert_source_type_sid");
+      rs = stmt.executeQuery();
+
+      while (rs.next()) {
+        OnrampDefinition def = new OnrampDefinition();
+        def.setConfiguration(rs.getString("configuration"));
+        def.setName(rs.getString("name"));
+        def.setType(rs.getString("source_type"));
+
+        definitions.add(def);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new WizardException("Couldn't get existing onramps: " + e.getLocalizedMessage());
+    } finally {
+      closeAll(connection, stmt, rs);
+    }
+
+    return definitions;
+  }
+
+  public List<User> getUsers(InstallWizardInfo info) throws WizardException {
+    Connection connection = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+
+    List<User> users = new ArrayList<User>();
+    try {
+      connection = getConnection(info);
+
+      stmt = connection.prepareStatement("select * from as_user");
+      rs = stmt.executeQuery();
+
+      while (rs.next()) {
+        User u = new User();
+
+        u.setEmail(rs.getString("email"));
+        u.setFullname(rs.getString("fullname"));
+        u.setUsername(rs.getString("username"));
+
+        users.add(u);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new WizardException("Couldn't get existing users: " + e.getLocalizedMessage());
+    } finally {
+      closeAll(connection, stmt, rs);
+    }
+
+    return users;
+  }
+
+  public String getTreeConfiguration(InstallWizardInfo info) throws WizardException {
+    Connection connection = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+
+    try {
+      connection = getConnection(info);
+
+      stmt = connection.prepareStatement("select * from tree_configurations where name='default'");
+      rs = stmt.executeQuery();
+
+      if (rs.next()) {
+        return rs.getString("configuration");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new WizardException("Couldn't get existing users: " + e.getLocalizedMessage());
+    } finally {
+      closeAll(connection, stmt, rs);
+    }
+
+    return null;
   }
 
   protected Connection getConnection(InstallWizardInfo info) throws WizardException, SQLException {
