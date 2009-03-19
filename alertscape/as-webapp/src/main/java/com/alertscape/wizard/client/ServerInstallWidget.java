@@ -17,15 +17,16 @@ import com.google.gwt.user.client.ui.Widget;
  * @author josh
  * 
  */
-public class FinalInstallWidget extends AbstractInstallWizardWidget {
+public class ServerInstallWidget extends AbstractInstallWizardWidget {
   private HTML errorLabel;
   private VerticalPanel layout;
+  private Button install;
 
   /**
    * @param wizardService
    * @param info
    */
-  public FinalInstallWidget(InstallWizardServiceAsync wizardService, InstallWizardInfo info) {
+  public ServerInstallWidget(InstallWizardServiceAsync wizardService, InstallWizardInfo info) {
     super(wizardService, info);
     layout = new VerticalPanel();
     initWidget(layout);
@@ -52,17 +53,21 @@ public class FinalInstallWidget extends AbstractInstallWizardWidget {
     server.addRow("Home directory:", getInfo().getAsHome());
     layout.add(server);
 
-    Button install = new Button("Install", new ClickListener() {
+    install = new Button("Install", new ClickListener() {
       public void onClick(Widget w) {
+        final Button b = (Button) w;
+        b.setEnabled(false);
         getWizardService().install(getInfo(), new AsyncCallback<Void>() {
           public void onFailure(Throwable t) {
             errorLabel.setText("Couldn't install Alertscape: " + t.getLocalizedMessage());
+            b.setEnabled(true);
+            fireNotProceedable();
           }
 
           public void onSuccess(Void value) {
-            errorLabel.setText("Finished installing, please restart application server");
+            errorLabel.setText("Finished installing server");
+            fireProceedable();
           }
-
         });
       }
     });

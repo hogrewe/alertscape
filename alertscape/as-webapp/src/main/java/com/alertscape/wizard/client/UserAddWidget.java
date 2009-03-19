@@ -3,6 +3,8 @@
  */
 package com.alertscape.wizard.client;
 
+import java.util.List;
+
 import com.alertscape.wizard.client.model.User;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -21,21 +23,6 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 public class UserAddWidget extends AbstractInstallWizardWidget {
-  /**
-   * @author josh
-   *
-   */
-  private final class InputValidationChangeListener implements ChangeListener {
-    public void onChange(Widget w) {
-      if (notEmpty(username) && notEmpty(email) && notEmpty(password1) && notEmpty(password2)
-          && password1.getText().equals(password2.getText())) {
-        addButton.setEnabled(true);
-      } else {
-        addButton.setEnabled(false);
-      }
-    }
-  }
-
   private HorizontalPanel layout;
   private FlexTable usersTable;
   private int numUsers;
@@ -101,13 +88,17 @@ public class UserAddWidget extends AbstractInstallWizardWidget {
           }
 
           public void onSuccess(User u) {
+            email.setText("");
+            username.setText("");
+            fullname.setText("");
+            password1.setText("");
+            password2.setText("");
             addUserToTable(u);
           }
         });
       }
-
     });
-    
+
     addButton.setEnabled(false);
 
     errorLabel = new HTML("");
@@ -121,7 +112,22 @@ public class UserAddWidget extends AbstractInstallWizardWidget {
 
   @Override
   public void onShow() {
-    if(numUsers > 0) {
+    numUsers = 0;
+    usersTable.clear();
+    getWizardService().getUsers(getInfo(), new AsyncCallback<List<User>>() {
+      public void onFailure(Throwable t) {
+        errorLabel.setText("Couldn't get users: " + t.getLocalizedMessage());
+      }
+
+      public void onSuccess(List<User> users) {
+        numUsers = 0;
+        usersTable.clear();
+        for (User user : users) {
+          addUserToTable(user);
+        }
+      }
+    });
+    if (numUsers > 0) {
       fireProceedable();
     }
   }
@@ -139,6 +145,21 @@ public class UserAddWidget extends AbstractInstallWizardWidget {
     numUsers++;
 
     fireProceedable();
+  }
+
+  /**
+   * @author josh
+   * 
+   */
+  private final class InputValidationChangeListener implements ChangeListener {
+    public void onChange(Widget w) {
+      if (notEmpty(username) && notEmpty(email) && notEmpty(password1) && notEmpty(password2)
+          && password1.getText().equals(password2.getText())) {
+        addButton.setEnabled(true);
+      } else {
+        addButton.setEnabled(false);
+      }
+    }
   }
 
 }

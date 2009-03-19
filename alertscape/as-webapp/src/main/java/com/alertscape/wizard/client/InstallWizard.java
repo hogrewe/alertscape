@@ -45,9 +45,11 @@ public class InstallWizard implements EntryPoint {
     steps.add(new WizardStep("Set DB Info", new DBInfoWidget(wizardService, info)));
     steps.add(new WizardStep("Choose Home Directory", new HomeDirWidget(wizardService, info)));
     steps.add(new WizardStep("Set Server Info", new ServerInfoWidget(wizardService, info)));
-    steps.add(new WizardStep("Install", new FinalInstallWidget(wizardService, info)));
+    steps.add(new WizardStep("Install", new ServerInstallWidget(wizardService, info)));
     steps.add(new WizardStep("Add Users", new UserAddWidget(wizardService, info)));
     steps.add(new WizardStep("Add Onramps", new OnrampAddWidget(wizardService, info)));
+    steps.add(new WizardStep("Set Tree Config", new TreeConfigWidget(wizardService, info)));
+//    steps.add(new WizardStep("Complete", new InstallCompleteWidget(wizardService, info)));
 
     Wizard wiz = new Wizard(steps, new WizardFinishHandler() {
       public void handleFinish() {

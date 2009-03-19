@@ -1,5 +1,7 @@
 package com.alertscape.wizard.client;
 
+import java.util.List;
+
 import com.alertscape.wizard.client.model.OnrampDefinition;
 import com.alertscape.wizard.client.model.User;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -23,5 +25,10 @@ public interface InstallWizardServiceAsync {
   void setTreeConfig(InstallWizardInfo info, String treeConfig, AsyncCallback<Void> callback);
 
   void addOnramp(InstallWizardInfo info, OnrampDefinition onramp, AsyncCallback<OnrampDefinition> callback);
-
+  
+  void getUsers(InstallWizardInfo info, AsyncCallback<List<User>> callback);
+  
+  void getOnramps(InstallWizardInfo info, AsyncCallback<List<OnrampDefinition>> callback);
+  
+  void getTreeConfiguration(InstallWizardInfo info, AsyncCallback<String> callback);
 }
