@@ -38,10 +38,10 @@ public class LicenseHelper {
     return content;
   }
 
-  public AlertscapeLicense getLicense() throws Exception {
+  public AL getLicense() throws Exception {
     LicenseManager lm = new LicenseManager(getLicenseParam());
     LicenseContent content = lm.verify();
-    return (AlertscapeLicense) content.getExtra();
+    return (AL) content.getExtra();
   }
 
   private LicenseParam getLicenseParam() {

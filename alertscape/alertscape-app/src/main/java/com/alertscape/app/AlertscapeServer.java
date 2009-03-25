@@ -19,7 +19,7 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.exolab.castor.xml.XMLContext;
 
-import com.alertscape.app.license.AlertscapeLicense;
+import com.alertscape.app.license.AL;
 import com.alertscape.app.license.LicenseHelper;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.AlertSource;
@@ -45,8 +45,8 @@ public class AlertscapeServer {
     LicenseHelper helper = new LicenseHelper();
     try {
       helper.install(asHome + File.separator + "alertscape.license");
-      AlertscapeLicense license = helper.getLicense();
-      initOnramps(license.getOnramps());
+      AL license = helper.getLicense();
+      initOnramps(license.getOn());
     } catch (Exception e) {
       StringBuilder b = new StringBuilder();
       b.append("Inv");
