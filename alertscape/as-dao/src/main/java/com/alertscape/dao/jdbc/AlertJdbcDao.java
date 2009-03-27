@@ -106,18 +106,16 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       return null;
     }
 
-    StringBuilder builder = new StringBuilder("select * from alerts where ");
+    StringBuilder builder = new StringBuilder("select * from alerts where source_id=?");
     List<Object> args = new ArrayList<Object>();
+    
+    args.add(a.getSource().getSourceId());
 
-    boolean first = true;
     for (AttributeEquator eq : equator.getAttributeEquators()) {
       String attributeName = eq.getAttributeName();
       String fieldName = attributeToColumnMap.get(attributeName);
       if (fieldName != null) {
-        if (!first) {
-          builder.append(" and ");
-        }
-        first = false;
+        builder.append(" and ");
         builder.append(fieldName + "=?");
         args.add(eq.getValue(a));
       } else {
@@ -137,9 +135,9 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
 
   @SuppressWarnings("unchecked")
   public List<Alert> getAllAlerts(String filter) throws DaoException {
-    //XXX:Get rid of sql injection vulnerability!!!!!
+    // XXX:Get rid of sql injection vulnerability!!!!!
     String query = GET_ALL_ALERTS_SQL;
-    if(filter != null && !filter.isEmpty()) {
+    if (filter != null && !filter.isEmpty()) {
       query += " where " + filter;
     }
     return getJdbcTemplate().query(query, alertMapper);
@@ -161,7 +159,7 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       insert(alert);
     }
     saveExtendedAttributes(alert);
-    getAlertSourceRepository().updateAlertIdSeq(alert.getSource(), alert.getAlertId()+1);
+    getAlertSourceRepository().updateAlertIdSeq(alert.getSource(), alert.getAlertId() + 1);
   }
 
   /**
