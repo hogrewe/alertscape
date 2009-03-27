@@ -16,7 +16,7 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import com.alertscape.app.license.AL;
+import com.alertscape.app.license.AlertscapeLicense;
 
 import de.schlichtherle.license.LicenseContent;
 import de.schlichtherle.license.LicenseManager;
@@ -67,16 +67,16 @@ public class AlertscapeLicenseGenerator {
     System.out.print("License file: ");
     String filename = br.readLine();
 
-    AL license = new AL();
+    AlertscapeLicense license = new AlertscapeLicense();
 
     System.out.print("Number of onramps: ");
-    license.setOn(readInt(br));
+    license.setOnramps(readInt(br));
 
     System.out.print("Number of offramps: ");
-    license.setOf(readInt(br));
+    license.setOfframps(readInt(br));
 
     System.out.print("Number of AMP users: ");
-    license.setAu(readInt(br));
+    license.setAmpUsers(readInt(br));
 
     result.setExtra(license);
 
