@@ -11,12 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.SwingUtilities;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import com.alertscape.browser.model.criterion.AlertCriterion;
 import com.alertscape.browser.ui.swing.panel.collection.tree.TreeMatcherEditor;
 import com.alertscape.browser.ui.swing.tree.AlertTreeModel;
+import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
@@ -26,6 +28,7 @@ import com.alertscape.common.model.severity.SeverityFactory;
  * @version $Version: $
  */
 public class DefaultAlertTreeNode implements AlertTreeNode {
+  private static final ASLogger LOG = ASLogger.getLogger(DefaultAlertTreeNode.class);
   private byte[] alertLock = new byte[0];
 
   private AlertTreeNode parent;
@@ -88,7 +91,7 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
         determineMaxSeverity();
         alerts.put(a, a);
         if (treeModel != null && (alerts.size() != startingCount || getMaxSeverity() != startingSev)) {
-          treeModel.nodeChanged(this);
+          notifyChanged();
         }
         matcherEditor.addAlert(a);
         if (!addToChildren(a)) {
@@ -98,6 +101,23 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
     }
 
     return added;
+  }
+
+  /**
+   * 
+   */
+  private void notifyChanged() {
+    try {
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          treeModel.nodeChanged(DefaultAlertTreeNode.this);
+        }
+
+      });
+    } catch (Exception e) {
+      LOG.error("Couldn't notify of changed tree nodes", e);
+    }
   }
 
   /**
@@ -130,7 +150,7 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
         determineMaxSeverity();
         matcherEditor.removeAlert(a);
         if (treeModel != null && (alerts.size() != startingCount || getMaxSeverity() != startingSev)) {
-          treeModel.nodeChanged(this);
+          notifyChanged();
         }
         for (AlertTreeNode child : getChildAddOrder()) {
           child.removeAlert(a);
@@ -150,19 +170,29 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
   public void addChild(AlertTreeNode child) {
     addChild(child, children.size());
   }
-  
+
   public void setChildren(List<AlertTreeNode> children) {
     for (AlertTreeNode child : children) {
       addChild(child);
     }
   }
 
-  public void addChild(AlertTreeNode child, int index) {
+  public void addChild(AlertTreeNode child, final int index) {
     children.add(index, child);
     child.setTreeModel(treeModel);
     child.setParent(this);
     if (treeModel != null) {
-      treeModel.nodesWereInserted(this, new int[] { index });
+      try {
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            treeModel.nodesWereInserted(DefaultAlertTreeNode.this, new int[] { index });
+          }
+
+        });
+      } catch (Exception e) {
+        LOG.error("Couldn't notify of changed tree nodes", e);
+      }
     }
   }
 
@@ -197,7 +227,7 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
       }
       determineMaxSeverity();
       if (treeModel != null) {
-        treeModel.nodeChanged(this);
+        notifyChanged();
       }
     }
   }
