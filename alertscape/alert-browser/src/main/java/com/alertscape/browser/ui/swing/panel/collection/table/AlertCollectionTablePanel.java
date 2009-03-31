@@ -5,21 +5,26 @@
 package com.alertscape.browser.ui.swing.panel.collection.table;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -113,7 +118,14 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
     Integer[] columnWidths = new Integer[] { 130, 130, 100, 100, 50, 300, 100, 50, 100, 100, 100, 100, 100 };
 
     tf = new AlertTableFormat(propertyNames, columnLabels, extendedAttributes);
-    model = new EventTableModel<Alert>(sortedList, tf);
+    model = new EventTableModel<Alert>(sortedList, tf) {
+
+      @Override
+      public boolean isCellEditable(int arg0, int arg1) {
+        return true;
+      }
+
+    };
     collectionTable = new JTable(model);
 
     chooser = new TableComparatorChooser<Alert>(collectionTable, sortedList, true);
@@ -128,6 +140,32 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
     collectionTable.setDefaultRenderer(Date.class, dateRenderer);
     collectionTable.setDefaultRenderer(Severity.class, sevRenderer);
     collectionTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    collectionTable.setDefaultEditor(Object.class, new DefaultCellEditor(new JTextField()) {
+      private static final long serialVersionUID = 8873680844314533976L;
+
+      @Override
+      public boolean isCellEditable(EventObject anEvent) {
+        if (anEvent instanceof MouseEvent) {
+          return ((MouseEvent) anEvent).getClickCount() >= 2;
+        }
+        return false;
+      }
+
+      @Override
+      public boolean shouldSelectCell(EventObject anEvent) {
+        if (anEvent instanceof MouseEvent) {
+          return ((MouseEvent) anEvent).getClickCount() >= 2;
+        }
+        return false;
+      }
+
+      @Override
+      public boolean stopCellEditing() {
+        // No-op
+        cancelCellEditing();
+        return true;
+      }
+    });
     setLayout(new BorderLayout());
     JScrollPane tableScroller = new JScrollPane(collectionTable);
     tableScroller.setBorder(BorderFactory.createEmptyBorder());
@@ -293,39 +331,35 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
 
     // create a map of sorted column number to the comparator being used for that column
     HashMap innerMap = new HashMap();
-    Iterator<Integer> it = sorting.iterator();    
-    while (it.hasNext())
-    {
-    	Integer nextCol = it.next();
-    	Integer nextComparatorIndex = chooser.getColumnComparatorIndex(nextCol.intValue());
-    	innerMap.put(nextCol, nextComparatorIndex);
-    	innerMap.put(nextCol + "_Reverse", new Boolean(chooser.isColumnReverse(nextCol.intValue())));
+    Iterator<Integer> it = sorting.iterator();
+    while (it.hasNext()) {
+      Integer nextCol = it.next();
+      Integer nextComparatorIndex = chooser.getColumnComparatorIndex(nextCol.intValue());
+      innerMap.put(nextCol, nextComparatorIndex);
+      innerMap.put(nextCol + "_Reverse", new Boolean(chooser.isColumnReverse(nextCol.intValue())));
     }
     map.put(PREFERENCES_COL_SORT_COMPARATORS, innerMap);
-        
+
     // now get the column order, and store it------------------------------
     ArrayList columnNames = new ArrayList();
-    for (int i = 0; i < collectionTable.getColumnCount(); i++)
-    {    	
-    	String colName = collectionTable.getColumnName(i);
-    	columnNames.add(colName);
+    for (int i = 0; i < collectionTable.getColumnCount(); i++) {
+      String colName = collectionTable.getColumnName(i);
+      columnNames.add(colName);
     }
     map.put(PREFERENCES_COL_ORDER, columnNames);
-    
+
     return map;
   }
 
-  public void setUserPreferences(Map preferences) 
-  {
+  public void setUserPreferences(Map preferences) {
     // set the column order---------------------------------------------------------
-    ArrayList preferredOrder = (ArrayList) preferences.get(PREFERENCES_COL_ORDER);        
-    for (int i = 0; i < preferredOrder.size(); i++)
-    {    	
-    	String colName = (String)preferredOrder.get(i);
-    	int currentIndex = getColumnIndex(colName);
-    	collectionTable.moveColumn(currentIndex, i);
+    ArrayList preferredOrder = (ArrayList) preferences.get(PREFERENCES_COL_ORDER);
+    for (int i = 0; i < preferredOrder.size(); i++) {
+      String colName = (String) preferredOrder.get(i);
+      int currentIndex = getColumnIndex(colName);
+      collectionTable.moveColumn(currentIndex, i);
     }
-  	
+
     // set the column widths: this assumes that the columns have already been added, and are in the correct order!
     TableColumn column = null;
     int columncount = collectionTable.getColumnCount();
@@ -338,35 +372,31 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
       column.setPreferredWidth(width);
       column.setWidth(width);
     }
-    
+
     // set the sorting configuration---------------------------------------------------------
     List<Integer> sorting = (List<Integer>) preferences.get(PREFERENCES_COL_SORTING);
-    Map comparatorIndexMap = (Map) preferences.get(PREFERENCES_COL_SORT_COMPARATORS);  
- 
+    Map comparatorIndexMap = (Map) preferences.get(PREFERENCES_COL_SORT_COMPARATORS);
+
     chooser.clearComparator();
     Iterator<Integer> it = sorting.iterator();
-    while (it.hasNext())
-    {
-    	Integer nextCol = it.next();
-    	chooser.appendComparator(nextCol.intValue(), 
-    			 										 ((Integer)comparatorIndexMap.get(nextCol)).intValue(),
-    			 										((Boolean)comparatorIndexMap.get(nextCol + "_Reverse")).booleanValue());    	
+    while (it.hasNext()) {
+      Integer nextCol = it.next();
+      chooser.appendComparator(nextCol.intValue(), ((Integer) comparatorIndexMap.get(nextCol)).intValue(),
+          ((Boolean) comparatorIndexMap.get(nextCol + "_Reverse")).booleanValue());
     }
   }
 
-  protected int getColumnIndex(String columnName){
-  	int noCols = collectionTable.getColumnCount();
-  	int colIndex=-1;
-  	for (int j=0; j<noCols; j++)
-  	{
-  		if(collectionTable.getColumnName(j).equals(columnName))
-  		{
-  			colIndex = j;
-  		}
-  	}
-  	return colIndex;
+  protected int getColumnIndex(String columnName) {
+    int noCols = collectionTable.getColumnCount();
+    int colIndex = -1;
+    for (int j = 0; j < noCols; j++) {
+      if (collectionTable.getColumnName(j).equals(columnName)) {
+        colIndex = j;
+      }
+    }
+    return colIndex;
   }
-  
+
   class PopupListener extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
       maybeShowPopup(e);
