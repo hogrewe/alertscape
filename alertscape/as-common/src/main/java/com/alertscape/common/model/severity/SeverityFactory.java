@@ -62,7 +62,7 @@ public class SeverityFactory
 
     severities[sevNum] = new Severity( );
     severities[sevNum].setLevel(sevNum);
-    severities[sevNum].setBackgroundColor(new Color(198, 65, 0));
+    severities[sevNum].setBackgroundColor(new Color(255, 65, 0));
     severities[sevNum].setForegroundColor(Color.BLACK);
     severities[sevNum].setSmallIcon("/com/alertscape/images/function/circle_red.png");
     severities[sevNum].setName("Critical");

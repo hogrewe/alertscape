@@ -26,17 +26,25 @@ import com.alertscape.common.model.severity.SeverityFactory;
  */
 public abstract class AbstractPollingAlertOnramp extends AlertOnramp implements AbstractPollingAlertOnrampMBean {
   private static final ASLogger LOG = ASLogger.getLogger(AbstractPollingAlertOnramp.class);
-  protected long sleepTimeBetweenReads = 10;
+  protected long sleepTimeBetweenReads = 100;
   private boolean stopped;
   private PollingRunner runner;
-  
+
   private List<String> uniqueFields;
   private String severityDeterminedField;
   private Map<Integer, List<String>> severityMappings;
   private Method severityFieldGetter;
 
-
   public void init() throws AlertscapeException {
+    if (uniqueFields == null) {
+      setEquator(null);
+    } else {
+      try {
+        setEquator(new AlertEquator(uniqueFields));
+      } catch (AlertscapeException e) {
+        LOG.error("Couldn't set eauator", e);
+      }
+    }
     registerMBean();
     runner = new PollingRunner();
     start();
@@ -83,7 +91,7 @@ public abstract class AbstractPollingAlertOnramp extends AlertOnramp implements 
       while (!stopped) {
         try {
           int processed = readUntilEnd();
-          if(processed < 1 && slowdown < MAX_SLOWDOWN_MULTIPLIER) {
+          if (processed < 1 && slowdown < MAX_SLOWDOWN_MULTIPLIER) {
             slowdown *= 2;
           } else {
             slowdown = 1;
@@ -169,15 +177,6 @@ public abstract class AbstractPollingAlertOnramp extends AlertOnramp implements 
    */
   public void setUniqueFields(List<String> uniqueFields) {
     this.uniqueFields = uniqueFields;
-    if (uniqueFields == null) {
-      setEquator(null);
-    } else {
-      try {
-        setEquator(new AlertEquator(uniqueFields));
-      } catch (AlertscapeException e) {
-        LOG.error("Couldn't set eauator", e);
-      }
-    }
   }
 
   /**
@@ -220,6 +219,5 @@ public abstract class AbstractPollingAlertOnramp extends AlertOnramp implements 
   public void setSeverityMappings(Map<Integer, List<String>> severityMappings) {
     this.severityMappings = severityMappings;
   }
-
 
 }

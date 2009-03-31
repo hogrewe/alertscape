@@ -9,6 +9,8 @@
 	</regex>
 	<uniqueFields>
 		<field>longDescription</field>
+        <field>item</field>
+        <field>type</field>
 	</uniqueFields>
 	<severityDeterminedField>type</severityDeterminedField>
 	<severityMappings>

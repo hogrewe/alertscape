@@ -36,7 +36,7 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
   private Map<String, Integer> severityMapping;
   private String query;
   private Map<String, Method> cachedSetters;
-  private AlertLineProcessor lineProcessor;
+  private List<AlertLineProcessor> lineProcessors;
   private String regexColumn;
 
   @SuppressWarnings("unchecked")
@@ -84,8 +84,17 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
         }
 
         lastIdHolder[0] = (ID) rs.getObject(idColumn);
-        if (lineProcessor != null) {
-          alert = getLineProcessor().populateAlert(alert, rs.getString(regexColumn));
+        if (lineProcessors != null) {
+          String columnValue = rs.getString(regexColumn);
+          for (AlertLineProcessor processor : lineProcessors) {
+            Alert processed = processor.populateAlert(alert, columnValue);
+            if(processed != null) {
+              // If the value returned is non-null, the processor matched so return
+              return processed;
+            }
+          }
+          // If none of the processors matched with a non-null alert, return null
+          return null;
         }
 
         return alert;
@@ -227,16 +236,16 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
   /**
    * @return the lineProcessor
    */
-  public AlertLineProcessor getLineProcessor() {
-    return lineProcessor;
+  public List<AlertLineProcessor> getLineProcessors() {
+    return lineProcessors;
   }
 
   /**
-   * @param lineProcessor
+   * @param lineProcessors
    *          the lineProcessor to set
    */
-  public void setLineProcessor(AlertLineProcessor lineProcessor) {
-    this.lineProcessor = lineProcessor;
+  public void setLineProcessors(List<AlertLineProcessor> lineProcessors) {
+    this.lineProcessors = lineProcessors;
   }
 
   /**
