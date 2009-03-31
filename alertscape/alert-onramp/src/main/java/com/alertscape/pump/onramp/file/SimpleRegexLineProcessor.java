@@ -3,6 +3,8 @@
  */
 package com.alertscape.pump.onramp.file;
 
+import java.beans.BeanDescriptor;
+import java.beans.Beans;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -83,10 +85,10 @@ public class SimpleRegexLineProcessor implements AlertLineProcessor {
     }
 
     try {
-      PropertyDescriptor d = new PropertyDescriptor(fieldName, Alert.class);
-      setter = d.getWriteMethod();
+      String methodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+      setter = Alert.class.getMethod(methodName, String.class);
       cachedSetters.put(fieldName, setter);
-    } catch (IntrospectionException e) {
+    } catch (Exception e) {
       LOG.error("Couldn't make setter for " + fieldName, e);
     }
     return setter;

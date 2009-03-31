@@ -3,6 +3,7 @@
  */
 package com.alertscape.pump.onramp.db;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.InitialContext;
@@ -36,7 +37,7 @@ public class ConfigurableDatabaseOnramp<ID> extends DatabaseOnramp<ID> {
   private String url;
   private String username;
   private String password;
-  private AlertLineProcessor lineProcessor;
+  private List<AlertLineProcessor> lineProcessors;
   private String regex;
   private String regexColumn;
 
@@ -82,7 +83,7 @@ public class ConfigurableDatabaseOnramp<ID> extends DatabaseOnramp<ID> {
     dao.setIdColumn(idColumn);
     dao.setTableName(tableName);
     dao.setWhereClause(whereClause);
-    dao.setLineProcessor(lineProcessor);
+    dao.setLineProcessors(lineProcessors);
     dao.setRegexColumn(regexColumn);
     dao.setDataSource(dataSource);
     
@@ -253,15 +254,15 @@ public class ConfigurableDatabaseOnramp<ID> extends DatabaseOnramp<ID> {
   /**
    * @return the lineProcessor
    */
-  public AlertLineProcessor getLineProcessor() {
-    return lineProcessor;
+  public List<AlertLineProcessor> getLineProcessors() {
+    return lineProcessors;
   }
 
   /**
-   * @param lineProcessor the lineProcessor to set
+   * @param lineProcessors the lineProcessor to set
    */
-  public void setLineProcessor(AlertLineProcessor lineProcessor) {
-    this.lineProcessor = lineProcessor;
+  public void setLineProcessors(List<AlertLineProcessor> lineProcessors) {
+    this.lineProcessors = lineProcessors;
   }
 
   /**
