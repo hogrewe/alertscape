@@ -3,8 +3,9 @@
 	icon="/com/alertscape/images/common/as_logo2_16.png">
 	<dynamic-tree-node text="Items"
 		dynamicPath="cat{stateprovince}:cat{city}:type">
-		<matcher>
-			<nonempty-attribute-matcher attributeName="stateProvince" />
-		</matcher>
+		<composite-matcher mode="AND">
+			<non-empty-attribute-matcher attributeName="stateProvince" />
+			<non-empty-attribute-matcher attributeName="customer" />
+		</composite-matcher>
 	</dynamic-tree-node>
 </tree-node>

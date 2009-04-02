@@ -2,13 +2,13 @@
   <parent>
     <artifactId>alertscape</artifactId>
     <groupId>com.alertscape</groupId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.4-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.alertscape.service</groupId>
   <artifactId>alert-service-interfaces</artifactId>
   <name>alert-service-interfaces</name>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.4-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <!--
   <build>
