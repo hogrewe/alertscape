@@ -5,7 +5,10 @@ package com.alertscape.browser.ui.swing.panel.collection.table.renderer;
 
 import java.awt.Component;
 import java.util.Date;
+import java.util.HashMap;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -29,8 +32,10 @@ public class DefaultAlertCellRenderer extends DefaultTableCellRenderer {
       Date date = (Date) value;
       value = FormatHelper.formatDate(date);
     }
-    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
+    //Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    label.setToolTipText(buildHtmlTooltip(value + ""));
+    
     @SuppressWarnings("unchecked")
     EventTableModel<Alert> model = (EventTableModel<Alert>) table.getModel();
     Alert e = model.getElementAt(row);
@@ -40,10 +45,44 @@ public class DefaultAlertCellRenderer extends DefaultTableCellRenderer {
       // c.setForeground(sev.getSelectionForegroundColor());
       // c.setBackground(sev.getSelectionBackgroundColor());
     } else {
-      c.setForeground(sev.getForegroundColor());
-      c.setBackground(sev.getBackgroundColor());
+    	label.setForeground(sev.getForegroundColor());
+    	label.setBackground(sev.getBackgroundColor());
     }
 
-    return c;
+    return label;
   }
+  
+  private HashMap<String,String> tooltipHash = new HashMap<String,String>();
+  private String buildHtmlTooltip(String val)
+  {
+  	String strval = tooltipHash.get(val);
+  	if (strval == null)
+  	{
+  	int maxchars = 100;
+  	StringBuffer buf = new StringBuffer();
+  	buf.append("<html>");
+  	
+  	for (int i=0; i<val.length(); i++)
+  	{
+  		char next = val.charAt(i);
+  		buf.append(next);
+  		if ((i % maxchars == 0) && (i != 0))
+  		{
+  			// line break
+  			buf.append("<BR>");
+  		}
+  	}
+  	
+  	buf.append("</html>");
+  	
+  	strval = buf.toString();
+  	tooltipHash.put(val, strval);
+    if (tooltipHash.size() > 50000)
+    {
+    	tooltipHash.clear();
+    }
+  	}
+  	return strval;
+  }
+  
 }
