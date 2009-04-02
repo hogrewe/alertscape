@@ -70,8 +70,8 @@ public class CreateChartConfigurationPanel extends JPanel
 		
 		// Create the list of all of the types of charts that are supported by the system for creation
 		List chartTypes = new ArrayList();
+		chartTypes.add(KEY_CHARTTYPE_BAR);
 		chartTypes.add(KEY_CHARTTYPE_PIE);
-//		chartTypes.add(KEY_CHARTTYPE_BAR);
 		chartTypeField = new JComboBox(chartTypes.toArray());
 		chartTypeField.setEditable(false);
 		
