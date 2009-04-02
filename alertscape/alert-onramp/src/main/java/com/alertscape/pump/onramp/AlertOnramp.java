@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.alertscape.AlertscapeException;
@@ -48,14 +49,16 @@ public abstract class AlertOnramp implements AlertSourceCallback {
   private File stateFile;
   private String postProcessField;
   private Method postProcessGetter;
-  private AlertLineProcessor postProcessor;
+  private List<AlertLineProcessor> postProcessors;
 
   public void sendAlert(Alert alert) {
-    if (postProcessGetter != null && postProcessor != null) {
+    if (postProcessGetter != null && postProcessors != null) {
       try {
         Object value = postProcessGetter.invoke(alert, (Object[]) null);
         if (value != null) {
-          postProcessor.populateAlert(alert, value.toString());
+          for (AlertLineProcessor processor : postProcessors) {            
+            processor.populateAlert(alert, value.toString());
+          }
         }
       } catch (Exception e) {
         LOG.error("Couldn't get " + postProcessField + " from alert", e);
@@ -294,15 +297,15 @@ public abstract class AlertOnramp implements AlertSourceCallback {
   /**
    * @return the postProcessor
    */
-  public AlertLineProcessor getPostProcessor() {
-    return postProcessor;
+  public List<AlertLineProcessor> getPostProcessors() {
+    return postProcessors;
   }
 
   /**
-   * @param postProcessor
+   * @param postProcessors
    *          the postProcessor to set
    */
-  public void setPostProcessor(AlertLineProcessor postProcessor) {
-    this.postProcessor = postProcessor;
+  public void setPostProcessors(List<AlertLineProcessor> postProcessors) {
+    this.postProcessors = postProcessors;
   }
 }

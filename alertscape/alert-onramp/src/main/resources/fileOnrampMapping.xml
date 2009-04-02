@@ -42,9 +42,9 @@
             <bind-xml name="postProcessField"/>
         </field>
         
-        <field name="postProcessor"
+        <field name="postProcessors" collection="arraylist"
             type="com.alertscape.pump.onramp.file.SimpleRegexLineProcessor">
-            <bind-xml name="postProcessor" node="element" />
+            <bind-xml name="postProcessor" location="postProcessors" />
         </field>
 	</class>
 
