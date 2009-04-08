@@ -112,7 +112,7 @@ public class CreateChartPanelAction extends AbstractAction
 										  }
 										  else if (type.equals(panel.KEY_CHARTTYPE_BAR))
 										  {										  
-										  	//chart = new AlertPieChartPanel(alerts, attribute, title, tooltip);										  
+										  	chart = new AlertBarChartPanel(alerts, attribute, title, tooltip);										  
 										  }
 										  
 										  if (chart != null)
