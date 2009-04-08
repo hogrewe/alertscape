@@ -9,6 +9,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import com.alertscape.common.model.Alert;
+import com.alertscape.pump.onramp.line.SimpleRegexLineProcessor;
 
 /**
  * @author josh
@@ -51,7 +52,7 @@ public class SimpleRegexLineProcessorTest extends TestCase {
 
   /**
    * Test method for
-   * {@link com.alertscape.pump.onramp.file.SimpleRegexLineProcessor#createAlert(java.util.regex.Matcher)}.
+   * {@link com.alertscape.pump.onramp.line.SimpleRegexLineProcessor#createAlert(java.util.regex.Matcher)}.
    */
   public void testCreateAlert() {
     processor.setRegex("(\\w*) (\\w*) (\\w*) (.*)");

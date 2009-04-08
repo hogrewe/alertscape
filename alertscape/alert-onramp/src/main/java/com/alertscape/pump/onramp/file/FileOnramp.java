@@ -14,6 +14,7 @@ import java.util.Map;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.pump.onramp.AbstractPollingAlertOnramp;
+import com.alertscape.pump.onramp.line.AlertLineProcessor;
 
 /**
  * @author josh

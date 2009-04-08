@@ -25,7 +25,7 @@ public interface AlertPump {
   AlertSource getAlertSource(String sourceName) throws AlertscapeException;
 
   List<AlertAttributeDefinition> getAttributeDefinitions();
-  
+
   Alert getAlert(AlertSource source, long alertId) throws AlertscapeException;
 
   /**
@@ -40,4 +40,6 @@ public interface AlertPump {
    * @return
    */
   Alert getAlert(Alert a, AlertEquator equator);
+
+  List<Alert> findMatching(Alert a, AlertEquator equator);
 }

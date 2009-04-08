@@ -9,6 +9,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,14 +102,14 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   }
 
   @SuppressWarnings("unchecked")
-  public Alert get(Alert a, AlertEquator equator) {
+  public List<Alert> findMatching(Alert a, AlertEquator equator) {
     if (equator == null) {
-      return null;
+      return Collections.emptyList();
     }
 
     StringBuilder builder = new StringBuilder("select * from alerts where source_id=?");
     List<Object> args = new ArrayList<Object>();
-    
+
     args.add(a.getSource().getSourceId());
 
     for (AttributeEquator eq : equator.getAttributeEquators()) {
@@ -123,14 +124,19 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       }
     }
     List<Alert> alerts = getJdbcTemplate().query(builder.toString(), args.toArray(), alertMapper);
-    if (alerts != null && !alerts.isEmpty()) {
-      if (alerts.size() > 1) {
-        LOG.error("Looking for a unique alert but found multiple; returning first one: " + a + ", " + equator);
-      }
-      return alerts.get(0);
-    } else {
+    return alerts;
+  }
+
+  public Alert get(Alert a, AlertEquator equator) {
+    List<Alert> alerts = findMatching(a, equator);
+    if (alerts.isEmpty()) {
       return null;
     }
+
+    if (alerts.size() > 1) {
+      LOG.error("Looking for a unique alert but found multiple; returning first one: " + a + ", " + equator);
+    }
+    return alerts.get(0);
   }
 
   @SuppressWarnings("unchecked")

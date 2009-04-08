@@ -50,6 +50,10 @@ public class DatabaseOfframp implements AlertOfframp {
   public Alert getAlert(Alert a, AlertEquator equator) {
     return getAlertDao().get(a, equator);
   }
+  
+  public List<Alert> findMatching(Alert a, AlertEquator equator) {
+    return getAlertDao().findMatching(a, equator);
+  }
 
   public String getOfframpName() {
     return "DBOfframp";
