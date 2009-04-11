@@ -113,3 +113,44 @@ CREATE TABLE `tree_configurations` (
   PRIMARY KEY  (`sid`),
   UNIQUE KEY `idx_tree_config_name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+CREATE TABLE `alert_categories` (
+  `sid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `alertid` bigint(20) unsigned zerofill NOT NULL,
+  `source_id` int(10) unsigned NOT NULL,
+  `category_sid` int(10) unsigned NOT NULL,
+  `value` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`sid`),
+  KEY `alert_cat_cat_sid_fk` (`category_sid`),
+  KEY `alert_cat_source_alert_fk` (`alertid`,`source_id`),
+  CONSTRAINT `alert_cat_src_alert_fk` FOREIGN KEY (`alertid`, `source_id`) REFERENCES `alerts` (`alertid`, `source_id`) ON DELETE CASCADE,
+  CONSTRAINT `alert_cat_cat_sid_fk` FOREIGN KEY (`category_sid`) REFERENCES `category_def` (`sid`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+CREATE TABLE `alert_labels` (
+  `sid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `source_id` int(10) unsigned NOT NULL,
+  `alertid` bigint(20) unsigned NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `value` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`sid`),
+  KEY `alert_label_source_alertid_fk` (`alertid`,`source_id`),
+  KEY `alert_label_name_idx` (`name`),
+  CONSTRAINT `alert_label_source_alertid_fk` FOREIGN KEY (`alertid`, `source_id`) REFERENCES `alerts` (`alertid`, `source_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `category_def` (
+  `sid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `allow_custom` tinyint(1) DEFAULT '1',
+  `active` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`sid`),
+  UNIQUE KEY `cat_def_name_unq` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+CREATE TABLE `category_value_def` (
+  `sid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `category_sid` int(10) unsigned NOT NULL,
+  `value` varchar(200) NOT NULL,
+  `is_default` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`sid`),
+  UNIQUE KEY `cat_value_def_cat_value_unq` (`category_sid`,`value`),
+  KEY `cat_value_def_cat_sid_idx` (`category_sid`),
+  CONSTRAINT `cat_value_def_cat_sid_fk` FOREIGN KEY (`category_sid`) REFERENCES `category_def` (`sid`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
