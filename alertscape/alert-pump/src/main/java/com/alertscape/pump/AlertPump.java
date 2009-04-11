@@ -4,6 +4,7 @@
 package com.alertscape.pump;
 
 import java.util.List;
+import java.util.Map;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
@@ -25,6 +26,10 @@ public interface AlertPump {
   AlertSource getAlertSource(String sourceName) throws AlertscapeException;
 
   List<AlertAttributeDefinition> getAttributeDefinitions();
+  
+  Map<String, Object> getCategoryDefinitions();
+  
+  Map<String, List<String>> getLabelDefinitions();
   
   Alert getAlert(AlertSource source, long alertId) throws AlertscapeException;
 

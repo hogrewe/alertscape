@@ -72,6 +72,14 @@ public class ConfigurableAlertPump implements AlertPump {
     return getDefinitionDao().getActiveDefinitions();
   }
 
+  public Map<String, Object> getCategoryDefinitions() {
+    return getDefinitionDao().getActiveCategoryDefinitions();
+  }
+  
+  public Map<String, List<String>> getLabelDefinitions() {
+    return getDefinitionDao().getActiveLabelDefinitions();
+  }
+  
   /**
    * @return the dbOfframp
    */

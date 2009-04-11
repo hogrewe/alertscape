@@ -51,8 +51,17 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
   private static final String DELETE_EXT_ALERT_SQL = "delete from ext_alert_attributes where source_id=? and alertid=?";
   private static final String INSERT_EXT_SQL_PRE = "insert into ext_alert_attributes (";
   private static final String UPDATE_EXT_SQL_PRE = "update ext_alert_attributes set ";
-  private static final String GET_EXT_SQL = "select * from ext_alert_attributes where source_id=? and alertid=?";
-
+  private static final String GET_EXT_SQL = "select * from ext_alert_attributes where source_id=? and alertid=?";    
+  private static final String GET_CATEGORIES_SQL = "select def.name, cat.value from alert_categories cat, category_def def where source_id=? and alertid=? and cat.category_sid=def.sid";
+  private static final String GET_LABELS_SQL = "select name, value from alert_labels where source_id=? and alertid=?";  
+  private static final String INSERT_CATEGORY_SQL="insert into alert_categories (alertid,source_id,category_sid,value) VALUES (?,?,(Select sid from category_def where name=?),?)";
+  private static final String UPDATE_CATEGORY_SQL="update alert_categories set value=? where source_id=? and alertid=? and category_sid=(Select sid from category_def where name=?)";  
+  private static final String DELETE_CATEGORIES_ALERT_SQL="delete from alert_categories where alertid=? and source_id=?";
+  private static final String INSERT_LABEL_SQL="insert into alert_labels (alertid,source_id,name,value) VALUES (?,?,?,?)";
+  private static final String UPDATE_LABEL_SQL="update alert_labels set value=? where alertid=? and source_id=? and name=?";
+  private static final String DELETE_LABELS_ALERT_SQL="delete from alert_labels where alertid=? and source_id=?";
+  
+  
   private RowMapper alertMapper = new AlertMapper();
   private AlertSourceRepository alertSourceRepository;
   public Map<String, String> attributeToColumnMap = new HashMap<String, String>();
@@ -71,6 +80,8 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
 
   public void delete(final AlertSource source, final long alertId) throws DaoException {
 
+  	deleteLabels(source, alertId);
+  	deleteCategories(source, alertId);  	
     deleteExtendedAttributes(source, alertId);
     PreparedStatementSetter pss = new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
@@ -140,7 +151,12 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
     if (filter != null && !filter.isEmpty()) {
       query += " where " + filter;
     }
-    return getJdbcTemplate().query(query, alertMapper);
+    
+    List<Alert> vals = getJdbcTemplate().query(query, alertMapper);
+    
+    LOG.info("Returing all alerts from db: " + vals);
+    
+    return vals;
   }
 
   @SuppressWarnings("unchecked")
@@ -159,6 +175,8 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       insert(alert);
     }
     saveExtendedAttributes(alert);
+    saveCategories(alert);
+    saveLabels(alert);
     getAlertSourceRepository().updateAlertIdSeq(alert.getSource(), alert.getAlertId() + 1);
   }
 
@@ -257,7 +275,93 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
     getJdbcTemplate().update(insert, args);
 
   }
+  
+  private void saveCategories(Alert alert) {
+    Map<String, Object> categories = alert.getMajorTags();
 
+    if (categories == null || categories.isEmpty()) {
+      return;
+    }
+
+    StringBuilder updateBuilder = new StringBuilder(UPDATE_CATEGORY_SQL);
+    StringBuilder insertBuilder = new StringBuilder(INSERT_CATEGORY_SQL);
+
+    Object[] insertArgs = new Object[4];
+    Object[] updateArgs = new Object[4];
+    
+    int i = 0;
+    for (String attrName : categories.keySet()) 
+    {      
+    	// build insert arguments
+    	insertArgs[0] = alert.getAlertId();
+    	insertArgs[1] = alert.getSource().getSourceId();
+    	insertArgs[2] = attrName;
+    	insertArgs[3] = categories.get(attrName);
+    	
+    	// build update arguments
+    	updateArgs[0] = categories.get(attrName);
+    	updateArgs[1] = alert.getSource().getSourceId();
+    	updateArgs[2] = alert.getAlertId();
+    	updateArgs[3] = attrName;
+    	
+    	// try to update the categories
+      int numUpdated = getJdbcTemplate().update(updateBuilder.toString(), updateArgs);
+
+      if (numUpdated > 0) 
+      {
+        // the update worked
+      }
+      else
+      {      	
+      	getJdbcTemplate().update(insertBuilder.toString(), insertArgs);
+      }
+    }
+  }
+  
+  private void saveLabels(Alert alert) {
+    Map<String, Object> labels = alert.getMinorTags();
+
+    if (labels == null || labels.isEmpty()) {
+      return;
+    }
+    
+    StringBuilder updateBuilder = new StringBuilder(UPDATE_LABEL_SQL);
+    StringBuilder insertBuilder = new StringBuilder(INSERT_LABEL_SQL);    
+
+    Object[] insertArgs = new Object[4];
+    Object[] updateArgs = new Object[4];
+    
+    int i = 0;
+    for (String attrName : labels.keySet()) 
+    {      
+    	// build insert arguments
+    	insertArgs[0] = alert.getAlertId();
+    	insertArgs[1] = alert.getSource().getSourceId();
+    	insertArgs[2] = attrName;
+    	insertArgs[3] = labels.get(attrName);
+    	
+    	// build update arguments
+    	updateArgs[0] = labels.get(attrName);
+    	updateArgs[1] = alert.getAlertId();
+    	updateArgs[2] = alert.getSource().getSourceId();    	
+    	updateArgs[3] = attrName;
+    	
+    	// try to update the categories
+      int numUpdated = getJdbcTemplate().update(updateBuilder.toString(), updateArgs);
+
+      if (numUpdated > 0) 
+      {
+        // the update worked
+      }
+      else
+      {      	
+      	getJdbcTemplate().update(insertBuilder.toString(), insertArgs);
+      }
+    }
+  }  
+  
+  
+  
   private void deleteExtendedAttributes(AlertSource source, long alertId) {
     Object[] args = new Object[2];
 
@@ -269,6 +373,29 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
     getJdbcTemplate().update(DELETE_EXT_ALERT_SQL, args);
   }
 
+  private void deleteCategories(AlertSource source, long alertId) {
+    Object[] args = new Object[2];
+
+    int i = 0;
+
+    args[i++] = alertId;
+    args[i++] = source.getSourceId();    
+
+    getJdbcTemplate().update(DELETE_CATEGORIES_ALERT_SQL, args);
+  }
+  
+  private void deleteLabels(AlertSource source, long alertId) {
+    Object[] args = new Object[2];
+
+    int i = 0;
+
+    args[i++] = alertId;
+    args[i++] = source.getSourceId();    
+
+    getJdbcTemplate().update(DELETE_LABELS_ALERT_SQL, args);
+  }  
+  
+  
   private final class AlertMapper implements RowMapper {
     public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
       SeverityFactory severityFactory = SeverityFactory.getInstance();
@@ -294,7 +421,10 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
 
       alert.setStatus(AlertStatus.STANDING);
 
-      alert.setExtendedAttributes(getExtendedAttributes(alert));
+      alert.setExtendedAttributes(getExtendedAttributes(alert));      
+      alert.setMajorTags(getCategories(alert));
+      alert.setMinorTags(getLabels(alert));
+      
       return alert;
     }
 
@@ -321,6 +451,70 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       }
       return attr;
     }
+    
+    /**
+     * @param alert
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> getCategories(Alert alert) {
+      Object[] args = new Object[2];
+      int i = 0;
+
+      args[i++] = alert.getSource().getSourceId();
+      args[i++] = alert.getAlertId();
+
+      Map<String, Object> attr = new HashMap<String, Object>(0);
+      try {
+        List<Map<String, Object>> list = getJdbcTemplate().query(GET_CATEGORIES_SQL, args, new CategoryMapper());
+        if (!list.isEmpty()) 
+        {
+        //  attr = list.get(0);
+        	for (int j=0; j < list.size(); j++)
+        	{
+        		Map<String, Object> nextMap = list.get(j);
+            attr.putAll(nextMap);
+        	}        	
+        }
+      } catch (DataAccessException e) {
+        LOG.info("Couldn't get categories", e);
+      }
+      
+//      LOG.info("returning categories for " + alert.getAlertId() + ": " + attr);
+      
+      return attr;    
+    }
+    
+    /**
+     * @param alert
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> getLabels(Alert alert) {
+      Object[] args = new Object[2];
+      int i = 0;
+
+      args[i++] = alert.getSource().getSourceId();
+      args[i++] = alert.getAlertId();
+
+      Map<String, Object> attr = new HashMap<String, Object>(0);
+      try {
+        List<Map<String, Object>> list = getJdbcTemplate().query(GET_LABELS_SQL, args, new LabelMapper());
+        if (!list.isEmpty()) 
+        {
+      		//attr = list.get(0);
+        	for (int j=0; j < list.size(); j++)
+        	{
+        		Map<String, Object> nextMap = list.get(j);
+            attr.putAll(nextMap);
+        	}
+        }
+      } catch (DataAccessException e) {
+        LOG.info("Couldn't get labels", e);
+      }
+      return attr;
+    }
+    
   }
 
   /**
@@ -343,6 +537,39 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
       return attr;
     }
   }
+  
+  private final class CategoryMapper implements RowMapper {
+    public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+      
+    	Map<String, Object> attr = new HashMap<String, Object>();
+      
+      //while (rs.next()) 
+      //{               
+        String name = rs.getString("NAME");
+        Object value = rs.getObject("VALUE");
+        attr.put(name, value);
+      //}
+
+      return attr;
+    }
+  }
+  
+  private final class LabelMapper implements RowMapper {
+    public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+      
+    	Map<String, Object> attr = new HashMap<String, Object>();
+      
+      //while (rs.next()) 
+      //{               
+        String name = rs.getString("NAME");
+        Object value = rs.getObject("VALUE");
+        attr.put(name, value);
+      //}
+
+      return attr;
+    }
+  }
+  
 
   /**
    * @return the alertSourceRepository

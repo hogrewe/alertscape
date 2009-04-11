@@ -3,6 +3,7 @@ package com.alertscape.browser.upramp.firstparty.customtag;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
@@ -66,6 +68,12 @@ public class CustomTagPanel extends AbstractUpRampPanel
 	@Override
 	protected boolean initialize(Map values)
 	{
+		if (values == null)
+		{
+			values = new HashMap();
+			ArrayList vals = new ArrayList();
+			values.put(CustomTagConstants.EXISTING_TAGNAMES, vals);
+		}
 		// step 1: build out the ui
 		BoxLayout mainbox = new BoxLayout(this, BoxLayout.Y_AXIS);
 		this.setLayout(mainbox);
@@ -84,6 +92,18 @@ public class CustomTagPanel extends AbstractUpRampPanel
 		
 		// get the list of all of the possible existing custom tags from the map
 		List tagNames = (List)values.get(CustomTagConstants.EXISTING_TAGNAMES);
+		
+		if (tagNames == null)
+		{
+			JOptionPane.showMessageDialog(this.getParent(),
+			    "Unable to load Labels from server",
+			    "Loading Error",
+			    JOptionPane.ERROR_MESSAGE);
+      tagNames = new ArrayList();
+      
+      return false;
+		}
+
 		tagField = new JComboBox(tagNames.toArray());
 		tagField.setEditable(true);
 		
