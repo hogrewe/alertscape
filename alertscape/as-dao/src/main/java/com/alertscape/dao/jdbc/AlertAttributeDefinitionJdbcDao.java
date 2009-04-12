@@ -6,6 +6,7 @@ package com.alertscape.dao.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -99,7 +100,9 @@ public class AlertAttributeDefinitionJdbcDao extends JdbcDaoSupport implements A
     	List<String> categoryList = new ArrayList<String>();
     	Set<String> categories = new HashSet<String>();
     	
-    	while (rs.next())
+    	// TODO: Really should not do it this way; should not be looping through the resultset this way
+    	// instead should deal with one row, return a map, and allow the caller to merge all of the data back together...
+    	do 
     	{
     		// get the data from the next row
         String name = rs.getString("Name");
@@ -132,7 +135,8 @@ public class AlertAttributeDefinitionJdbcDao extends JdbcDaoSupport implements A
         	}
         }
     	}
-
+    	while (rs.next());
+    	
     	categoryList.addAll(categories);
     	attr.put("definedTagNames", categoryList);
     	
@@ -210,7 +214,9 @@ public class AlertAttributeDefinitionJdbcDao extends JdbcDaoSupport implements A
       List<String> labels2 = new ArrayList<String>();
       labels.put("existingTagNames", labels2);  
       
-    	while (rs.next())
+    	// TODO: Really should not do it this way; should not be looping through the resultset this way
+    	// instead should deal with one row, return a map, and allow the caller to merge all of the data back together...
+    	do 
     	{
     		// get the data from the next row
         String name = rs.getString("Name");
@@ -219,7 +225,10 @@ public class AlertAttributeDefinitionJdbcDao extends JdbcDaoSupport implements A
         // add this label to the set of label names 
         labels2.add(name);
     	}
+    	while (rs.next());
       
+    	Collections.sort(labels2);
+    	
     	return labels;
     	
  //// TODO - these are all hardcoded, they need to come from a file or a database instead

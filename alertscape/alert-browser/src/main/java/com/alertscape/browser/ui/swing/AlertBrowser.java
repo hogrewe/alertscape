@@ -68,6 +68,7 @@ import com.alertscape.browser.ui.swing.panel.collection.table.AlertCollectionTab
 import com.alertscape.browser.ui.swing.panel.collection.tree.AlertTreePanel;
 import com.alertscape.browser.ui.swing.panel.common.ASPanelBuilder;
 import com.alertscape.browser.upramp.firstparty.ack.AcknowledgeAlertAction;
+import com.alertscape.browser.upramp.firstparty.alertproperties.AlertPropertiesAction;
 import com.alertscape.browser.upramp.firstparty.clear.ClearAlertAction;
 import com.alertscape.browser.upramp.firstparty.customtag.CustomTagAction;
 import com.alertscape.browser.upramp.firstparty.login.LoginAction;
@@ -233,7 +234,12 @@ public class AlertBrowser extends JFrame {
     chartAction.setParentFrame(this);
     JButton chartButton = actionToolbar.add(chartAction);
     chartButton.setOpaque(false);
-
+    
+    AlertPropertiesAction propertiesAction = new AlertPropertiesAction();
+    propertiesAction.setParentFrame(this);
+    JButton propertiesButton = actionToolbar.add(propertiesAction);
+    propertiesButton.setOpaque(false);
+    
     LoginAction loginAction = new LoginAction();
     loginAction.setParentFrame(this);
     JButton loginButton = actionToolbar.add(loginAction);
@@ -335,7 +341,9 @@ public class AlertBrowser extends JFrame {
     // - view ticket
     // - view comments
     // filter configuration
-
+    
+    viewMenu.add(propertiesAction);
+    
     JMenu preferencesMenu = new JMenu("Preferences");
     // build a list of all of the userpreferencepanels
     List<UserPreferencesPanel> prefPanels = new ArrayList<UserPreferencesPanel>();
@@ -378,6 +386,7 @@ public class AlertBrowser extends JFrame {
     popup.add(customTagAction);
     popup.addSeparator();
     popup.add(chartAction);
+    popup.add(propertiesAction);
     tablePanel.setPopup(popup);
 
     // jframe housekeeping

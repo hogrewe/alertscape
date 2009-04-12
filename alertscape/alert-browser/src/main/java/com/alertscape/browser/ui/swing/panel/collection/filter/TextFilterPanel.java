@@ -61,7 +61,8 @@ public class TextFilterPanel extends JPanel implements AlertFilter, UserPreferen
     add(builder.getPanel(), BorderLayout.CENTER);
 
     String[] propertyNames = { "shortDescription", "longDescription", "type", "item", "itemManager", "itemType",
-        "itemManagerType",  "severity", "source"};
+        "itemManagerType",  "severity", "source", "majorTags", "minorTags"};
+    
     TextFilterator<Alert> textFilterator = GlazedLists.textFilterator(propertyNames);
     matcherEditor = new TextComponentMatcherEditor<Alert>(searchText, textFilterator);
 //    matcherEditor.setLive(false);
