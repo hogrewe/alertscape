@@ -3,7 +3,6 @@
  */
 package com.alertscape.wizard.client;
 
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 

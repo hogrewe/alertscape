@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
-import com.alertscape.util.GetterHelper;
+import com.alertscape.common.util.GetterHelper;
 import com.alertscape.util.PrimitiveHelper;
 
 class AlertColumn {
@@ -43,7 +43,7 @@ class AlertColumn {
 
   public void setPropertyName(String propertyName) {
     if (this.propertyName == null || !this.propertyName.equals(propertyName)) {
-      propertyGetter = GetterHelper.makeAlertGetter(propertyName);
+      propertyGetter = GetterHelper.makeGetter(propertyName);
       if (propertyGetter != null) {
         columnClass = propertyGetter.getReturnType();
         if (columnClass.isPrimitive()) {

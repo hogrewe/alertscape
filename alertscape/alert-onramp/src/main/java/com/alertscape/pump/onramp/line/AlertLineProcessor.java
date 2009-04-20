@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.alertscape.pump.onramp.file;
+package com.alertscape.pump.onramp.line;
 
 import com.alertscape.common.model.Alert;
 
@@ -21,5 +21,6 @@ public interface AlertLineProcessor {
    * @return
    */
   Alert populateAlert(Alert alert, String line);
-
+  
+  boolean matches(String line);
 }

@@ -165,7 +165,7 @@ public class Alert implements Serializable {
   public void setStatus(AlertStatus status) {
     this.status = status;
   }
-  
+
   public void setStatus(String status) {
     this.status = AlertStatus.valueOf(status);
   }

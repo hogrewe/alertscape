@@ -55,9 +55,13 @@ public class ConfigurableAlertPump implements AlertPump {
   public Alert getAlert(AlertSource source, long alertId) throws AlertscapeException {
     return getDbOfframp().getAlert(source, alertId);
   }
-  
+
   public Alert getAlert(Alert a, AlertEquator equator) {
     return getDbOfframp().getAlert(a, equator);
+  }
+
+  public List<Alert> findMatching(Alert a, AlertEquator equator) {
+    return getDbOfframp().findMatching(a, equator);
   }
 
   public List<Alert> getAllAlerts(String filter) throws AlertscapeException {
