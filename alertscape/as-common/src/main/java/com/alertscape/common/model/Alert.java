@@ -195,8 +195,8 @@ public class Alert implements Serializable {
     getMajorTags().put(name, value);
   }
 
-  public Object getMajorTag(String name) {
-    return majorTags.get(name);
+  public Object getMajorTag(String name) {    
+    return majorTags == null ? null : majorTags.get(name);
   }
 
   /**
@@ -226,7 +226,7 @@ public class Alert implements Serializable {
   }
 
   public Object getMinorTag(String name) {
-    return minorTags.get(name);
+  	return minorTags == null ? null : minorTags.get(name);
   }
 
   /**

@@ -58,7 +58,7 @@ public class DefaultAlertCellRenderer extends DefaultTableCellRenderer {
   	String strval = tooltipHash.get(val);
   	if (strval == null)
   	{
-  	int maxchars = 100;
+  	int maxchars = 80;
   	StringBuffer buf = new StringBuffer();
   	buf.append("<html>");
   	

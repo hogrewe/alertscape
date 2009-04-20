@@ -3,6 +3,7 @@ package com.alertscape.browser.upramp.firstparty.predefinedtag;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,14 +14,15 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.upramp.model.AbstractUpRampPanel;
 import com.alertscape.browser.upramp.model.UpRamp;
+import com.alertscape.common.model.PredefinedTagProfile;
 import com.alertscape.service.tags.PredefinedTagConstants;
-import com.alertscape.service.tags.PredefinedTagProfile;
 
 public class PredefinedTagPanel  extends AbstractUpRampPanel
 {
@@ -85,6 +87,16 @@ public class PredefinedTagPanel  extends AbstractUpRampPanel
 		
 		// get the list of all of the possible existing custom tags from the map
 		List tagNames = (List)values.get(PredefinedTagConstants.DEFINED_TAGNAMES);
+		if (tagNames == null)
+		{
+			JOptionPane.showMessageDialog(this.getParent(),
+			    "Unable to load Categories from server",
+			    "Loading Error",
+			    JOptionPane.ERROR_MESSAGE);
+      tagNames = new ArrayList();
+      
+      return false;
+		}
 		tagField = new JComboBox(tagNames.toArray());
 		//tagField.setEditable(true);
 		

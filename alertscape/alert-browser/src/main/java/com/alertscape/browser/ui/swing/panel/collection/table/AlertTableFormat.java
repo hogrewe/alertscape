@@ -68,7 +68,12 @@ public class AlertTableFormat implements TableFormat<Alert> {
       return delegate.getColumnValue(a, col);
     } else {
       AlertAttributeDefinition def = definitions.get(col - delegate.getColumnCount());
-      return a.getExtendedAttribute(def.getName());
+      Object val = a.getExtendedAttribute(def.getName());
+      if (val == null)
+      {
+      	val = a.getMajorTag(def.getName());
+      }
+      return val;
     }
   }
 }

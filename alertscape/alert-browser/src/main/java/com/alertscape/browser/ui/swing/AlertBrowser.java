@@ -26,6 +26,7 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -67,6 +68,7 @@ import com.alertscape.browser.ui.swing.panel.collection.table.AlertCollectionTab
 import com.alertscape.browser.ui.swing.panel.collection.tree.AlertTreePanel;
 import com.alertscape.browser.ui.swing.panel.common.ASPanelBuilder;
 import com.alertscape.browser.upramp.firstparty.ack.AcknowledgeAlertAction;
+import com.alertscape.browser.upramp.firstparty.alertproperties.AlertPropertiesAction;
 import com.alertscape.browser.upramp.firstparty.clear.ClearAlertAction;
 import com.alertscape.browser.upramp.firstparty.customtag.CustomTagAction;
 import com.alertscape.browser.upramp.firstparty.login.LoginAction;
@@ -80,6 +82,7 @@ import com.alertscape.common.model.AlertCollection;
 import com.alertscape.common.model.BinarySortAlertCollection;
 import com.alertscape.service.AlertService;
 import com.alertscape.service.AuthenticationService;
+import com.alertscape.service.tags.PredefinedTagConstants;
 import com.alertscape.util.ImageFinder;
 
 /**
@@ -164,6 +167,17 @@ public class AlertBrowser extends JFrame {
     } catch (Exception e) {
       LOG.error("Couldn't get attribute definitions", e);
     }
+    
+    List<AlertAttributeDefinition> categoryAttributes = null;
+    try {    	 
+    	categoryAttributes = buildAttrDefs(alertService.getCategories(Authentication.getUser("CEV")));
+    } catch (Exception e) {
+      LOG.error("Couldn't get attribute definitions", e);
+    }
+    
+    // add the categories into the extended attrs
+    extendedAttributes.addAll(categoryAttributes);
+    
     tablePanel = new AlertCollectionTablePanel(summaryCollection, extendedAttributes);
     tablePanel.init();
 
@@ -205,14 +219,14 @@ public class AlertBrowser extends JFrame {
     PredefinedTagAction predefinedTagAction = new PredefinedTagAction();
     predefinedTagAction.setParentFrame(this);
     // TODO: This is disabled until complete
-    predefinedTagAction.setEnabled(false);
+//    predefinedTagAction.setEnabled(false);
     JButton predefinedTagButton = actionToolbar.add(predefinedTagAction);
     predefinedTagButton.setOpaque(false);
 
     CustomTagAction customTagAction = new CustomTagAction();
     customTagAction.setParentFrame(this);
     // TODO: This is disabled until complete
-    customTagAction.setEnabled(false);
+//    customTagAction.setEnabled(false);
     JButton customTagButton = actionToolbar.add(customTagAction);
     customTagButton.setOpaque(false);
 
@@ -220,7 +234,12 @@ public class AlertBrowser extends JFrame {
     chartAction.setParentFrame(this);
     JButton chartButton = actionToolbar.add(chartAction);
     chartButton.setOpaque(false);
-
+    
+    AlertPropertiesAction propertiesAction = new AlertPropertiesAction();
+    propertiesAction.setParentFrame(this);
+    JButton propertiesButton = actionToolbar.add(propertiesAction);
+    propertiesButton.setOpaque(false);
+    
     LoginAction loginAction = new LoginAction();
     loginAction.setParentFrame(this);
     JButton loginButton = actionToolbar.add(loginAction);
@@ -322,7 +341,9 @@ public class AlertBrowser extends JFrame {
     // - view ticket
     // - view comments
     // filter configuration
-
+    
+    viewMenu.add(propertiesAction);
+    
     JMenu preferencesMenu = new JMenu("Preferences");
     // build a list of all of the userpreferencepanels
     List<UserPreferencesPanel> prefPanels = new ArrayList<UserPreferencesPanel>();
@@ -365,6 +386,7 @@ public class AlertBrowser extends JFrame {
     popup.add(customTagAction);
     popup.addSeparator();
     popup.add(chartAction);
+    popup.add(propertiesAction);
     tablePanel.setPopup(popup);
 
     // jframe housekeeping
@@ -636,5 +658,31 @@ public class AlertBrowser extends JFrame {
     this.authenticationService = authenticationService;
     // TODO: This whole static Authentication thing is a hack and should be taken out
     Authentication.setAuthenticationService(authenticationService);
+  }
+  
+  private List<AlertAttributeDefinition> buildAttrDefs(Map<String, ?> categories)
+  {
+  	List<AlertAttributeDefinition> vals = new ArrayList<AlertAttributeDefinition>(0);
+  	
+  	if (categories != null)
+  	{
+	    // get the list of all of the possible existing custom tags from the map
+			List tagNames = (List)categories.get(PredefinedTagConstants.DEFINED_TAGNAMES);
+			if (tagNames != null)
+			{
+				for (int i = 0; i < tagNames.size(); i++)
+				{
+					String category = (String)tagNames.get(i);
+					AlertAttributeDefinition nextCategory = new AlertAttributeDefinition();
+					nextCategory.setActive(true);
+					nextCategory.setDisplayName(category);
+					nextCategory.setName(category);
+					
+					vals.add(nextCategory);
+				}
+			}
+  	}
+  	
+  	return vals;
   }
 }
