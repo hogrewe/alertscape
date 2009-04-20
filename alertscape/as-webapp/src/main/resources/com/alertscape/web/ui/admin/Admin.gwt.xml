@@ -16,7 +16,7 @@
     <!-- Specify the app entry point class.                         -->
     <entry-point class='com.alertscape.web.ui.admin.client.AlertscapeAdmin' />
 
-    <servlet path="/adminService"
+    <servlet path="/adminService.gwt"
         class="com.alertscape.web.ui.admin.server.AdminServiceServlet" />
 
 
