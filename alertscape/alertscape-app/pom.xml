@@ -166,10 +166,19 @@
 									com.alertscape.pump.onramp.AbstractPollingAlertOnramp* {public
 									*;}</option>
 								<option>-keep public class
-									com.alertscape.pump.onramp.file.SimpleRegexLineProcessor
+									com.alertscape.pump.onramp.line.AbstractRegexLineProcessor
 									{public void set*(***); *** get*();}</option>
 								<option>-keep public class
-									com.alertscape.pump.onramp.file.AlertLineProcessor {public void
+									com.alertscape.pump.onramp.line.SimpleRegexLineProcessor
+									{public void set*(***); *** get*();}</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.line.IgnoringRegexLineProcessor
+									{public void set*(***); *** get*();}</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.MultiClearCriteria
+									{public void set*(***); *** get*();}</option>
+								<option>-keep public class
+									com.alertscape.pump.onramp.line.AlertLineProcessor {public void
 									set*(***); *** get*();}</option>
 								<option>-keep public class
 									com.alertscape.pump.onramp.AlertCache* {public *;}</option>

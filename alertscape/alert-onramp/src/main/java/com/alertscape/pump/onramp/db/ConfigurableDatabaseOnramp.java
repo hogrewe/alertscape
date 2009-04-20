@@ -18,7 +18,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.logging.ASLogger;
-import com.alertscape.pump.onramp.file.AlertLineProcessor;
+import com.alertscape.pump.onramp.line.AlertLineProcessor;
 
 /**
  * @author josh

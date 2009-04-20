@@ -3,6 +3,8 @@
  */
 package com.alertscape.pump.onramp.sender;
 
+import java.util.List;
+
 import com.alertscape.AlertscapeException;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
@@ -55,6 +57,10 @@ public class LocalAlertTransport implements AlertTransport {
 
   public Alert getAlert(Alert a, AlertEquator equator) {
     return pump.getAlert(a, equator);
+  }
+
+  public List<Alert> findMatchingAlerts(Alert a, AlertEquator equator) {
+    return pump.findMatching(a, equator);
   }
 
   public AlertPump getPump() {

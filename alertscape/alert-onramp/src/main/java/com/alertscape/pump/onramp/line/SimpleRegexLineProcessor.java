@@ -1,17 +1,12 @@
 /**
  * 
  */
-package com.alertscape.pump.onramp.file;
+package com.alertscape.pump.onramp.line;
 
-import java.beans.BeanDescriptor;
-import java.beans.Beans;
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
@@ -20,11 +15,8 @@ import com.alertscape.common.model.Alert;
  * @author josh
  * 
  */
-public class SimpleRegexLineProcessor implements AlertLineProcessor {
+public class SimpleRegexLineProcessor extends AbstractRegexLineProcessor {
   private static final ASLogger LOG = ASLogger.getLogger(SimpleRegexLineProcessor.class);
-  private String regex;
-  private Pattern pattern;
-  private boolean matchRequired = true;
   private Map<String, Method> cachedSetters = new HashMap<String, Method>();
   private Map<String, String> fieldMappings;
   private Map<String, String> categoryMappings;
@@ -38,7 +30,7 @@ public class SimpleRegexLineProcessor implements AlertLineProcessor {
   }
 
   public Alert populateAlert(Alert a, String line) {
-    Matcher matcher = pattern.matcher(line);
+    Matcher matcher = makeMatcher(line);
 
     if (!matcher.matches()) {
       if (isMatchRequired()) {
@@ -50,7 +42,6 @@ public class SimpleRegexLineProcessor implements AlertLineProcessor {
 
     if (getFieldMappings() != null) {
       for (String field : getFieldMappings().keySet()) {
-        // TODO: Is this a good idea?
         String replacement = getFieldMappings().get(field);
         String value = matcher.replaceAll(replacement);
         matcher.reset();
@@ -66,7 +57,6 @@ public class SimpleRegexLineProcessor implements AlertLineProcessor {
     Map<String, Object> extendedAttributes = a.getExtendedAttributes();
     if (getCategoryMappings() != null) {
       for (String field : getCategoryMappings().keySet()) {
-        // TODO: Is this a good idea?
         String replacement = getCategoryMappings().get(field);
         String value = matcher.replaceAll(replacement);
         matcher.reset();
@@ -93,7 +83,7 @@ public class SimpleRegexLineProcessor implements AlertLineProcessor {
     }
     return setter;
   }
-
+  
   /**
    * @return the fieldMappings
    */
@@ -122,42 +112,6 @@ public class SimpleRegexLineProcessor implements AlertLineProcessor {
    */
   public void setCategoryMappings(Map<String, String> categoryMappings) {
     this.categoryMappings = categoryMappings;
-  }
-
-  /**
-   * @return the regex
-   */
-  public String getRegex() {
-    return regex;
-  }
-
-  /**
-   * @param regex
-   *          the regex to set
-   */
-  public void setRegex(String regex) {
-    if (regex == null) {
-      this.regex = null;
-      pattern = null;
-    } else {
-      this.regex = regex.trim();
-      pattern = Pattern.compile(this.regex);
-    }
-  }
-
-  /**
-   * @param matchRequired
-   *          the matchRequired to set
-   */
-  public void setMatchRequired(boolean matchRequired) {
-    this.matchRequired = matchRequired;
-  }
-
-  /**
-   * @return the matchRequired
-   */
-  public boolean isMatchRequired() {
-    return matchRequired;
   }
 
 }

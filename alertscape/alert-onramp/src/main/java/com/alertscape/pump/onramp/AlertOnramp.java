@@ -23,9 +23,10 @@ import com.alertscape.AlertscapeException;
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
+import com.alertscape.common.model.AlertStatus;
 import com.alertscape.common.model.equator.AlertEquator;
 import com.alertscape.pump.AlertSourceCallback;
-import com.alertscape.pump.onramp.file.AlertLineProcessor;
+import com.alertscape.pump.onramp.line.AlertLineProcessor;
 import com.alertscape.pump.onramp.sender.AlertTransport;
 import com.alertscape.pump.onramp.sender.AlertTransportException;
 
@@ -50,13 +51,36 @@ public abstract class AlertOnramp implements AlertSourceCallback {
   private String postProcessField;
   private Method postProcessGetter;
   private List<AlertLineProcessor> postProcessors;
+  private List<MultiClearCriteria> clearCriteria;
 
   public void sendAlert(Alert alert) {
+    alert.setSource(source);
+
+    if (clearCriteria != null) {
+      for (MultiClearCriteria clearCrit : clearCriteria) {
+        if (clearCrit.shouldClear(alert)) {
+          List<Alert> matchingAlerts = transport.findMatchingAlerts(alert, clearCrit.getToClearEquator());
+          LOG.info("Clearing out " + matchingAlerts.size() + " alerts from : " + alert);
+          for (Alert matched : matchingAlerts) {
+            matched.setStatus(AlertStatus.CLEARED);
+            updateCached(matched);
+            try {
+              transport.sendAlert(matched);
+            } catch (AlertTransportException e) {
+              LOG.error("Couldn't send alert to transport", e);
+            }
+          }
+          // We cleared some alerts, and now we're done
+          return;
+        }
+      }
+    }
+
     if (postProcessGetter != null && postProcessors != null) {
       try {
         Object value = postProcessGetter.invoke(alert, (Object[]) null);
         if (value != null) {
-          for (AlertLineProcessor processor : postProcessors) {            
+          for (AlertLineProcessor processor : postProcessors) {
             processor.populateAlert(alert, value.toString());
           }
         }
@@ -65,7 +89,6 @@ public abstract class AlertOnramp implements AlertSourceCallback {
       }
     }
 
-    alert.setSource(source);
     Date now = new Date();
 
     Alert existing = updateCached(alert);
@@ -307,5 +330,20 @@ public abstract class AlertOnramp implements AlertSourceCallback {
    */
   public void setPostProcessors(List<AlertLineProcessor> postProcessors) {
     this.postProcessors = postProcessors;
+  }
+
+  /**
+   * @return the clearCriteria
+   */
+  public List<MultiClearCriteria> getClearCriteria() {
+    return clearCriteria;
+  }
+
+  /**
+   * @param clearCriteria
+   *          the clearCriteria to set
+   */
+  public void setClearCriteria(List<MultiClearCriteria> clearCriteria) {
+    this.clearCriteria = clearCriteria;
   }
 }

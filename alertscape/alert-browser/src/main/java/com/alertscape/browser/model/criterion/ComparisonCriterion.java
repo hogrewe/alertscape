@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
-import com.alertscape.util.GetterHelper;
+import com.alertscape.common.util.GetterHelper;
 
 /**
  * @author josh
@@ -90,7 +90,7 @@ public class ComparisonCriterion implements AlertCriterion {
 
   public void setField(String field) {
     if (this.field != field) {
-      fieldGetter = GetterHelper.makeAlertGetter(field);
+      fieldGetter = GetterHelper.makeGetter(field);
     }
     this.field = field;
   }

@@ -45,4 +45,6 @@ public interface AlertPump {
    * @return
    */
   Alert getAlert(Alert a, AlertEquator equator);
+
+  List<Alert> findMatching(Alert a, AlertEquator equator);
 }

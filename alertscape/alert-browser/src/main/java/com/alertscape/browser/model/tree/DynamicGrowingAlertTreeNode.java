@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
-import com.alertscape.util.GetterHelper;
+import com.alertscape.common.util.GetterHelper;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -72,7 +72,7 @@ public class DynamicGrowingAlertTreeNode extends DefaultAlertTreeNode {
         usesAttribute = true;
         childField = m.group(1);
       } else {
-        childGetter = GetterHelper.makeAlertGetter(childField);
+        childGetter = GetterHelper.makeGetter(childField);
       }
     }
   }

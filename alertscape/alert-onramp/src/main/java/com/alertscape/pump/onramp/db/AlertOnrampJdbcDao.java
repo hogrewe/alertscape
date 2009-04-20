@@ -20,7 +20,7 @@ import com.alertscape.common.logging.ASLogger;
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.severity.Severity;
 import com.alertscape.common.model.severity.SeverityFactory;
-import com.alertscape.pump.onramp.file.AlertLineProcessor;
+import com.alertscape.pump.onramp.line.AlertLineProcessor;
 
 /**
  * @author josh
@@ -87,9 +87,9 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
         if (lineProcessors != null) {
           String columnValue = rs.getString(regexColumn);
           for (AlertLineProcessor processor : lineProcessors) {
-            Alert processed = processor.populateAlert(alert, columnValue);
-            if(processed != null) {
-              // If the value returned is non-null, the processor matched so return
+            // If this processor matches, populate the value of the alert and return
+            if (processor.matches(columnValue)) {
+              Alert processed = processor.populateAlert(alert, columnValue);
               return processed;
             }
           }

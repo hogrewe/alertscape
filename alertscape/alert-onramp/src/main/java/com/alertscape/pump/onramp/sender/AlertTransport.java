@@ -3,6 +3,8 @@
  */
 package com.alertscape.pump.onramp.sender;
 
+import java.util.List;
+
 import com.alertscape.common.model.Alert;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.equator.AlertEquator;
@@ -27,4 +29,6 @@ public interface AlertTransport {
    * @return
    */
   Alert getAlert(Alert a, AlertEquator equator);
+
+  List<Alert> findMatchingAlerts(Alert a, AlertEquator equator);
 }
