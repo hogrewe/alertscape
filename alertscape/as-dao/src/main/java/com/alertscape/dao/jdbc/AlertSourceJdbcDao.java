@@ -6,9 +6,8 @@ package com.alertscape.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,7 +16,6 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import com.alertscape.common.model.AlertSource;
 import com.alertscape.common.model.AlertSourceType;
 import com.alertscape.dao.AlertSourceDao;
-import com.alertscape.dao.DaoException;
 
 /**
  * @author josh
@@ -31,34 +29,40 @@ public class AlertSourceJdbcDao extends JdbcDaoSupport implements AlertSourceDao
   public static final String UPDATE_ID_SEQ = "update alert_sources set alert_id_seq=? where alert_source_id=? "
       + "and alert_id_seq < ?";
   public static final String GET_ALERT_ID_SEQ = "select alert_id_seq from alert_sources where alert_source_id=?";
-
-  public Map<Integer, AlertSource> sourcesMap = new HashMap<Integer, AlertSource>();
+  public static final String INSERT_SOURCE_SQL = "insert into alert_sources (alert_source_name, alert_source_type_sid, configuration)"
+      + "(select ?, sid, ? from alert_source_types where type=?)";
+  public static final String UPDATE_CONFIGURATION_SQL = "update alert_sources set configuration=? where alert_source_id=?";
 
   public AlertSourceMapper sourceMapper = new AlertSourceMapper();
 
-  public AlertSource get(int sourceId) throws DaoException {
-    AlertSource source;
-    synchronized (sourcesMap) {
-      source = sourcesMap.get(sourceId);
-      if (source == null) {
-        source = (AlertSource) getJdbcTemplate().query(GET_SOURCE_SQL, new Object[] { sourceId }, sourceMapper);
-        sourcesMap.put(sourceId, source);
-      }
+  @SuppressWarnings("unchecked")
+  public AlertSource get(int sourceId) {
+    AlertSource source = null;
+    List<AlertSource> sources = getJdbcTemplate().query(GET_SOURCE_SQL, new Object[] { sourceId }, sourceMapper);
+    if (!sources.isEmpty()) {
+      source = sources.get(0);
     }
     return source;
   }
 
   @SuppressWarnings("unchecked")
-  public List<AlertSource> getAllSources() throws DaoException {
+  public List<AlertSource> getAllSources() {
     return getJdbcTemplate().query(GET_ALL_SOURCES_SQL, sourceMapper);
   }
 
-  public void save(AlertSource source) throws DaoException {
+  public void save(AlertSource source) {
     AlertSource existing = get(source.getSourceId());
     if (existing == null) {
-      // TODO: SAVE NEW SOURCE
+      List<Object> args = new ArrayList<Object>();
+      args.add(source.getSourceName());
+      args.add(source.getConfigXml());
+      args.add(source.getType().getType());
+      getJdbcTemplate().update(INSERT_SOURCE_SQL, args.toArray());
     } else {
-      // TODO: UPDATE EXISTING SOURCE
+      List<Object> args = new ArrayList<Object>();
+      args.add(source.getConfigXml());
+      args.add(source.getSourceId());
+      getJdbcTemplate().update(UPDATE_CONFIGURATION_SQL, args.toArray());
     }
   }
 

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.alertscape.common.logging.ASLogger;
 import com.alertscape.dao.AlertSourceDao;
-import com.alertscape.dao.DaoException;
 
 /**
  * @author josh
@@ -23,9 +22,9 @@ public class DefaultAlertSourceRepository implements AlertSourceRepository {
   private Map<Integer, AlertSource> idToSource = new HashMap<Integer, AlertSource>();
 
   public DefaultAlertSourceRepository() {
-    
+
   }
-  
+
   public DefaultAlertSourceRepository(Map<String, AlertSource> alertSources) {
     this.alertSources = alertSources;
   }
@@ -41,24 +40,20 @@ public class DefaultAlertSourceRepository implements AlertSourceRepository {
 
     return alertSource == null ? DEFAULT_SOURCE : alertSource;
   }
-  
+
   public void updateAlertIdSeq(AlertSource source, long alertId) {
     getSourceDao().updateAlertIdSeq(source, alertId);
   }
-  
+
   public long getNextAlertIdSeq(AlertSource source) {
     return getSourceDao().getAlertIdSeq(source);
   }
 
   public void init() {
-    try {
-      List<AlertSource> allSources = getSourceDao().getAllSources();
-      for (AlertSource alertSource : allSources) {
-        alertSources.put(alertSource.getSourceName(), alertSource);
-        idToSource.put(alertSource.getSourceId(), alertSource);
-      }
-    } catch (DaoException e) {
-      LOG.error("Couldn't get sources from the DB", e);
+    List<AlertSource> allSources = getSourceDao().getAllSources();
+    for (AlertSource alertSource : allSources) {
+      alertSources.put(alertSource.getSourceName(), alertSource);
+      idToSource.put(alertSource.getSourceId(), alertSource);
     }
   }
 
@@ -70,7 +65,8 @@ public class DefaultAlertSourceRepository implements AlertSourceRepository {
   }
 
   /**
-   * @param sourceDao the sourceDao to set
+   * @param sourceDao
+   *          the sourceDao to set
    */
   public void setSourceDao(AlertSourceDao sourceDao) {
     this.sourceDao = sourceDao;

@@ -36,7 +36,7 @@ public class AlertAttributeDefinitionJdbcDao extends JdbcDaoSupport implements A
   private static final String GET_DEF_SQL = "select * from attribute_definitions where attribute_name=?";
   private static final String INSERT_DEF_SQL = "insert into attribute_definitions (attribute_name) values (?)";
   private static final String UPDATE_DEF_SQL = "update attribute_definitions set active=? where attribute_definition_id=?";
-
+  
   private static final String GET_ACTIVE_CAT_DEF_SQL="select def.name, def.allow_custom, def.active, valdef.value, valdef.is_default from category_def def, category_value_def valdef where def.sid=valdef.category_sid and def.active=1";
   private static final String GET_ACTIVE_LABEL_DEF_SQL="select distinct name from alert_labels";
   
@@ -59,6 +59,18 @@ public class AlertAttributeDefinitionJdbcDao extends JdbcDaoSupport implements A
   }
 
   protected void insert(AlertAttributeDefinition definition) {
+    int maxSize = definition.getMaxSize();
+    if(maxSize < 1) {
+      maxSize = 50;
+    }
+    StringBuilder alterSql = new StringBuilder();
+    
+    alterSql.append("alter table ext_alert_attributes add ");
+    alterSql.append(definition.getName());
+    alterSql.append(" varchar2(" + maxSize + ")");
+
+    getJdbcTemplate().execute(alterSql.toString());
+    
     Object[] args = new Object[1];
     
     int i = 0;

@@ -114,11 +114,15 @@
 									com.alertscape.pump.offramp.DatabaseOfframp {public void
 									set*(***);*** get*();}</option>
 								<option>-keep public class
+									com.alertscape.common.logging.ASLogger {public *; }</option>
+								<option>-keep public class
 									com.alertscape.dao.jdbc.AlertJdbcDao {public *; }</option>
 								<option>-keep public class
 									com.alertscape.dao.jdbc.AlertSourceJdbcDao {public *; }</option>
 								<option>-keep public class
 									com.alertscape.dao.jdbc.AuthenticatedUserJdbcDao {public *; }</option>
+								<option>-keep public interface
+									com.alertscape.dao.*Dao {public *; }</option>
 								<option>-keep public class
 									com.alertscape.dao.jdbc.TreeConfigurationJdbcDao {public *; }</option>
 								<option>-keep public class

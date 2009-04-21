@@ -3,6 +3,8 @@
  */
 package com.alertscape.dao;
 
+import java.util.List;
+
 import com.alertscape.common.model.AuthenticatedUser;
 
 /**
@@ -11,4 +13,6 @@ import com.alertscape.common.model.AuthenticatedUser;
  */
 public interface AuthenticatedUserDao {
   AuthenticatedUser authenticate(String username, char[] password);
+  List<AuthenticatedUser> getAll();
+  void save(AuthenticatedUser user, char[] password);
 }

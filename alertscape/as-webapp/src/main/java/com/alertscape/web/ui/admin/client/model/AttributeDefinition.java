@@ -9,13 +9,12 @@ import java.io.Serializable;
  * @author josh
  * 
  */
-public class OnrampDefinition implements Serializable {
-  private static final long serialVersionUID = -5572459708351572031L;
-
+public class AttributeDefinition implements Serializable {
+  private static final long serialVersionUID = 3294504895786264753L;
   private int id;
   private String name;
-  private String configuration;
-  private String type;
+  private String displayName;
+  private int size;
 
   /**
    * @return the name
@@ -33,33 +32,33 @@ public class OnrampDefinition implements Serializable {
   }
 
   /**
-   * @return the configuration
+   * @return the displayName
    */
-  public String getConfiguration() {
-    return configuration;
+  public String getDisplayName() {
+    return displayName;
   }
 
   /**
-   * @param configuration
-   *          the configuration to set
+   * @param displayName
+   *          the displayName to set
    */
-  public void setConfiguration(String configuration) {
-    this.configuration = configuration;
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
   }
 
   /**
-   * @return the type
+   * @return the size
    */
-  public String getType() {
-    return type;
+  public int getSize() {
+    return size;
   }
 
   /**
-   * @param type
-   *          the type to set
+   * @param size
+   *          the size to set
    */
-  public void setType(String type) {
-    this.type = type;
+  public void setSize(int size) {
+    this.size = size;
   }
 
   /**
@@ -76,5 +75,4 @@ public class OnrampDefinition implements Serializable {
   public void setId(int id) {
     this.id = id;
   }
-
 }

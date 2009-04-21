@@ -14,6 +14,7 @@ public class AlertAttributeDefinition implements Serializable {
   private int attributeDefinitionId;
   private String name;
   private String displayName;
+  private int maxSize;
   private boolean active;
 
   /**
@@ -74,5 +75,19 @@ public class AlertAttributeDefinition implements Serializable {
    */
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
+  }
+
+  /**
+   * @return the maxSize
+   */
+  public int getMaxSize() {
+    return maxSize;
+  }
+
+  /**
+   * @param maxSize the maxSize to set
+   */
+  public void setMaxSize(int maxSize) {
+    this.maxSize = maxSize;
   }
 }
