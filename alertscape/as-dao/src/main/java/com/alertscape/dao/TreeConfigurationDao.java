@@ -9,4 +9,6 @@ package com.alertscape.dao;
  */
 public interface TreeConfigurationDao {
   String getTreeConfiguration();
+  
+  void save(String configuration);
 }

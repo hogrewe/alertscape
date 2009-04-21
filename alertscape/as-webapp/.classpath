@@ -29,6 +29,7 @@
   <classpathentry kind="var" path="M2_REPO/com/odell/glazedlists/1.7.0/glazedlists-1.7.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/google/gwt/gwt-servlet/1.5.3/gwt-servlet-1.5.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/google/gwt/gwt-user/1.5.3/gwt-user-1.5.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/sf/gwt-widget/gwt-widgets-server/0.1.4/gwt-widgets-server-0.1.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
   <classpathentry kind="var" path="M2_REPO/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.5.5/spring-2.5.5.jar"/>
