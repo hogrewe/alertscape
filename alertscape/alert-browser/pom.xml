@@ -147,6 +147,10 @@
 								<option>-keep public class
 									com.alertscape.browser.model.tree.*Matcher {public void
 									set*(***); *** get*();}</option>
+								<option>-keep public class
+									com.alertscape.common.model.PredefinedTagProfile
+									{*;}
+								</option>
 								<option>-keepnames class * implements
 									java.io.Serializable</option>
 								<option>-keepclassmembers class * implements

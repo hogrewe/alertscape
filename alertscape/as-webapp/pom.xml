@@ -46,16 +46,6 @@
 			<artifactId>alertscape-app</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.alertscape</groupId>
-			<artifactId>as-common</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.alertscape.dao</groupId>
-			<artifactId>as-dao</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
 			<version>1.5.3</version>
@@ -124,6 +114,18 @@
   <profiles>
     <profile>
 	<id>prodrelease</id>
+	  <dependencies>
+		<dependency>
+			<groupId>com.alertscape</groupId>
+			<artifactId>as-common</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alertscape.dao</groupId>
+			<artifactId>as-dao</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	  </dependencies>
 	<build>
 	 <plugins>
 	  <plugin>

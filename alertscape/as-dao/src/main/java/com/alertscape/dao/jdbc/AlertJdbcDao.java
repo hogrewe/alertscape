@@ -160,8 +160,6 @@ public class AlertJdbcDao extends JdbcDaoSupport implements AlertDao {
     
     List<Alert> vals = getJdbcTemplate().query(query, alertMapper);
     
-    LOG.info("Returing all alerts from db: " + vals);
-    
     return vals;
   }
 

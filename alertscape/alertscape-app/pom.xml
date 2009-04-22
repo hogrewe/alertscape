@@ -179,6 +179,10 @@
 									com.alertscape.pump.onramp.line.IgnoringRegexLineProcessor
 									{public void set*(***); *** get*();}</option>
 								<option>-keep public class
+									com.alertscape.common.model.PredefinedTagProfile
+									{*;}
+								</option>
+								<option>-keep public class
 									com.alertscape.pump.onramp.MultiClearCriteria
 									{public void set*(***); *** get*();}</option>
 								<option>-keep public class
