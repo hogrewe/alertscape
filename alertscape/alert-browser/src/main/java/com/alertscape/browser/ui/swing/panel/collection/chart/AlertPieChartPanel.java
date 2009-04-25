@@ -84,7 +84,9 @@ public class AlertPieChartPanel extends JPanel implements AlertCollectionPanel, 
   		double nextval = fieldPcts.get(nextkey);
   		if (nextval > 0.01) // if it is greater than 1% then show it on it's own, otherwise sum it into an 'other' pie
   		{
-  			dataset.setValue(nextkey, nextval);
+  			String visibleLabel = nextkey + " (" + fieldAlerts.get(nextkey).size() +")";
+  			dataset.setValue(visibleLabel, nextval);
+  			fieldAlerts.put(visibleLabel, fieldAlerts.get(nextkey));
   		}
   		else
   		{
@@ -95,8 +97,9 @@ public class AlertPieChartPanel extends JPanel implements AlertCollectionPanel, 
   	
   	if (otherpct > 0.0)
   	{
-  		dataset.setValue("Other", otherpct);
-  		fieldAlerts.put("Other", otherAlerts);
+  		String otherlabel = "Other" + " (" + otherAlerts.size() +")";
+  		dataset.setValue(otherlabel, otherpct);
+  		fieldAlerts.put(otherlabel, otherAlerts);
   	}
   	
   	JFreeChart chart3 = ChartFactory.createPieChart3D(title, dataset, false, false, false);
