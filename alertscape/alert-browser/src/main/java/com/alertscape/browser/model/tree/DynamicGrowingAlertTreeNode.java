@@ -87,7 +87,18 @@ public class DynamicGrowingAlertTreeNode extends DefaultAlertTreeNode {
       final Object value;
       AlertMatcher matcher;
       if (usesAttribute) {
-        value = alert.getExtendedAttribute(childField);
+        Object tmpvalue = alert.getExtendedAttribute(childField);
+        if (tmpvalue == null) // if it is not a extattr, check if it is a major tag (category)        	
+        {
+        	tmpvalue = alert.getMajorTag(childField);
+          
+        	if (tmpvalue == null) // if it is not a major tag, check if it is a minor tag (label)
+          {
+          	tmpvalue = alert.getMinorTag(childField);
+          }
+        }
+        value = tmpvalue;
+        
         matcher = new AttributeAlertMatcher(childField, value);
       } else {
         value = childGetter.invoke(alert);
