@@ -35,11 +35,17 @@
         <version>1.0-beta-1</version>
       </plugin>
 <<<<<<< HEAD:alertscape/pom.xml
+<<<<<<< HEAD:alertscape/pom.xml
+=======
+>>>>>>> AS-21:alertscape/pom.xml
 	  <plugin>
           <groupId>org.codehaus.sonar</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
           <version>1.8</version>
 	  </plugin>
+<<<<<<< HEAD:alertscape/pom.xml
+=======
+>>>>>>> AS-21:alertscape/pom.xml
 =======
 >>>>>>> AS-21:alertscape/pom.xml
 
