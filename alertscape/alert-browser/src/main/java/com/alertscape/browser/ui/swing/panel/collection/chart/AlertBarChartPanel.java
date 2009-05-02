@@ -2,6 +2,7 @@ package com.alertscape.browser.ui.swing.panel.collection.chart;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,8 @@ import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.entity.CategoryItemEntity;
 import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.PieSectionEntity;
@@ -82,12 +85,20 @@ public class AlertBarChartPanel extends JPanel implements AlertCollectionPanel, 
   	// build the chart
   	this.setLayout(new BorderLayout());
   	 	
-  	JFreeChart chart3 = ChartFactory.createBarChart3D(title, chartedField, "Total Alerts", dataset, PlotOrientation.VERTICAL, false, true, false);
+  	boolean showlabels = (dataset.getRowCount() < 30);
+  	JFreeChart chart3 = ChartFactory.createBarChart3D(title, chartedField, "Total Alerts", dataset, PlotOrientation.VERTICAL, false, true, false);  	
   	CategoryPlot p = chart3.getCategoryPlot(); 
 	  p.setForegroundAlpha(0.6f);    
-    
+
+    // rotate the labels of the bar chart so they are readable
+    CategoryPlot plot = (CategoryPlot)chart3.getPlot();
+    CategoryAxis xAxis = (CategoryAxis)plot.getDomainAxis();
+    xAxis.setCategoryLabelPositions(CategoryLabelPositions.DOWN_45);
+    xAxis.setMaximumCategoryLabelLines(1);
+    xAxis.setTickLabelsVisible(showlabels);
+	  
     ChartPanel chartpanel = new ChartPanel(chart3);
-    
+   
     chartpanel.addChartMouseListener(new ChartMouseListener()
     		{
 					@Override

@@ -132,6 +132,7 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
             alert = existingEvents.get(index);
             Alert newEvent = list.get(index);
             existingEvents.set(index, newEvent);
+            root.removeAlert(alert); // remove it first, in case it needs to change nodes
             root.addAlert(newEvent);
             break;
           }

@@ -61,6 +61,7 @@ import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.model.JmsAlertListener;
 import com.alertscape.browser.model.tree.AlertTreeNode;
 import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
+import com.alertscape.browser.ui.swing.panel.about.CreateAboutPanelAction;
 import com.alertscape.browser.ui.swing.panel.collection.chart.CreateChartPanelAction;
 import com.alertscape.browser.ui.swing.panel.collection.filter.TextFilterPanel;
 import com.alertscape.browser.ui.swing.panel.collection.summary.AlertCollectionSummaryPanel;
@@ -241,6 +242,11 @@ public class AlertBrowser extends JFrame {
     propertiesAction.setParentFrame(this);
     JButton propertiesButton = actionToolbar.add(propertiesAction);
     propertiesButton.setOpaque(false);
+    
+    CreateAboutPanelAction aboutAction = new CreateAboutPanelAction();
+    aboutAction.setParentFrame(this);
+    //JButton aboutButton = actionToolbar.add(aboutAction);
+    //aboutButton.setOpaque(false);
 
     LoginAction loginAction = new LoginAction();
     loginAction.setParentFrame(this);
@@ -368,6 +374,8 @@ public class AlertBrowser extends JFrame {
     // - Release Notes
     // - Forums (Link to website Forums)
     // - User Guide (Link to versioned user guide doc online)
+    
+    helpMenu.add(aboutAction);
 
     menubar.add(fileMenu);
     menubar.add(editMenu);

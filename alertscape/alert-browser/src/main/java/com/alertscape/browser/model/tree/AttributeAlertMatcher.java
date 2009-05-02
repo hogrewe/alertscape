@@ -25,8 +25,22 @@ public class AttributeAlertMatcher implements AlertMatcher {
     
   }
 
-  public boolean matches(Alert alert) {
-    return value != null && value.equals(alert.getExtendedAttribute(attributeName));
+  public boolean matches(Alert alert) {    
+  	boolean matches = false;
+  	if (value != null)
+  	{
+  		matches = value.equals(alert.getExtendedAttribute(attributeName));
+  		if (!matches) // if it is not an ext attr, check if it is a major tag
+  		{
+  			matches = value.equals(alert.getMajorTag(attributeName));
+    		if (!matches) // if it is not a major tag, check if it is a minor tag
+    		{
+    			matches = value.equals(alert.getMinorTag(attributeName));
+    		}
+  		}
+  	}
+            
+  	return matches;
   }
 
   /**
