@@ -51,6 +51,11 @@
                   <proguardVersion>4.3</proguardVersion>
                 </configuration>
             </plugin>
+      <plugin>
+          <groupId>org.codehaus.sonar</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>1.8</version>
+      </plugin>
           </plugins>
         </pluginManagement>
     </build>
