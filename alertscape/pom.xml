@@ -228,13 +228,11 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>2.3</version>
       </plugin>
-      <plugins>  
-	    <plugin>  
-		<groupId>org.codehaus.mojo</groupId>  
-		<artifactId>jxr-maven-plugin</artifactId> 
-	  </plugin> 
-
-
+      <plugins>
+	    <plugin>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>jxr-maven-plugin</artifactId>
+	  </plugin>
     </plugins>
   </reporting>
     <repositories>
