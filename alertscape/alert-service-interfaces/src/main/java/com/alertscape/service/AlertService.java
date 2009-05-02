@@ -17,23 +17,23 @@ import com.alertscape.common.model.AuthenticatedUser;
  */
 public interface AlertService {
 
-  public List<Alert> getAllAlerts(String filter) throws AlertscapeException;
+  List<Alert> getAllAlerts(String filter) throws AlertscapeException;
 
-  public void clear(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
+  void clear(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
 
-  public void unacknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
+  void unacknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
 
-  public void acknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
+  void acknowledge(AuthenticatedUser user, List<Alert> alert) throws AlertscapeException;
     
-  public void categorize(AuthenticatedUser user, List<Alert> alerts, String tagName, String tagValue) throws AlertscapeException;
+  void categorize(AuthenticatedUser user, List<Alert> alerts, String tagName, String tagValue) throws AlertscapeException;
   
-  public Map<String,?> getCategories(AuthenticatedUser user) throws AlertscapeException;
+  Map<String,?> getCategories(AuthenticatedUser user) throws AlertscapeException;
   
-  public void label(AuthenticatedUser user, List<Alert> alerts, String tagName, String tagValue) throws AlertscapeException;
+  void label(AuthenticatedUser user, List<Alert> alerts, String tagName, String tagValue) throws AlertscapeException;
   
-  public Map<String,List<String>> getLabels(AuthenticatedUser user) throws AlertscapeException;
+  Map<String,List<String>> getLabels(AuthenticatedUser user) throws AlertscapeException;
   
-  public List<AlertAttributeDefinition> getAttributeDefinitions() throws AlertscapeException;
+  List<AlertAttributeDefinition> getAttributeDefinitions() throws AlertscapeException;
   
-  public String getTreeConfiguration() throws AlertscapeException;
+  String getTreeConfiguration() throws AlertscapeException;
 }
