@@ -7,9 +7,6 @@
     <version>1.0.4-SNAPSHOT</version>
     <name>alertscape</name>
     <url>http://alertscape.com</url>
-    <scm>
-        <connection>scm:git:ssh://hogrewe.com/storage/as-dev/as.git</connection>
-    </scm>
     <modules>
         <module>as-common</module>
         <module>alert-onramp</module>
@@ -206,6 +203,30 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>2.0.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+
+
+    </plugins>
+  </reporting>
     <repositories>
         <repository>
             <id>internal</id>
