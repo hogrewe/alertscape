@@ -18,7 +18,7 @@
   <classpathentry kind="var" path="M2_REPO/com/jgoodies/forms/1.2.1/forms-1.2.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/geronimo/specs/geronimo-j2ee-management_1.0_spec/1.0/geronimo-j2ee-management_1.0_spec-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/geronimo/specs/geronimo-jms_1.1_spec/1.1.1/geronimo-jms_1.1_spec-1.1.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/odell/glazedlists/1.7.0/glazedlists-1.7.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/java/dev/glazedlists/glazedlists_java15/1.8.0/glazedlists_java15-1.8.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/jfree/jcommon/1.0.12/jcommon-1.0.12.jar"/>
   <classpathentry kind="var" path="M2_REPO/jfree/jfreechart/1.0.9/jfreechart-1.0.9.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>

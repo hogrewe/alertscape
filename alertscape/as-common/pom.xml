@@ -42,8 +42,8 @@
   -->
   <dependencies>
     <dependency>
-      <groupId>com.odell</groupId>
-      <artifactId>glazedlists</artifactId>
+	  <groupId>net.java.dev.glazedlists</groupId>
+	  <artifactId>glazedlists_java15</artifactId>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>

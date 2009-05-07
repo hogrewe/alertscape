@@ -5,7 +5,6 @@
 package com.alertscape.browser.ui.swing.panel.collection.table;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -24,7 +23,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -119,6 +117,7 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
 
     tf = new AlertTableFormat(propertyNames, columnLabels, extendedAttributes);
     model = new EventTableModel<Alert>(sortedList, tf) {
+      private static final long serialVersionUID = -2774076369413484262L;
 
       @Override
       public boolean isCellEditable(int arg0, int arg1) {

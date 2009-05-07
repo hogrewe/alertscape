@@ -61,7 +61,7 @@
           <artifactId>gwt-dev</artifactId>
           <version>1.5.3</version>
           <classifier>${gwt.platform}</classifier>
-          <scope>provided</scope>
+          <scope>compile</scope>
         </dependency>
 		-->
 		<dependency>
@@ -188,4 +188,28 @@
         </activation>
     </profile>
   </profiles>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>internal</id>
+            <name>Archiva Managed Internal Repository</name>
+            <url>http://hogrewe.com:8585/archiva/repository/internal/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+          <id>codehaus-snapshots</id>
+          <name>Codehaus Snapshots</name>
+          <url>http://snapshots.repository.codehaus.org/</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

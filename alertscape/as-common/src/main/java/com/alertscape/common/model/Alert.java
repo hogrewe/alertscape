@@ -146,8 +146,16 @@ public class Alert implements Serializable {
     return longDescription;
   }
 
+  public String getDescription() {
+    return longDescription;
+  }
+
   public void setLongDescription(String longDescription) {
     this.longDescription = longDescription;
+  }
+
+  public void setDescription(String description) {
+    this.longDescription = description;
   }
 
   public String getShortDescription() {
@@ -195,7 +203,7 @@ public class Alert implements Serializable {
     getMajorTags().put(name, value);
   }
 
-  public Object getMajorTag(String name) {    
+  public Object getMajorTag(String name) {
     return majorTags == null ? null : majorTags.get(name);
   }
 
@@ -226,7 +234,7 @@ public class Alert implements Serializable {
   }
 
   public Object getMinorTag(String name) {
-  	return minorTags == null ? null : minorTags.get(name);
+    return minorTags == null ? null : minorTags.get(name);
   }
 
   /**
