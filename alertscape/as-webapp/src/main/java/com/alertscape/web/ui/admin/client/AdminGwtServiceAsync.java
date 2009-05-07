@@ -1,6 +1,7 @@
 package com.alertscape.web.ui.admin.client;
 
 import java.util.List;
+import java.util.Map;
 
 import com.alertscape.web.ui.admin.client.model.AttributeDefinition;
 import com.alertscape.web.ui.admin.client.model.OnrampDefinition;
@@ -23,4 +24,7 @@ public interface AdminGwtServiceAsync {
   void saveUser(User user, char[] password, AsyncCallback<Void> callback);
 
   void saveAttributeDefinition(AttributeDefinition definition, AsyncCallback<Void> callback);
+
+  void regexTest(String regex, Map<String, String> replacements, String[] testStrings,
+      AsyncCallback<List<Map<String, String>>> callback);
 }

@@ -4,7 +4,11 @@
 package com.alertscape.web.ui.admin.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -86,6 +90,34 @@ public class AdminGwtServiceServlet extends RemoteServiceServlet implements Admi
     adminService.saveAttributeDefinition(translate(definition));
   }
 
+  public List<Map<String, String>> regexTest(String regex, Map<String, String> replacements, String[] testStrings) {
+    List<Map<String, String>> results = new ArrayList<Map<String, String>>();
+
+    Pattern p = Pattern.compile(regex);
+
+    for (String testString : testStrings) {
+      Matcher matcher = p.matcher(testString);
+      if (matcher.matches()) {
+        Map<String,String> a = new HashMap<String, String>();
+        for (String fieldName : replacements.keySet()) {
+          try {
+            String value = matcher.replaceAll(replacements.get(fieldName));
+            matcher.reset();
+            a.put(fieldName, value);
+          } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Couldn't replace text " + fieldName);
+          }
+          results.add(a);
+        }
+      } else {
+        results.add(null);
+      }
+    }
+
+    return results;
+  }
+
   @Override
   public void init() throws ServletException {
     super.init();
@@ -158,4 +190,5 @@ public class AdminGwtServiceServlet extends RemoteServiceServlet implements Admi
 
     return to;
   }
+
 }

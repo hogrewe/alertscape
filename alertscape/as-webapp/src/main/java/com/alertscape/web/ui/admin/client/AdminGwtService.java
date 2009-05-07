@@ -4,6 +4,7 @@
 package com.alertscape.web.ui.admin.client;
 
 import java.util.List;
+import java.util.Map;
 
 import com.alertscape.web.ui.admin.client.model.AttributeDefinition;
 import com.alertscape.web.ui.admin.client.model.OnrampDefinition;
@@ -32,4 +33,6 @@ public interface AdminGwtService extends RemoteService {
   void saveTreeDefinition(String treeDefinition);
 
   void saveAttributeDefinition(AttributeDefinition definition);
+
+  List<Map<String, String>> regexTest(String regex, Map<String, String> replacements, String[] testStrings);
 }
