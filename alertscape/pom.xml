@@ -205,11 +205,6 @@
                 <version>3.8.1</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.codehaus.sonar</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>1.8</version>
-            </dependency> 
         </dependencies>
     </dependencyManagement>
   <reporting>
