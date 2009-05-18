@@ -29,8 +29,6 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-<<<<<<< HEAD:alertscape/pom.xml
-=======
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>sonar-maven-plugin</artifactId>
@@ -41,8 +39,6 @@
           <artifactId>sonar-maven-plugin</artifactId>
           <version>1.8</version>
 	  </plugin>
-
->>>>>>> AS-21:alertscape/pom.xml
         </plugins>
         <pluginManagement>
           <plugins>
