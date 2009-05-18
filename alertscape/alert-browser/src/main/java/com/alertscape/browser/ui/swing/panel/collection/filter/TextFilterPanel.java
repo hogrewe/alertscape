@@ -67,11 +67,11 @@ public class TextFilterPanel extends JPanel implements AlertFilter, UserPreferen
     fieldListener = new TextFieldListener(searchText);
     fieldListener.setLive(true);
 
-    searchCombo = new JComboBox(new Object[] { "Quick", "Powerful" });
+    searchCombo = new JComboBox(new Object[] { "Quick", "Advanced" });
     searchCombo.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        if (searchCombo.getSelectedItem().equals("Powerful")) {
+        if (searchCombo.getSelectedItem().equals("Advanced")) {
           searchEngineMatcherEditor.refilter(searchText.getText());
           filterList.setMatcherEditor(searchEngineMatcherEditor);
           fieldListener.setLive(false);
