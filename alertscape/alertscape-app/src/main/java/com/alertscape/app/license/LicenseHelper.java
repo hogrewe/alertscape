@@ -23,7 +23,7 @@ import de.schlichtherle.license.LicenseParam;
  * 
  */
 public class LicenseHelper {
-  public void install(String filename) throws Exception {
+  public final void install(String filename) throws Exception {
     LicenseManager lm = new LicenseManager(getLicenseParam());
     File licenseFile = new File(filename);
     if (!licenseFile.exists()) {
@@ -32,18 +32,18 @@ public class LicenseHelper {
     lm.install(licenseFile);
   }
 
-  public LicenseContent verify() throws Exception {
+  public final LicenseContent verify() throws Exception {
     LicenseManager lm = new LicenseManager(getLicenseParam());
     LicenseContent content = lm.verify();
     return content;
   }
 
-  public AlertscapeLicense getLicense() throws Exception {
+  public final AlertscapeLicense getLicense() throws Exception {
     LicenseManager lm = new LicenseManager(getLicenseParam());
     LicenseContent content = lm.verify();
     return (AlertscapeLicense) content.getExtra();
   }
-
+  
   private LicenseParam getLicenseParam() {
     CipherParam cipherParam = new DefaultCipherParam("A13r7$c4p3R0x0rs");
     KeyStoreParam keyStoreParam = new DefaultKeyStoreParam(LicenseHelper.class, "/asPublicCerts.store",
