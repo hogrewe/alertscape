@@ -3,13 +3,13 @@
 	<parent>
 		<artifactId>alertscape</artifactId>
 		<groupId>com.alertscape</groupId>
-		<version>1.0.5-SNAPSHOT</version>
+		<version>1.0.7-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alertscape</groupId>
 	<artifactId>alertscape-app</artifactId>
 	<name>alertscape-app</name>
-	<version>1.0.5-SNAPSHOT</version>
+	<version>1.0.7-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<profiles>
 		<profile>
