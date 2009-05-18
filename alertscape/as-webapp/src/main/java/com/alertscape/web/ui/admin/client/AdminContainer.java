@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.alertscape.web.ui.admin.client.widget.AdminComponent;
 import com.alertscape.web.ui.admin.client.widget.OnrampAdminWidget;
-import com.alertscape.web.ui.admin.client.widget.OnrampTesterWidget;
 import com.alertscape.web.ui.admin.client.widget.TreeConfigAdminWidget;
 import com.alertscape.web.ui.admin.client.widget.UserAdminWidget;
 import com.google.gwt.core.client.GWT;
@@ -83,7 +82,7 @@ public class AdminContainer extends Composite {
     adminTree.addTreeListener(new AdminTreeListener());
     addNavLink(adminTree, new AdminNavLink("Users", new UserAdminWidget(adminService)));
     addNavLink(adminTree, new AdminNavLink("Onramps", new OnrampAdminWidget(adminService)));
-    addNavLink(adminTree, new AdminNavLink("Onramp Testing", new OnrampTesterWidget(adminService)));
+    // addNavLink(adminTree, new AdminNavLink("Onramp Testing", new OnrampTesterWidget(adminService)));
     addNavLink(adminTree, new AdminNavLink("Tree Configuration", new TreeConfigAdminWidget(adminService)));
     // addNavLink(new AdminNavLink("Attributes", new AttributeAdminWidget(adminService)));
 
