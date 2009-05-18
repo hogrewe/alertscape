@@ -243,11 +243,22 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>2.3</version>
       </plugin>
+<<<<<<< HEAD:alertscape/pom.xml
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jxr-maven-plugin</artifactId>
         </plugin>
       </plugins>
+=======
+      <plugins>  
+	    <plugin>  
+		<groupId>org.codehaus.mojo</groupId>  
+		<artifactId>jxr-maven-plugin</artifactId> 
+	  </plugin> 
+
+
+    </plugins>
+>>>>>>> AS-21:alertscape/pom.xml
   </reporting>
     <repositories>
         <repository>
