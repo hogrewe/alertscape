@@ -29,17 +29,6 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>sonar-maven-plugin</artifactId>
-        <version>1.0-beta-1</version>
-      </plugin>
-	  <plugin>
-          <groupId>org.codehaus.sonar</groupId>
-          <artifactId>sonar-maven-plugin</artifactId>
-          <version>1.8</version>
-	  </plugin>
-
         </plugins>
         <pluginManagement>
           <plugins>
@@ -216,11 +205,6 @@
                 <version>3.8.1</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.codehaus.sonar</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>1.8</version>
-            </dependency> 
         </dependencies>
     </dependencyManagement>
   <reporting>
