@@ -35,8 +35,8 @@
 	<bean id="alertscapeServer" class="com.alertscape.app.AlertscapeServer"
 		init-method="init" destroy-method="shutdown">
 		<property name="pump" ref="alertpump" />
-		<property name="sourceDao" ref="sourceDao"/>
-        <property name="asHome" value="${as.home}" />
+		<property name="sourceDao" ref="sourceDao" />
+		<property name="asHome" value="${as.home}" />
 	</bean>
 	<bean id="alertSourceRepository"
 		class="com.alertscape.common.model.DefaultAlertSourceRepository"
@@ -59,9 +59,9 @@
 	<bean id="definitionDao" class="com.alertscape.dao.jdbc.AlertAttributeDefinitionJdbcDao">
 		<property name="dataSource" ref="asDataSource" />
 	</bean>
-    <bean id="treeConfigDao" class="com.alertscape.dao.jdbc.TreeConfigurationJdbcDao">
-        <property name="dataSource" ref="asDataSource" />
-    </bean>
+	<bean id="treeConfigDao" class="com.alertscape.dao.jdbc.TreeConfigurationJdbcDao">
+		<property name="dataSource" ref="asDataSource" />
+	</bean>
 	<bean id="jmsOfframp" class="com.alertscape.pump.offramp.JmsOfframp"
 		init-method="init" destroy-method="shutdown">
 		<property name="factory" ref="jmsFactory" />
@@ -102,7 +102,7 @@
 	<!-- Service endpoints -->
 	<bean id="alertService" class="com.alertscape.service.ConfigurableAlertService">
 		<property name="pump" ref="alertpump" />
-        <property name="treeConfigurationDao" ref="treeConfigDao" />
+		<property name="treeConfigurationDao" ref="treeConfigDao" />
 	</bean>
 	<bean name="alertExporter"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
@@ -117,4 +117,14 @@
 		<property name="service" ref="authenticationService" />
 		<property name="serviceInterface" value="com.alertscape.service.AuthenticationService" />
 	</bean>
+
+	<bean
+		class="org.springframework.web.context.support.ServletContextAttributeExporter">
+		<property name="attributes">
+			<map>
+				<entry key="authenticatedUserDao" value-ref="authenticatedUserDao" />
+			</map>
+		</property>
+	</bean>
+
 </beans>
