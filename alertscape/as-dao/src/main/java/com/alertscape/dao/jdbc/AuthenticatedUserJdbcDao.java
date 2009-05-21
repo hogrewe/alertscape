@@ -9,7 +9,9 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -28,6 +30,7 @@ public class AuthenticatedUserJdbcDao extends JdbcDaoSupport implements Authenti
   private static final String INSERT_USER_SQL = "insert into as_user (username, password, email, fullname) values (?,?,?,?)";
   private static final String UPDATE_USER_SQL = "update as_user set username=?, password=?, email=?, fullname=?) where user_id=?";
   private static final String UPDATE_USER_NO_PASSWORD_SQL = "update as_user set username=?, email=?, fullname=?) where user_id=?";
+  private static final String GET_ROLES_SQL = "select role.name as role_name from as_user_role aur join as_role role on role.sid=aur.as_role_sid where aur.as_user_id=?";
 
   public AuthenticatedUser authenticate(String username, char[] password) {
     Object[] args = new Object[2];
@@ -81,6 +84,20 @@ public class AuthenticatedUserJdbcDao extends JdbcDaoSupport implements Authenti
       getJdbcTemplate().update(INSERT_USER_SQL, args.toArray());
     }
   }
+  
+  @SuppressWarnings("unchecked")
+  private Set<String> getRoles(AuthenticatedUser user) {
+    List<String> roles = getJdbcTemplate().query(GET_ROLES_SQL, new Object[] { user.getUserId() }, new RowMapper() {
+
+      @Override
+      public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return rs.getString("role_name");
+      }
+      
+    });
+    
+    return new HashSet<String>(roles);
+  }
 
   /**
    * @author josh
@@ -94,6 +111,9 @@ public class AuthenticatedUserJdbcDao extends JdbcDaoSupport implements Authenti
       user.setFullName(rs.getString("FULLNAME"));
       user.setUserId(rs.getInt("USER_ID"));
       user.setUsername(rs.getString("USERNAME"));
+      
+      Set<String> roles = getRoles(user);
+      user.setRoles(roles);
 
       return user;
     }
