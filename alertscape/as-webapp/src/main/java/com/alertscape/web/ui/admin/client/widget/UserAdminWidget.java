@@ -1,7 +1,10 @@
 package com.alertscape.web.ui.admin.client.widget;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.alertscape.web.ui.admin.client.AdminGwtServiceAsync;
 import com.alertscape.web.ui.admin.client.model.User;
@@ -9,10 +12,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.PopupListener;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -127,18 +132,21 @@ public class UserAdminWidget extends AbstractAdminComponent {
     private TextBox email;
     private PasswordTextBox password1;
     private PasswordTextBox password2;
+    private CheckBox admin;
 
     private Button saveButton;
     private HTML errorLabel;
 
     private FlexTable inputTable;
     private int numInputs;
+    
+    private Button cancelButton;
 
     public UserEditDialog(final User user, final AdminGwtServiceAsync adminService) {
       this.user = user;
       this.adminService = adminService;
-      
-      if(user.getUsername() == null) {
+
+      if (user.getUsername() == null) {
         setTitle("New User");
       } else {
         setTitle("Editing " + user.getUsername());
@@ -156,6 +164,8 @@ public class UserAdminWidget extends AbstractAdminComponent {
       password1 = new PasswordTextBox();
       password2 = new PasswordTextBox();
 
+      admin = new CheckBox();
+
       InputValidationChangeListener listener = new InputValidationChangeListener();
       username.addChangeListener(listener);
       fullname.addChangeListener(listener);
@@ -168,12 +178,22 @@ public class UserAdminWidget extends AbstractAdminComponent {
       addRow("Password (again):", password2);
       addRow("Fullname:", fullname);
       addRow("Email:", email);
+      addRow("Admin:", admin);
 
       saveButton = new Button("Save", new ClickListener() {
         public void onClick(Widget w) {
           user.setEmail(email.getText());
           user.setUsername(username.getText());
           user.setFullname(fullname.getText());
+
+          if (admin.isChecked()) {
+            Set<String> roles = new HashSet<String>(1);
+            roles.add("admin");
+            user.setRoles(roles);
+          } else {
+            Set<String> roles = new HashSet<String>(0);
+            user.setRoles(roles);
+          }
 
           adminService.saveUser(user, password1.getText().toCharArray(), new AsyncCallback<Void>() {
             public void onFailure(Throwable t) {
@@ -186,18 +206,30 @@ public class UserAdminWidget extends AbstractAdminComponent {
           });
         }
       });
+      
+      cancelButton = new Button("Cancel", new ClickListener() {
+        public void onClick(Widget w) {
+          hide();
+        }        
+      });
 
       fullname.setText(user.getFullname());
       username.setText(user.getUsername());
       email.setText(user.getEmail());
+      
+      if(user.getRoles().contains("admin")) {
+        admin.setChecked(true);
+      }
 
       listener.onChange(username);
 
       errorLabel = new HTML("");
       inputLayout.add(inputTable);
-      inputLayout.add(saveButton);
+      HorizontalPanel buttonPanel = new HorizontalPanel();
+      buttonPanel.add(saveButton);
+      buttonPanel.add(cancelButton);
+      inputLayout.add(buttonPanel);
       inputLayout.add(errorLabel);
-
     }
 
     protected void addRow(String label, Widget w) {
@@ -209,7 +241,7 @@ public class UserAdminWidget extends AbstractAdminComponent {
     private final class InputValidationChangeListener implements ChangeListener {
       public void onChange(Widget w) {
         boolean enabled = notEmpty(username) && notEmpty(email);
-        if(notEmpty(password1) || notEmpty(password2)) {
+        if (notEmpty(password1) || notEmpty(password2)) {
           enabled &= password1.getText().equals(password2.getText());
         }
         saveButton.setEnabled(enabled);
