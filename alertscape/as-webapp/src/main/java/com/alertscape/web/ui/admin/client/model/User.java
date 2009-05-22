@@ -4,6 +4,7 @@
 package com.alertscape.web.ui.admin.client.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * @author josh
@@ -17,6 +18,7 @@ public class User implements Serializable {
   private String username;
   private String fullname;
   private String email;
+  private Set<String> roles;
 
   /**
    * @return the username
@@ -76,6 +78,20 @@ public class User implements Serializable {
    */
   public void setId(long id) {
     this.id = id;
+  }
+
+  /**
+   * @return the roles
+   */
+  public Set<String> getRoles() {
+    return roles;
+  }
+
+  /**
+   * @param roles the roles to set
+   */
+  public void setRoles(Set<String> roles) {
+    this.roles = roles;
   }
 
 }

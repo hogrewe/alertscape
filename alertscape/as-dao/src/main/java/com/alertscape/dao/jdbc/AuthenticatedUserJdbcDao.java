@@ -27,10 +27,13 @@ public class AuthenticatedUserJdbcDao extends JdbcDaoSupport implements Authenti
   private static final String AUTHENTICATE_USER_SQL = "select * from as_user where username=? and upper(password)=?";
   private static final String GET_ALL_USERS_SQL = "select * from as_user where active=true";
   private static final String GET_USER_SQL = "select * from as_user where user_id=?";
+  private static final String GET_USER_BY_USERNAME_SQL = "select * from as_user where username=?";
   private static final String INSERT_USER_SQL = "insert into as_user (username, password, email, fullname) values (?,?,?,?)";
   private static final String UPDATE_USER_SQL = "update as_user set username=?, password=?, email=?, fullname=? where user_id=?";
   private static final String UPDATE_USER_NO_PASSWORD_SQL = "update as_user set username=?, email=?, fullname=? where user_id=?";
   private static final String GET_ROLES_SQL = "select role.name as role_name from as_user_role aur join as_role role on role.sid=aur.as_role_sid where aur.as_user_id=?";
+  private static final String DELETE_ROLES_SQL = "delete from as_user_role where as_user_id=?";
+  private static final String INSERT_ROLE_SQL = "insert into as_user_role (as_user_id, as_role_sid) values (?,(select sid from as_role where name=?))";
 
   public AuthenticatedUser authenticate(String username, char[] password) {
     Object[] args = new Object[2];
@@ -82,9 +85,14 @@ public class AuthenticatedUserJdbcDao extends JdbcDaoSupport implements Authenti
         throw new IllegalArgumentException("Cannot create a user with a null password");
       }
       getJdbcTemplate().update(INSERT_USER_SQL, args.toArray());
+
+      user = (AuthenticatedUser) getJdbcTemplate().queryForObject(GET_USER_BY_USERNAME_SQL,
+          new Object[] { user.getUsername() }, new UserMapper());
     }
+
+    updateRoles(user);
   }
-  
+
   @SuppressWarnings("unchecked")
   private Set<String> getRoles(AuthenticatedUser user) {
     List<String> roles = getJdbcTemplate().query(GET_ROLES_SQL, new Object[] { user.getUserId() }, new RowMapper() {
@@ -93,10 +101,17 @@ public class AuthenticatedUserJdbcDao extends JdbcDaoSupport implements Authenti
       public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
         return rs.getString("role_name");
       }
-      
+
     });
-    
+
     return new HashSet<String>(roles);
+  }
+
+  private void updateRoles(AuthenticatedUser user) {
+    getJdbcTemplate().update(DELETE_ROLES_SQL, new Object[] { user.getUserId() });
+    for (String role : user.getRoles()) {
+      getJdbcTemplate().update(INSERT_ROLE_SQL, new Object[] { user.getUserId(), role });
+    }
   }
 
   /**
@@ -111,7 +126,7 @@ public class AuthenticatedUserJdbcDao extends JdbcDaoSupport implements Authenti
       user.setFullName(rs.getString("FULLNAME"));
       user.setUserId(rs.getInt("USER_ID"));
       user.setUsername(rs.getString("USERNAME"));
-      
+
       Set<String> roles = getRoles(user);
       user.setRoles(roles);
 

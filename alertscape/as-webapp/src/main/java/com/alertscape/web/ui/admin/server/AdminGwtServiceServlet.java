@@ -157,6 +157,8 @@ public class AdminGwtServiceServlet extends RemoteServiceServlet implements Admi
     to.setFullname(user.getFullName());
     to.setId(user.getUserId());
     to.setUsername(user.getUsername());
+    
+    to.setRoles(user.getRoles());
 
     return to;
   }
@@ -167,6 +169,8 @@ public class AdminGwtServiceServlet extends RemoteServiceServlet implements Admi
     to.setFullName(user.getFullname());
     to.setUserId(user.getId());
     to.setUsername(user.getUsername());
+    
+    to.setRoles(user.getRoles());
 
     return to;
   }
