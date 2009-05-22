@@ -5,7 +5,6 @@ package com.alertscape.web.ui.auth;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,8 +36,7 @@ public class AlertscapeLogoutServlet extends HttpServlet {
    */
   private void logout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     req.getSession().removeAttribute("authUser");
-    RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(req.getContextPath() + "/login");
-    dispatcher.forward(req, resp);
+    resp.sendRedirect(resp.encodeRedirectURL(req.getContextPath() + "/login"));
   }
 
 }
