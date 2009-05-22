@@ -28,8 +28,8 @@ public class AuthenticatedUserJdbcDao extends JdbcDaoSupport implements Authenti
   private static final String GET_ALL_USERS_SQL = "select * from as_user where active=true";
   private static final String GET_USER_SQL = "select * from as_user where user_id=?";
   private static final String INSERT_USER_SQL = "insert into as_user (username, password, email, fullname) values (?,?,?,?)";
-  private static final String UPDATE_USER_SQL = "update as_user set username=?, password=?, email=?, fullname=?) where user_id=?";
-  private static final String UPDATE_USER_NO_PASSWORD_SQL = "update as_user set username=?, email=?, fullname=?) where user_id=?";
+  private static final String UPDATE_USER_SQL = "update as_user set username=?, password=?, email=?, fullname=? where user_id=?";
+  private static final String UPDATE_USER_NO_PASSWORD_SQL = "update as_user set username=?, email=?, fullname=? where user_id=?";
   private static final String GET_ROLES_SQL = "select role.name as role_name from as_user_role aur join as_role role on role.sid=aur.as_role_sid where aur.as_user_id=?";
 
   public AuthenticatedUser authenticate(String username, char[] password) {
