@@ -3,6 +3,8 @@
  */
 package com.alertscape.browser.model.tree;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.alertscape.common.model.Alert;
 
 /**
@@ -21,7 +23,23 @@ public class NonEmptyAttributeMatcher implements AlertMatcher {
   }
 
   public boolean matches(Alert alert) {
-    return alert.getExtendedAttribute(attributeName) != null;
+    Object attribute = alert.getExtendedAttribute(attributeName);
+    
+    if(attribute != null && !StringUtils.isEmpty(attribute.toString())) {
+      return true;
+    }
+    
+    attribute = alert.getMajorTag(attributeName);
+    if(attribute != null && !StringUtils.isEmpty(attribute.toString())) {
+      return true;
+    }
+    
+    attribute = alert.getMinorTag(attributeName);
+    if(attribute != null && !StringUtils.isEmpty(attribute.toString())) {
+      return true;
+    }
+    
+    return false;
   }
 
   /**

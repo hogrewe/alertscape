@@ -67,6 +67,13 @@
 			<bind-xml name="attributeName" node="attribute" />
 		</field>
 	</class>
+    <class name="com.alertscape.browser.model.tree.IsEmptyAttributeMatcher"
+        extends="com.alertscape.browser.model.tree.AlertMatcher">
+        <map-to xml="is-empty-attribute-matcher" />
+        <field name="attributeName" type="string">
+            <bind-xml name="attributeName" node="attribute" />
+        </field>
+    </class>
 	<class name="com.alertscape.browser.model.tree.CompositeAlertMatcher"
 		extends="com.alertscape.browser.model.tree.AlertMatcher">
 		<map-to xml="composite-matcher" />
