@@ -97,6 +97,10 @@ public abstract class AlertOnramp implements AlertSourceCallback {
       alert.setAlertId(existing.getAlertId());
       alert.setCount(existing.getCount() + 1);
       alert.setFirstOccurence(existing.getFirstOccurence());
+      
+      // Set the non-onramp (i.e. user defined) attributes
+      alert.setMajorTags(existing.getMajorTags());
+      alert.setMinorTags(existing.getMinorTags());
     } else {
       alert.setAlertId(nextAlertId++);
       alert.setCount(1);

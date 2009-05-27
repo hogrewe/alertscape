@@ -51,6 +51,9 @@ public class DefaultAlertSourceRepository implements AlertSourceRepository {
 
   public void init() {
     List<AlertSource> allSources = getSourceDao().getAllSources();
+    if(LOG.isDebugEnabled()) {
+      LOG.debug("Retrieved sources: " + allSources);
+    }
     for (AlertSource alertSource : allSources) {
       alertSources.put(alertSource.getSourceName(), alertSource);
       idToSource.put(alertSource.getSourceId(), alertSource);
