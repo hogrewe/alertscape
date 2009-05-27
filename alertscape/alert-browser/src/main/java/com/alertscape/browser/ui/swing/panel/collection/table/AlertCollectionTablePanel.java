@@ -363,7 +363,8 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
     TableColumn column = null;
     int columncount = collectionTable.getColumnCount();
     ArrayList<Integer> widths = (ArrayList<Integer>) preferences.get(PREFERENCES_COL_WIDTHS);
-    for (int i = 0; i < columncount; i++) {
+    int maxcol = Math.min(widths.size(), columncount);
+    for (int i = 0; i < maxcol; i++) {
       column = collectionTable.getColumnModel().getColumn(i);
       Integer width = widths.get(i);
 
