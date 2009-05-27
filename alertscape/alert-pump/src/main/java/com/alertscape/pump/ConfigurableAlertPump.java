@@ -16,7 +16,6 @@ import com.alertscape.common.model.equator.AlertEquator;
 import com.alertscape.dao.AlertAttributeDefinitionDao;
 import com.alertscape.pump.offramp.DatabaseOfframp;
 import com.alertscape.pump.offramp.JmsOfframp;
-import com.alertscape.pump.offramp.MemoryOfframp;
 
 /**
  * @author josh
@@ -25,23 +24,13 @@ import com.alertscape.pump.offramp.MemoryOfframp;
 public class ConfigurableAlertPump implements AlertPump {
   private DatabaseOfframp dbOfframp;
   private JmsOfframp jmsOfframp;
-  private MemoryOfframp memoryOfframp;
   private AlertSourceRepository alertSourceRepository;
   private AlertAttributeDefinitionDao definitionDao;
   private Map<AlertSource, AlertSourceCallback> callbacks = new HashMap<AlertSource, AlertSourceCallback>();
 
   public void processAlert(Alert a) throws AlertscapeException {
-  	// enrich the alert with attrs that did not come from the onramp (because this uses the memory offramp to get the previous instance of the alert, must do this prior to the alert update.
-  	// also, this must be done prior to the alert being sent to the client, or you will have the effect of the alerts popping out of categories.
-  	enrichAlertInternal(a);
-
   	if (dbOfframp != null) {
       dbOfframp.processAlert(a);
-    }
-  	
-  	// third, update the memory offramp with this latest data
-  	if (memoryOfframp != null) {
-      memoryOfframp.processAlert(a);
     }
   	
     // last, update the ui's with this latest data
@@ -50,24 +39,6 @@ public class ConfigurableAlertPump implements AlertPump {
     }
   }
 
-  // this method will look up internal (categories, labels, etc) attributes associated with the alert and put them into the alert prior to dumping it to an offramp
-  public void enrichAlertInternal(Alert a) throws AlertscapeException 
-  {
-  	// try to grab a previous version of this alert
-  	Alert prev = memoryOfframp.getAlert(a.getAlertId());
-  	
-  	// check if a previous version was found
-  	if (prev != null)
-  	{
-  		// if one was found, enrich the alert with the previous major and minor tags
-  		if (a.getMajorTags() == null || a.getMajorTags().keySet().size() == 0)
-  		{
-  			a.setMajorTags(prev.getMajorTags());
-  			a.setMinorTags(prev.getMinorTags());
-  		}
-  	}
-  }
-  
   public void processUprampAlert(Alert a) throws AlertscapeException {
     processAlert(a);
     AlertSourceCallback callback = callbacks.get(a.getSource());
@@ -128,16 +99,7 @@ public class ConfigurableAlertPump implements AlertPump {
    */
   public void setDbOfframp(DatabaseOfframp dbOfframp) 
   {
-    this.dbOfframp = dbOfframp;
-    
-    // TODO: this is completely ridiculous, but I don't know where else to force triggering creating a memory offramp when a dbofframp is created ==> Ask Josh later       
-    try
-		{
-			memoryOfframp = new MemoryOfframp(dbOfframp.getAllAlerts(""));
-		} catch (AlertscapeException e)
-		{
-			e.printStackTrace();
-		}
+    this.dbOfframp = dbOfframp;    
   }
 
   /**
