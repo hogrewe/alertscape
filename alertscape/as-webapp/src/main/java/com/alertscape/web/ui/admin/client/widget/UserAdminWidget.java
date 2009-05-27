@@ -1,7 +1,6 @@
 package com.alertscape.web.ui.admin.client.widget;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -124,9 +123,6 @@ public class UserAdminWidget extends AbstractAdminComponent {
   }
 
   private static class UserEditDialog extends DialogBox {
-    private User user;
-    private AdminGwtServiceAsync adminService;
-
     private TextBox username;
     private TextBox fullname;
     private TextBox email;
@@ -143,9 +139,6 @@ public class UserAdminWidget extends AbstractAdminComponent {
     private Button cancelButton;
 
     public UserEditDialog(final User user, final AdminGwtServiceAsync adminService) {
-      this.user = user;
-      this.adminService = adminService;
-
       if (user.getUsername() == null) {
         setTitle("New User");
       } else {

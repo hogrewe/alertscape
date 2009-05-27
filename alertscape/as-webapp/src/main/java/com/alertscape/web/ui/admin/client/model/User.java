@@ -4,6 +4,7 @@
 package com.alertscape.web.ui.admin.client.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -18,7 +19,7 @@ public class User implements Serializable {
   private String username;
   private String fullname;
   private String email;
-  private Set<String> roles;
+  private Set<String> roles = new HashSet<String>();
 
   /**
    * @return the username
