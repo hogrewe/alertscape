@@ -19,6 +19,10 @@ import com.alertscape.common.model.Alert;
 public class TreeMatcherEditor extends AbstractMatcherEditor<Alert> {
   private Set<Alert> alerts = new HashSet<Alert>();
   
+  public TreeMatcherEditor() {
+    fireChanged(new TreeMatcher());
+  }
+  
   public void addAlert(Alert a) {
     alerts.add(a);
     fireRelaxed(new TreeMatcher());
