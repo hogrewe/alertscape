@@ -66,14 +66,19 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
 
     alertTree.addTreeSelectionListener(new TreeSelectionListener() {
       @SuppressWarnings("unchecked")
-      public void valueChanged(TreeSelectionEvent e) {
-        for (TreePath treePath : e.getPaths()) {
+      public void valueChanged(TreeSelectionEvent e) 
+      {
+        for (TreePath treePath : e.getPaths()) 
+        {
           DefaultAlertTreeNode selectedNode = (DefaultAlertTreeNode) treePath.getLastPathComponent();
 
           EventList<MatcherEditor<Alert>> matcherEditors = compositeEditor.getMatcherEditors();
-          if (e.isAddedPath(treePath)) {
+          if (e.isAddedPath(treePath)) 
+          {
             matcherEditors.add(selectedNode.getMatcherEditor());
-          } else {
+          } 
+          else 
+          {
             matcherEditors.remove(selectedNode.getMatcherEditor());
           }
         }
@@ -103,6 +108,11 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
     this.root = root;
   }
 
+  public void addTreeSelectionListener(TreeSelectionListener listener)
+  {
+  	alertTree.addTreeSelectionListener(listener);
+  }
+  
   public AlertCollection setMasterCollection(AlertCollection master) {
     EventList<Alert> rootList = master.getEventList();
     FilterList<Alert> filterList = new FilterList<Alert>(rootList, compositeEditor);

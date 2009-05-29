@@ -42,10 +42,16 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
 
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.XMLContext;
+
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.matchers.MatcherEditor;
 
 import com.alertscape.AlertscapeException;
 import com.alertscape.browser.common.auth.Authentication;
@@ -60,6 +66,7 @@ import com.alertscape.browser.model.AlertListenerExceptionListener;
 import com.alertscape.browser.model.BrowserContext;
 import com.alertscape.browser.model.JmsAlertListener;
 import com.alertscape.browser.model.tree.AlertTreeNode;
+import com.alertscape.browser.model.tree.DefaultAlertTreeNode;
 import com.alertscape.browser.ui.swing.panel.AlertBrowserStatusPanel;
 import com.alertscape.browser.ui.swing.panel.about.CreateAboutPanelAction;
 import com.alertscape.browser.ui.swing.panel.collection.chart.CreateChartPanelAction;
@@ -144,7 +151,7 @@ public class AlertBrowser extends JFrame {
     treePanel = new AlertTreePanel();
     treePanel.setRootNode(getRootNode());
     treePanel.init();
-
+       
     URL imageUrl = getClass().getResource("/com/alertscape/images/mini/close_tab.png");
     closeIcon = new ImageIcon(imageUrl);
 
@@ -449,6 +456,14 @@ public class AlertBrowser extends JFrame {
     //
     // Thread t = new Thread(gen);
     // t.start();
+    
+    treePanel.addTreeSelectionListener(new TreeSelectionListener() {
+      @SuppressWarnings("unchecked")
+      public void valueChanged(TreeSelectionEvent e) 
+      {
+      	tablePanel.clearSelection();
+      }
+    });
   }
 
   private void initJms() {
