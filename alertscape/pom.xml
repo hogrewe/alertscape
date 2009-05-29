@@ -4,7 +4,7 @@
     <groupId>com.alertscape</groupId>
     <artifactId>alertscape</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.7-SNAPSHOT</version>
+    <version>1.0.9-SNAPSHOT</version>
     <name>alertscape</name>
     <modules>
         <module>as-common</module>
