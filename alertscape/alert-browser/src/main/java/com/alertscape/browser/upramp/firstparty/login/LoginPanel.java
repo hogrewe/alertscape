@@ -166,7 +166,7 @@ public class LoginPanel extends AbstractUpRampPanel {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        transferFocus();
+        passwordField.requestFocus();
       }
 
     });
