@@ -139,4 +139,6 @@ public interface AlertTreeNode extends MutableTreeNode {
   
   void setTreeModel(AlertTreeModel treeModel);
 
+  public boolean scrubEmptyNodes();
+  
 }

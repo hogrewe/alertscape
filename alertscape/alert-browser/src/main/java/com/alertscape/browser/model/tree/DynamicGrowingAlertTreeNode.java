@@ -78,15 +78,19 @@ public class DynamicGrowingAlertTreeNode extends DefaultAlertTreeNode {
   }
 
   @Override
-  protected void addNonChildMatchingAlert(Alert alert) {
-    try {
-      if (childGetter == null && !usesAttribute) {
+  protected void addNonChildMatchingAlert(Alert alert) 
+  {
+    try 
+    {
+      if (childGetter == null && !usesAttribute) 
+      {
         return;
       }
 
       final Object value;
       AlertMatcher matcher;
-      if (usesAttribute) {
+      if (usesAttribute) 
+      {
         Object tmpvalue = alert.getExtendedAttribute(childField);
         if (tmpvalue == null) // if it is not a extattr, check if it is a major tag (category)        	
         {
@@ -100,13 +104,16 @@ public class DynamicGrowingAlertTreeNode extends DefaultAlertTreeNode {
         value = tmpvalue;
         
         matcher = new AttributeAlertMatcher(childField, value);
-      } else {
+      } 
+      else 
+      {
         value = childGetter.invoke(alert);
         matcher = new FieldAlertMatcher(childField, value);
       }
       
       // Don't add empty values
-      if(value == null) {
+      if(value == null) 
+      {
         return;
       }
 
