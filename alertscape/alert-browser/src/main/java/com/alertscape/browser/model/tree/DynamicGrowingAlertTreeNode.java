@@ -78,46 +78,40 @@ public class DynamicGrowingAlertTreeNode extends DefaultAlertTreeNode {
   }
 
   @Override
-  protected void addNonChildMatchingAlert(Alert alert) 
-  {
-    try 
-    {
-      if (childGetter == null && !usesAttribute) 
-      {
+  protected void addNonChildMatchingAlert(Alert alert) {
+    try {
+      if (childGetter == null && !usesAttribute) {
         return;
       }
 
       final Object value;
       AlertMatcher matcher;
-      if (usesAttribute) 
-      {
+      if (usesAttribute) {
         Object tmpvalue = alert.getExtendedAttribute(childField);
-        if (tmpvalue == null) // if it is not a extattr, check if it is a major tag (category)        	
+        if (tmpvalue == null) // if it is not a extattr, check if it is a major tag (category)
         {
-        	tmpvalue = alert.getMajorTag(childField);
-          
-        	if (tmpvalue == null) // if it is not a major tag, check if it is a minor tag (label)
+          tmpvalue = alert.getMajorTag(childField);
+
+          if (tmpvalue == null) // if it is not a major tag, check if it is a minor tag (label)
           {
-          	tmpvalue = alert.getMinorTag(childField);
+            tmpvalue = alert.getMinorTag(childField);
           }
         }
         value = tmpvalue;
-        
+
         matcher = new AttributeAlertMatcher(childField, value);
-      } 
-      else 
-      {
+      } else {
         value = childGetter.invoke(alert);
         matcher = new FieldAlertMatcher(childField, value);
       }
-      
+
       // Don't add empty values
-      if(value == null) 
-      {
+      if (value == null) {
         return;
       }
 
       DynamicGrowingAlertTreeNode child = new DynamicGrowingAlertTreeNode();
+      child.setRemovable(true);
       child.setText(value.toString());
       child.setIcon(getIcon());
       child.setMatcher(matcher);

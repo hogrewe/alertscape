@@ -23,6 +23,7 @@ import com.alertscape.util.ImageFinder;
  */
 public class AlertTreeNodeRenderer extends DefaultTreeCellRenderer {
   private static final long serialVersionUID = 1L;
+
   @Override
   public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
       boolean leaf, int row, boolean hasFocus) {
@@ -40,18 +41,14 @@ public class AlertTreeNodeRenderer extends DefaultTreeCellRenderer {
     if (icon != null) {
       l.setIcon(icon);
     }
-    
-    if (selected) 
-    {
+
+    if (selected) {
       l.setBackground(getBackgroundSelectionColor());
-    } 
-    else 
-    {
-      if (node.getAlertCount() == 0) 
-      {
+    } else {
+      if (node.getAlertCount() == 0) {
         l.setForeground(Color.gray);
         l.setBackground(getBackgroundNonSelectionColor());
-        
+
       } else {
         // l.setForeground(node.getMaxSeverity().getForegroundColor());
         // l.setBackground(node.getMaxSeverity().getBackgroundColor());
@@ -63,13 +60,13 @@ public class AlertTreeNodeRenderer extends DefaultTreeCellRenderer {
 
   protected Icon determineIcon(AlertTreeNode node, Icon defaultIcon) {
     Severity severity = node.getMaxSeverity();
-    
+
     ImageFinder finder = ImageFinder.getInstance();
     Icon nodeIcon = finder.findImage(node.getIcon());
-    if(nodeIcon == null) {
+    if (nodeIcon == null) {
       nodeIcon = defaultIcon;
     }
-    if(severity.getSmallIcon() != null) {
+    if (severity.getSmallIcon() != null) {
       Icon[] icons = new Icon[2];
       icons[0] = nodeIcon;
       icons[1] = finder.findImage(severity.getSmallIcon());
