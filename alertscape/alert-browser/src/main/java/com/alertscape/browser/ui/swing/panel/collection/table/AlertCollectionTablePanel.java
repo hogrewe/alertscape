@@ -253,6 +253,11 @@ public class AlertCollectionTablePanel extends JPanel implements AlertCollection
   public AlertCollection getCollection() {
     return collection;
   }
+  
+  public void clearSelection()
+  {
+  	collectionTable.clearSelection();
+  }
 
   public List<Alert> getSelectedAlerts() {
     int[] myrows = collectionTable.getSelectedRows();

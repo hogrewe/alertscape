@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -66,14 +67,19 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
 
     alertTree.addTreeSelectionListener(new TreeSelectionListener() {
       @SuppressWarnings("unchecked")
-      public void valueChanged(TreeSelectionEvent e) {
-        for (TreePath treePath : e.getPaths()) {
+      public void valueChanged(TreeSelectionEvent e) 
+      {
+        for (TreePath treePath : e.getPaths()) 
+        {
           DefaultAlertTreeNode selectedNode = (DefaultAlertTreeNode) treePath.getLastPathComponent();
 
           EventList<MatcherEditor<Alert>> matcherEditors = compositeEditor.getMatcherEditors();
-          if (e.isAddedPath(treePath)) {
+          if (e.isAddedPath(treePath)) 
+          {
             matcherEditors.add(selectedNode.getMatcherEditor());
-          } else {
+          } 
+          else 
+          {
             matcherEditors.remove(selectedNode.getMatcherEditor());
           }
         }
@@ -103,19 +109,28 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
     this.root = root;
   }
 
+  public void addTreeSelectionListener(TreeSelectionListener listener)
+  {
+  	alertTree.addTreeSelectionListener(listener);
+  }
+  
   public AlertCollection setMasterCollection(AlertCollection master) {
     EventList<Alert> rootList = master.getEventList();
     FilterList<Alert> filterList = new FilterList<Alert>(rootList, compositeEditor);
     subCollection = new BinarySortAlertCollection(filterList);
     existingEvents.clear();
-    existingEvents.addAll(rootList);
-
-    rootList.addListEventListener(new ListEventListener<Alert>() {
-      public void listChanged(ListEvent<Alert> listChanges) {
+    existingEvents.addAll(rootList);    
+    
+    rootList.addListEventListener(new ListEventListener<Alert>() 
+    {
+      public void listChanged(ListEvent<Alert> listChanges) 
+      {
         EventList<Alert> list = listChanges.getSourceList();
         Lock lock = list.getReadWriteLock().readLock();
         lock.lock();
         Alert alert;
+        
+        // iterate through the list of alerts and process them all 
         while (listChanges.next()) {
           int index = listChanges.getIndex();
           switch (listChanges.getType()) {
@@ -136,12 +151,30 @@ public class AlertTreePanel extends JPanel implements AlertFilter {
             root.addAlert(newEvent);
             break;
           }
-
         }
 
         lock.unlock();
       }
     });
+    
+    // create a thread that will routinely scrub empty nodes
+    Thread t = new Thread(new Runnable() 
+  	{
+      @Override
+      public void run() 
+      {
+      	while (true)
+      	{
+      		try { Thread.sleep(15*1000); } 
+      		catch (InterruptedException e) 	{ e.printStackTrace(); }
+					
+      		root.scrubEmptyNodes();
+      	}
+      }
+  	});
+    t.start();
+    
+    
 
     // Initialize the counts to the current counts in the collection
     Lock lock = rootList.getReadWriteLock().readLock();

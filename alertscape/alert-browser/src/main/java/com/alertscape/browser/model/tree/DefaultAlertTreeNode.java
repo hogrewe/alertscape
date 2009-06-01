@@ -111,7 +111,10 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
         public void run() {
-          treeModel.nodeChanged(DefaultAlertTreeNode.this);
+        	synchronized(treeModel)
+        	{
+        		treeModel.nodeChanged(DefaultAlertTreeNode.this);
+        	}
         }
 
       });
@@ -138,25 +141,32 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
     }
   }
 
-  public void removeAlert(Alert a) {
-    synchronized (alertLock) {
+  public void removeAlert(Alert a) 
+  {
+    synchronized (alertLock) 
+    {
       Severity startingSev = getMaxSeverity();
       int startingCount = alerts.size();
-      Alert existing = alerts.remove(a);
-      if (existing != null) {
+      Alert existing = alerts.remove(a); // check if this alert is already in this node
+      if (existing != null)
+      {
         int count = severityCounts.get(existing.getSeverity());
         count--;
         severityCounts.put(existing.getSeverity(), count);
         determineMaxSeverity();
         matcherEditor.removeAlert(a);
-        if (treeModel != null && (alerts.size() != startingCount || getMaxSeverity() != startingSev)) {
+        if (treeModel != null && (alerts.size() != startingCount || getMaxSeverity() != startingSev)) 
+        {
           notifyChanged();
         }
-        for (AlertTreeNode child : getChildAddOrder()) {
+        //final ArrayList<AlertTreeNode> childrenToRemove = new ArrayList<AlertTreeNode>(1);
+        for (AlertTreeNode child : getChildAddOrder()) 
+        {
           child.removeAlert(a);
         }
       }
     }
+    
   }
 
   public List<AlertTreeNode> getChildren() {
@@ -176,7 +186,7 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
       addChild(child);
     }
   }
-
+  
   public void addChild(AlertTreeNode child, final int index) {
     children.add(index, child);
     child.setTreeModel(treeModel);
@@ -186,7 +196,10 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
+          	synchronized(treeModel)
+          	{
             treeModel.nodesWereInserted(DefaultAlertTreeNode.this, new int[] { index });
+          	}
           }
 
         });
@@ -419,5 +432,57 @@ public class DefaultAlertTreeNode implements AlertTreeNode {
       child.setTreeModel(treeModel);
       child.setParent(this);
     }
+  }
+  
+  // purpose of this method is to iterate the tree and scrub any child nodes that are empty
+  public boolean scrubEmptyNodes()
+  {
+  	synchronized (alertLock) 
+  	{  	   		
+  		// recurse through subnodes first
+  	  final ArrayList<AlertTreeNode> childrenToRemove = new ArrayList<AlertTreeNode>(1);
+      for (AlertTreeNode child : getChildAddOrder()) 
+      {        
+        boolean isEmpty = child.scrubEmptyNodes();
+        if (isEmpty)
+        {        	
+        	// do not remove children of the root, because the never come back for some reason...
+        	if (this.parent != null)
+        	{        	
+        		// if a child needs removing, then add it to the list
+        		childrenToRemove.add(child);
+        	}
+        }
+      }
+      
+      // remove the children that are empty prior to returning my own node status
+      // grab all of the indexes from the original list
+      final int[] indexes = new int[childrenToRemove.size()];
+      for (int i = 0; i < childrenToRemove.size(); i++)
+      {
+      	AlertTreeNode child = childrenToRemove.get(i);
+      	int index = this.getIndex(child);
+      	indexes[i] = index;
+      }
+    
+      // remove the child nodes
+      for (int i = 0; i < childrenToRemove.size(); i++)
+      {
+	    	AlertTreeNode child = childrenToRemove.get(i);        	
+	      remove(child);
+	    }
+     
+	    // tell the tree model that we removed some nodes
+      if (treeModel != null) 
+	    {
+	    	final DefaultAlertTreeNode me = this;
+	    	synchronized(treeModel)
+      	{
+	    		treeModel.nodesWereRemoved(me, indexes, childrenToRemove.toArray());
+      	}
+	    }
+      
+      return this.getAlertCount()==0;
+  	}
   }
 }

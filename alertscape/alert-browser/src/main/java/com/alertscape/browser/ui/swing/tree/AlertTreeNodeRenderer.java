@@ -40,13 +40,18 @@ public class AlertTreeNodeRenderer extends DefaultTreeCellRenderer {
     if (icon != null) {
       l.setIcon(icon);
     }
-
-    if (selected) {
+    
+    if (selected) 
+    {
       l.setBackground(getBackgroundSelectionColor());
-    } else {
-      if (node.getAlertCount() == 0) {
+    } 
+    else 
+    {
+      if (node.getAlertCount() == 0) 
+      {
         l.setForeground(Color.gray);
         l.setBackground(getBackgroundNonSelectionColor());
+        
       } else {
         // l.setForeground(node.getMaxSeverity().getForegroundColor());
         // l.setBackground(node.getMaxSeverity().getBackgroundColor());
