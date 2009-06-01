@@ -42,7 +42,7 @@ public interface AlertTreeNode extends MutableTreeNode {
   void clearAlerts();
 
   void addChild(AlertTreeNode child);
-  
+
   void setChildren(List<AlertTreeNode> children);
 
   /**
@@ -94,7 +94,6 @@ public interface AlertTreeNode extends MutableTreeNode {
    */
   Severity getMaxSeverity();
 
-
   /**
    * @return Returns the text.
    */
@@ -134,11 +133,19 @@ public interface AlertTreeNode extends MutableTreeNode {
    * @return
    */
   String getDisplayText();
-  
+
   int getAlertCount();
-  
+
   void setTreeModel(AlertTreeModel treeModel);
 
-  public boolean scrubEmptyNodes();
-  
+  boolean scrubEmptyNodes();
+
+  boolean isRemovable();
+
+  void setRemovable(boolean removable);
+
+  long getEmptyTime();
+
+  void setEmptyTime(long emptyTime);
+
 }
