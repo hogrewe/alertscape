@@ -27,6 +27,7 @@ import com.alertscape.pump.onramp.line.AlertLineProcessor;
  * 
  */
 public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnrampDao<ID> {
+
   private static final ASLogger LOG = ASLogger.getLogger(AlertOnrampJdbcDao.class);
   private String tableName;
   private String whereClause;
@@ -46,60 +47,8 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
     }
     final ID[] lastIdHolder = (ID[]) new Object[1];
     lastIdHolder[0] = lastId;
-    List<Alert> alerts = getJdbcTemplate().query(query, new Object[] { lastId, batchSize }, new RowMapper() {
-      public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Alert alert = new Alert();
-        SeverityFactory factory = SeverityFactory.getInstance();
-        alert.setSeverity(factory.getSeverity(0));
-
-        for (String column : columnsToFields.keySet()) {
-          Object value = rs.getObject(column);
-          String fieldName = columnsToFields.get(column);
-          if (fieldName.equals("severity")) {
-            Integer sevNum = severityMapping.get(value);
-            if (sevNum == null || sevNum < 0) {
-              sevNum = 0;
-            } else if (sevNum >= factory.getNumSeverities()) {
-              sevNum = factory.getNumSeverities() - 1;
-            }
-            Severity severity = factory.getSeverity(sevNum);
-            value = severity;
-          }
-          Method setter = getSetter(fieldName);
-          if (setter != null) {
-            try {
-              setter.invoke(alert, value);
-            } catch (Exception e) {
-              LOG.error("Couldn't set " + fieldName + " to " + value);
-            }
-          }
-        }
-
-        for (String column : columnsToAttributes.keySet()) {
-          Object value = rs.getObject(column);
-
-          String attrName = columnsToAttributes.get(column);
-
-          alert.getExtendedAttributes().put(attrName, value);
-        }
-
-        lastIdHolder[0] = (ID) rs.getObject(idColumn);
-        if (lineProcessors != null) {
-          String columnValue = rs.getString(regexColumn);
-          for (AlertLineProcessor processor : lineProcessors) {
-            // If this processor matches, populate the value of the alert and return
-            if (processor.matches(columnValue)) {
-              Alert processed = processor.populateAlert(alert, columnValue);
-              return processed;
-            }
-          }
-          // If none of the processors matched with a non-null alert, return null
-          return null;
-        }
-
-        return alert;
-      }
-    });
+    List<Alert> alerts = getJdbcTemplate().query(query, new Object[] { lastId, batchSize },
+        new AlertLineProcessorRowMapper(lastIdHolder));
     for (Alert alert : alerts) {
       if (alert != null) {
         nextAlerts.add(alert);
@@ -262,4 +211,80 @@ public class AlertOnrampJdbcDao<ID> extends JdbcDaoSupport implements AlertOnram
   public void setRegexColumn(String regexColumn) {
     this.regexColumn = regexColumn;
   }
+
+  /**
+   * @author josh
+   * 
+   */
+  private final class AlertLineProcessorRowMapper implements RowMapper {
+    /**
+     * 
+     */
+    private final ID[] lastIdHolder;
+
+    /**
+     * @param lastIdHolder
+     */
+    private AlertLineProcessorRowMapper(ID[] lastIdHolder) {
+      this.lastIdHolder = lastIdHolder;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+      Alert alert = new Alert();
+      SeverityFactory factory = SeverityFactory.getInstance();
+      alert.setSeverity(factory.getSeverity(0));
+
+      for (String column : columnsToFields.keySet()) {
+        Object value = rs.getObject(column);
+        String fieldName = columnsToFields.get(column);
+        if (fieldName.equals("severity")) {
+          Integer sevNum = severityMapping.get(value);
+          if (sevNum == null || sevNum < 0) {
+            sevNum = 0;
+          } else if (sevNum >= factory.getNumSeverities()) {
+            sevNum = factory.getNumSeverities() - 1;
+          }
+          Severity severity = factory.getSeverity(sevNum);
+          value = severity;
+        }
+        Method setter = getSetter(fieldName);
+        if (setter != null) {
+          try {
+            setter.invoke(alert, value);
+          } catch (Exception e) {
+            LOG.error("Couldn't set " + fieldName + " to " + value);
+          }
+        }
+      }
+
+      for (String column : columnsToAttributes.keySet()) {
+        Object value = rs.getObject(column);
+
+        String attrName = columnsToAttributes.get(column);
+
+        alert.getExtendedAttributes().put(attrName, value);
+      }
+
+      lastIdHolder[0] = (ID) rs.getObject(idColumn);
+      if (lineProcessors != null) {
+        String columnValue = rs.getString(regexColumn);
+        for (AlertLineProcessor processor : lineProcessors) {
+          // If this processor matches, populate the value of the alert and return
+          if (processor.matches(columnValue)) {
+            Alert processed = processor.populateAlert(alert, columnValue);
+            if (processed != null) {
+              processed.setGeneratedBy(processor.getName());
+            }
+            return processed;
+          }
+        }
+        // If none of the processors matched with a non-null alert, return null
+        return null;
+      }
+
+      return alert;
+    }
+  }
+
 }

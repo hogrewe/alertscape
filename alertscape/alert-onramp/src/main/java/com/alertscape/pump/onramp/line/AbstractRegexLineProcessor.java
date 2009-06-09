@@ -14,6 +14,7 @@ public abstract class AbstractRegexLineProcessor implements AlertLineProcessor {
   private String regex;
   private Pattern pattern;
   private boolean matchRequired = true;
+  private String name;
 
   public boolean matches(String line) {
     Matcher matcher = makeMatcher(line);
@@ -59,6 +60,20 @@ public abstract class AbstractRegexLineProcessor implements AlertLineProcessor {
    */
   public boolean isMatchRequired() {
     return matchRequired;
+  }
+
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * @param name the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
   }
 
 }

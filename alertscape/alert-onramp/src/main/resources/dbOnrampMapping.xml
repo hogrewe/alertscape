@@ -120,6 +120,9 @@
 		<field name="regex" type="string">
 			<bind-xml name="regex" />
 		</field>
+        <field name="name" type="string">
+            <bind-xml name="name" node="attribute"/>
+        </field>
 	</class>
 
 	<class name="com.alertscape.pump.onramp.line.IgnoringRegexLineProcessor"

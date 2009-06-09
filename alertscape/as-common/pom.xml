@@ -2,13 +2,13 @@
   <parent>
     <artifactId>alertscape</artifactId>
     <groupId>com.alertscape</groupId>
-    <version>1.0.9-SNAPSHOT</version>
+    <version>1.0.10</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.alertscape</groupId>
   <artifactId>as-common</artifactId>
   <name>as-common</name>
-  <version>1.0.9-SNAPSHOT</version>
+  <version>1.0.10</version>
   <!--
   <build>
     <plugins>

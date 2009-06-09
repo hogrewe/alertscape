@@ -58,7 +58,8 @@ public class UserAdminWidget extends AbstractAdminComponent {
     addButton = new Button("Add User");
     addButton.addClickListener(new ClickListener() {
       public void onClick(Widget w) {
-        editUser(new User());
+        User user = new User();
+        editUser(user);
       }
     });
 
@@ -135,7 +136,7 @@ public class UserAdminWidget extends AbstractAdminComponent {
 
     private FlexTable inputTable;
     private int numInputs;
-    
+
     private Button cancelButton;
 
     public UserEditDialog(final User user, final AdminGwtServiceAsync adminService) {
@@ -199,18 +200,18 @@ public class UserAdminWidget extends AbstractAdminComponent {
           });
         }
       });
-      
+
       cancelButton = new Button("Cancel", new ClickListener() {
         public void onClick(Widget w) {
           hide();
-        }        
+        }
       });
 
       fullname.setText(user.getFullname());
       username.setText(user.getUsername());
       email.setText(user.getEmail());
-      
-      if(user.getRoles().contains("admin")) {
+
+      if (user.getRoles().contains("admin")) {
         admin.setChecked(true);
       }
 
@@ -235,7 +236,9 @@ public class UserAdminWidget extends AbstractAdminComponent {
       public void onChange(Widget w) {
         boolean enabled = notEmpty(username) && notEmpty(email);
         if (notEmpty(password1) || notEmpty(password2)) {
-          enabled &= password1.getText().equals(password2.getText());
+          String p1 = password1.getText();
+          String p2 = password2.getText();
+          enabled &= (p1 != null && p2 != null) && password1.getText().equals(password2.getText());
         }
         saveButton.setEnabled(enabled);
       }
