@@ -38,7 +38,6 @@ public class ConfigurableDatabaseOnramp<ID> extends DatabaseOnramp<ID> {
   private String username;
   private String password;
   private List<AlertLineProcessor> lineProcessors;
-  private String regex;
   private String regexColumn;
 
   private PoolingDataSource poolingDataSource;
@@ -263,20 +262,6 @@ public class ConfigurableDatabaseOnramp<ID> extends DatabaseOnramp<ID> {
    */
   public void setLineProcessors(List<AlertLineProcessor> lineProcessors) {
     this.lineProcessors = lineProcessors;
-  }
-
-  /**
-   * @return the regex
-   */
-  public String getRegex() {
-    return regex;
-  }
-
-  /**
-   * @param regex the regex to set
-   */
-  public void setRegex(String regex) {
-    this.regex = regex;
   }
 
   /**

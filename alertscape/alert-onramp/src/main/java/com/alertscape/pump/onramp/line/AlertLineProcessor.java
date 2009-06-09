@@ -23,4 +23,6 @@ public interface AlertLineProcessor {
   Alert populateAlert(Alert alert, String line);
   
   boolean matches(String line);
+  
+  String getName();
 }

@@ -19,5 +19,4 @@ public class IgnoringRegexLineProcessor extends AbstractRegexLineProcessor {
   public Alert populateAlert(Alert alert, String line) {
     return null;
   }
-
 }

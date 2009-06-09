@@ -36,6 +36,7 @@ public class Alert implements Serializable {
   private Date lastOccurence;
   private long compositeAlertId = -1;
   private String acknowledgedBy;
+  private String generatedBy;
 
   private Map<String, Object> majorTags;
   private Map<String, Object> minorTags;
@@ -320,6 +321,20 @@ public class Alert implements Serializable {
         .append("firstOccurence", firstOccurence).append("lastOccurence", lastOccurence).append("longDescription",
             longDescription).append("severity", severity).append("shortDescription", shortDescription).append("status",
             status).append("type", type).toString();
+  }
+
+  /**
+   * @return the matchedRule
+   */
+  public String getGeneratedBy() {
+    return generatedBy;
+  }
+
+  /**
+   * @param generatedBy the matchedRule to set
+   */
+  public void setGeneratedBy(String generatedBy) {
+    this.generatedBy = generatedBy;
   }
 
 }
