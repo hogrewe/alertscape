@@ -8,3 +8,4 @@ bin
 **/as-webapp/tomcat
 release.properties
 pom.xml.releaseBackup
+.metadata
